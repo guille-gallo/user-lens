@@ -1,0 +1,131 @@
+// Design System Foundation
+// ========================
+
+// Import design tokens first
+@import 'tokens';
+@import 'bem-helpers';
+@import 'mixins';
+
+// Global Reset and Base Styles
+// -----------------------------
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; // Base font size for rem calculations
+  line-height: $line-height-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: $line-height-base;
+  color: $color-text-primary;
+  background-color: $color-bg-secondary;
+}
+
+// Base Typography
+// ---------------
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 $space-4 0;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $color-text-primary;
+}
+
+h1 { @include text-2xl; }
+h2 { @include text-xl; }
+h3 { @include text-lg; }
+h4 { @include text-base; }
+h5 { @include text-sm; }
+h6 { @include text-xs; }
+
+p {
+  margin: 0 0 $space-4 0;
+  line-height: $line-height-base;
+}
+
+// Link Styles
+a {
+  color: $color-primary;
+  text-decoration: none;
+  transition: color $transition-base;
+  
+  &:hover {
+    color: $color-primary-dark;
+    text-decoration: underline;
+  }
+  
+  &:focus {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+}
+
+// List Styles
+ul, ol {
+  margin: 0 0 $space-4 0;
+  padding-left: $space-6;
+}
+
+li {
+  margin-bottom: $space-1;
+}
+
+// Code Styles
+code {
+  padding: $space-1 $space-2;
+  font-family: $font-family-mono;
+  font-size: 0.875em;
+  background-color: $color-gray-100;
+  border-radius: $radius-sm;
+}
+
+pre {
+  padding: $space-4;
+  overflow-x: auto;
+  font-family: $font-family-mono;
+  background-color: $color-gray-100;
+  border-radius: $radius-base;
+  
+  code {
+    padding: 0;
+    background-color: transparent;
+  }
+}
+
+// Form Element Base Styles
+input, textarea, select {
+  font-family: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+// Focus Management
+.focus-visible {
+  outline: 2px solid $color-primary;
+  outline-offset: 2px;
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

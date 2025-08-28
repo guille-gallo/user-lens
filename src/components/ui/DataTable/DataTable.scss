@@ -1,29 +1,48 @@
 // DataTable component styles
+@import '../../../styles/design-system/tokens';
+@import '../../../styles/design-system/mixins';
+
 .data-table {
   width: 100%;
 
   &__wrapper {
     overflow-x: auto;
-    border-radius: 12px;
-    border: 1px solid #e1e5e9;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: $radius-lg;
+    border: 1px solid $color-border-light;
+    background-color: $color-bg-primary;
+    box-shadow: $shadow-sm;
+    
+    // Improve mobile scrolling
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: $color-gray-400 $color-gray-100;
+    
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $color-gray-100;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $color-gray-400;
+      border-radius: $radius-full;
+    }
   }
 
   &__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
+    @include table-base;
+    @include text-sm;
     min-width: 800px; // Ensures horizontal scroll on mobile
+    
+    @include respond-to(lg) {
+      min-width: 100%;
+    }
   }
 
   &__header-cell {
-    background-color: #f8f9fa;
-    padding: 16px;
-    text-align: left;
-    font-weight: 600;
-    color: #495057;
-    border-bottom: 2px solid #e1e5e9;
+    @include table-header;
     position: sticky;
     top: 0;
     z-index: 10;
@@ -31,37 +50,37 @@
     &--actions {
       width: 200px;
       text-align: center;
+      
+      @include respond-to(sm) {
+        width: 150px;
+      }
     }
   }
 
   &__sort-button {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: $space-2;
     background: none;
     border: none;
     padding: 0;
     font: inherit;
-    font-weight: 600;
+    font-weight: $font-weight-semibold;
     color: inherit;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: color $transition-base;
 
     &:hover {
-      color: #0066cc;
+      color: $color-primary;
     }
 
-    &:focus {
-      outline: 2px solid #0066cc;
-      outline-offset: 2px;
-      border-radius: 4px;
-    }
+    @include interactive-focus;
   }
 
   &__sort-icon {
     font-size: 12px;
     opacity: 0.7;
-    transition: opacity 0.2s ease;
+    transition: opacity $transition-base;
 
     .data-table__sort-button:hover & {
       opacity: 1;
@@ -69,56 +88,123 @@
   }
 
   &__row {
-    transition: background-color 0.2s ease;
+    transition: background-color $transition-base;
 
     &:hover {
-      background-color: #f8f9fa;
+      background-color: $color-bg-tertiary;
     }
 
     &:nth-child(even) {
-      background-color: rgba(0, 0, 0, 0.02);
+      background-color: rgba($color-gray-900, 0.02);
 
       &:hover {
-        background-color: #f8f9fa;
+        background-color: $color-bg-tertiary;
       }
     }
   }
 
   &__cell {
-    padding: 16px;
-    border-bottom: 1px solid #e1e5e9;
-    vertical-align: middle;
+    @include table-cell;
+    
+    // Responsive cell padding
+    @include respond-to(sm) {
+      padding: $space-3;
+    }
 
     &--actions {
       text-align: center;
       white-space: nowrap;
+      
+      @include respond-to(sm) {
+        padding: $space-2;
+      }
     }
   }
 
   &__actions {
     display: flex;
-    gap: 8px;
+    gap: $space-2;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
+    
+    @include respond-to(sm) {
+      gap: $space-1;
+    }
+  }
+
+  &__action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-1 $space-3;
+    border: 1px solid $color-border-medium;
+    border-radius: $space-1;
+    background: $color-white;
+    color: $color-text-secondary;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    @include text-xs;
+    @include font-medium;
+    white-space: nowrap;
+    
+    @include respond-to(sm) {
+      padding: $space-1 $space-2;
+      @include text-xs;
+    }
+
+    &:hover {
+      border-color: $color-border-light;
+      transform: translateY(-1px);
+      box-shadow: $shadow-sm;
+    }
+
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 1px;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &--view {
+      &:hover {
+        background: $color-primary;
+        color: $color-white;
+        border-color: $color-primary;
+      }
+    }
+
+    &--edit {
+      &:hover {
+        background: $color-warning;
+        color: $color-white;
+        border-color: $color-warning;
+      }
+    }
+
+    &--delete {
+      &:hover {
+        background: $color-danger;
+        color: $color-white;
+        border-color: $color-danger;
+      }
+    }
   }
 
   &__email-link,
   &__phone-link,
   &__website-link {
-    color: #0066cc;
+    color: $color-primary;
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color $transition-base;
 
     &:hover {
-      color: #0052a3;
+      color: $color-primary-dark;
       text-decoration: underline;
     }
 
-    &:focus {
-      outline: 2px solid #0066cc;
-      outline-offset: 1px;
-      border-radius: 2px;
-    }
+    @include interactive-focus;
   }
 
   // Loading state
@@ -147,26 +233,46 @@
 
   // Empty state
   &__empty {
-    display: flex;
+    @include flex-center;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 64px 24px;
+    padding: $space-16 $space-6;
     text-align: center;
-    background-color: #fff;
-    border-radius: 12px;
-    border: 1px solid #e1e5e9;
+    background-color: $color-white;
+    border-radius: $space-3;
+    border: 1px solid $color-border-light;
+    
+    @include respond-to(md) {
+      padding: $space-12 $space-4;
+    }
 
     p {
-      margin: 0 0 8px 0;
-      color: #495057;
-      font-size: 18px;
-      font-weight: 500;
+      margin: 0 0 $space-2 0;
+      color: $color-text-primary;
+      @include text-lg;
+      @include font-medium;
+      
+      @include respond-to(md) {
+        @include text-base;
+      }
     }
 
     small {
-      color: #6c757d;
-      font-size: 14px;
+      color: $color-text-secondary;
+      @include text-sm;
+    }
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid $color-white;
+    box-shadow: $shadow-sm;
+    
+    @include respond-to(md) {
+      width: 32px;
+      height: 32px;
     }
   }
 }
@@ -212,32 +318,6 @@
       p {
         font-size: 16px;
       }
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .data-table {
-    &__table {
-      min-width: 600px; // Reduced minimum width for very small screens
-    }
-
-    &__header-cell {
-      padding: 10px 6px;
-
-      &--actions {
-        width: 120px;
-      }
-    }
-
-    &__cell {
-      padding: 10px 6px;
-      font-size: 12px;
-    }
-
-    &__actions {
-      flex-direction: column;
-      gap: 2px;
     }
   }
 }

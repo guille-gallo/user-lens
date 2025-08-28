@@ -1,13 +1,25 @@
 // AppLayout component styles
+@import '../../../styles/design-system/tokens';
+@import '../../../styles/design-system/mixins';
+
 .app-layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: $color-bg-secondary;
 
   &__content {
     flex: 1;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    padding: 0 $space-6;
+    
+    @include respond-to(md) {
+      padding: 0 $space-4;
+    }
   }
 }
 

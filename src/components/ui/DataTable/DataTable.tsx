@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import type { User } from '../../../services/userService';
-import { Button } from '../Button';
 import './DataTable.scss';
 
 type SortOrder = 'asc' | 'desc';
@@ -174,35 +173,34 @@ export const DataTable: React.FC<DataTableProps> = ({
                 <td className="data-table__cell data-table__cell--actions">
                   <div className="data-table__actions">
                     {onView && (
-                      <Button
-                        variant="outline"
-                        size="small"
+                      <button
+                        className="data-table__action-btn data-table__action-btn--view"
                         onClick={() => onView(user)}
                         aria-label={`View ${user.name}`}
+                        title="View details"
                       >
                         View
-                      </Button>
+                      </button>
                     )}
                     {onEdit && (
-                      <Button
-                        variant="secondary"
-                        size="small"
+                      <button
+                        className="data-table__action-btn data-table__action-btn--edit"
                         onClick={() => onEdit(user)}
                         aria-label={`Edit ${user.name}`}
+                        title="Edit user"
                       >
                         Edit
-                      </Button>
+                      </button>
                     )}
                     {onDelete && (
-                      <Button
-                        variant="outline"
-                        size="small"
-                        className="button--danger"
+                      <button
+                        className="data-table__action-btn data-table__action-btn--delete"
                         onClick={() => onDelete(user)}
                         aria-label={`Delete ${user.name}`}
+                        title="Delete user"
                       >
                         Delete
-                      </Button>
+                      </button>
                     )}
                   </div>
                 </td>

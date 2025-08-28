@@ -1,0 +1,89 @@
+// SearchBar Component - Design System Version
+// ============================================
+
+@import '../../../styles/design-system/tokens';
+@import '../../../styles/design-system/mixins';
+
+.search-bar {
+  width: 100%;
+  max-width: 400px;
+
+  @include element(input-wrapper) {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  @include element(input) {
+    @include input-base;
+    padding-right: $space-12; // Space for search icon
+    
+    &::placeholder {
+      color: $color-text-muted;
+    }
+  }
+
+  @include element(icon) {
+    position: absolute;
+    right: $space-4;
+    color: $color-text-muted;
+    pointer-events: none;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @include element(clear-button) {
+    position: absolute;
+    right: $space-2;
+    background: none;
+    border: none;
+    color: $color-text-muted;
+    cursor: pointer;
+    padding: $space-1;
+    border-radius: $radius-sm;
+    transition: color $transition-base;
+    
+    &:hover {
+      color: $color-text-secondary;
+    }
+    
+    &:focus {
+      @include interactive-focus;
+    }
+  }
+
+  // Size variants
+  @include modifier(sm) {
+    max-width: 300px;
+    
+    .search-bar__input {
+      @include text-sm;
+      padding: $space-2 $space-10 $space-2 $space-3;
+    }
+  }
+
+  @include modifier(lg) {
+    max-width: 500px;
+    
+    .search-bar__input {
+      @include text-lg;
+      padding: $space-4 $space-12 $space-4 $space-5;
+    }
+  }
+
+  // State variants
+  @include modifier(error) {
+    .search-bar__input {
+      @include input-state($color-danger);
+    }
+  }
+
+  @include modifier(success) {
+    .search-bar__input {
+      @include input-state($color-success);
+    }
+  }
+}
