@@ -1,9 +1,12 @@
+@import '../../../styles/index.scss';
+
 // Header component styles
 .header {
-  background-color: #fff;
-  border-bottom: 1px solid #e1e5e9;
+  background-color: $color-white;
+  border-bottom: 1px solid $color-gray-200;
   padding: 24px 0;
   margin-bottom: 32px;
+  box-shadow: 0 1px 3px rgba($color-gray-900, 0.05);
 
   &__content {
     display: flex;
@@ -22,14 +25,14 @@
   &__title {
     font-size: 32px;
     font-weight: 700;
-    color: #212529;
+    color: $color-primary;
     margin: 0 0 8px 0;
     line-height: 1.2;
   }
 
   &__subtitle {
     font-size: 16px;
-    color: #6c757d;
+    color: $color-gray-600;
     margin: 0;
     line-height: 1.4;
   }

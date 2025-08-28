@@ -1,20 +1,20 @@
 // SearchBar Component - Design System Version
 // ============================================
 
-@import '../../../styles/design-system/tokens';
-@import '../../../styles/design-system/mixins';
+@import '../../../styles/tokens';
+@import '../../../styles/mixins';
 
 .search-bar {
   width: 100%;
   max-width: 400px;
 
-  @include element(input-wrapper) {
+  &__input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
   }
 
-  @include element(input) {
+  &__input {
     @include input-base;
     padding-right: $space-12; // Space for search icon
     
@@ -23,7 +23,7 @@
     }
   }
 
-  @include element(icon) {
+  &__icon {
     position: absolute;
     right: $space-4;
     color: $color-text-muted;
@@ -35,7 +35,7 @@
     justify-content: center;
   }
 
-  @include element(clear-button) {
+  &__clear-button {
     position: absolute;
     right: $space-2;
     background: none;
@@ -56,7 +56,7 @@
   }
 
   // Size variants
-  @include modifier(sm) {
+  &--sm {
     max-width: 300px;
     
     .search-bar__input {
@@ -65,7 +65,7 @@
     }
   }
 
-  @include modifier(lg) {
+  &--lg {
     max-width: 500px;
     
     .search-bar__input {
@@ -75,13 +75,13 @@
   }
 
   // State variants
-  @include modifier(error) {
+  &--error {
     .search-bar__input {
       @include input-state($color-danger);
     }
   }
 
-  @include modifier(success) {
+  &--success {
     .search-bar__input {
       @include input-state($color-success);
     }

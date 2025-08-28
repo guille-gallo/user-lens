@@ -1,3 +1,5 @@
+@import '../../../styles/index.scss';
+
 // SearchBar component styles
 .search-bar {
   width: 100%;
@@ -12,24 +14,25 @@
   &__input {
     width: 100%;
     padding: 12px 50px 12px 16px;
-    border: 2px solid #e1e5e9;
-    border-radius: 8px;
+    border: 2px solid $color-gray-200;
+    border-radius: 12px;
     font-size: 14px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 500;
+    transition: all 0.2s ease;
     outline: none;
-    background-color: #fff;
+    background-color: $color-white;
 
     &::placeholder {
-      color: #6c757d;
+      color: $color-gray-400;
     }
 
     &:focus {
-      border-color: #0066cc;
-      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+      border-color: $color-primary;
+      box-shadow: 0 0 0 4px rgba($color-primary, 0.1);
     }
 
     &:hover {
-      border-color: #b8bcc2;
+      border-color: $color-gray-300;
     }
   }
 

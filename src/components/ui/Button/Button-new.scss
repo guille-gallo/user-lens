@@ -1,9 +1,9 @@
 // Button Component - Design System Version
 // =========================================
 
-@import '../../../styles/design-system/tokens';
-@import '../../../styles/design-system/mixins';
-@import '../../../styles/design-system/components';
+@import '../../../styles/tokens';
+@import '../../../styles/mixins';
+@import '../../../styles/components';
 
 .button {
   @include button-base;

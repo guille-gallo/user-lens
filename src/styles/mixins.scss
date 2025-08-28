@@ -68,18 +68,6 @@
 }
 
 // Utility Mixins
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@mixin flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 @mixin interactive-focus {
   &:focus {
     outline: 2px solid $color-primary;
@@ -185,6 +173,12 @@
   &::placeholder {
     color: $color-text-muted;
   }
+}
+
+// Input State Variants
+@mixin input-state($color) {
+  border-color: $color;
+  box-shadow: 0 0 0 3px rgba($color, 0.1);
 }
 
 // Responsive Breakpoint Mixins

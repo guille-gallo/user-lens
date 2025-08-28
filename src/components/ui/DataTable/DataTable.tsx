@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Icon } from '../Icon';
 import type { User } from '../../../services/userService';
 import './DataTable.scss';
 
@@ -104,8 +105,12 @@ export const DataTable: React.FC<DataTableProps> = ({
   };
 
   const getSortIcon = (field: SortableFields) => {
-    if (sortField !== field) return '↕️';
-    return sortOrder === 'asc' ? '↑' : '↓';
+    if (sortField !== field) {
+      return <Icon name="chevrons-up-down" size={14} className="data-table__sort-icon--neutral" />;
+    }
+    return sortOrder === 'asc' ? 
+      <Icon name="chevron-up" size={14} className="data-table__sort-icon--asc" /> : 
+      <Icon name="chevron-down" size={14} className="data-table__sort-icon--desc" />;
   };
 
   if (loading) {
@@ -172,14 +177,15 @@ export const DataTable: React.FC<DataTableProps> = ({
                 ))}
                 <td className="data-table__cell data-table__cell--actions">
                   <div className="data-table__actions">
-                    {onView && (
+                                        {onView && (
                       <button
                         className="data-table__action-btn data-table__action-btn--view"
                         onClick={() => onView(user)}
-                        aria-label={`View ${user.name}`}
+                        aria-label={`View ${user.name} details`}
                         title="View details"
                       >
-                        View
+                        <Icon name="eye" size={16} />
+                        <span className="data-table__action-text">View</span>
                       </button>
                     )}
                     {onEdit && (
@@ -189,7 +195,8 @@ export const DataTable: React.FC<DataTableProps> = ({
                         aria-label={`Edit ${user.name}`}
                         title="Edit user"
                       >
-                        Edit
+                        <Icon name="edit" size={16} />
+                        <span className="data-table__action-text">Edit</span>
                       </button>
                     )}
                     {onDelete && (
@@ -199,7 +206,8 @@ export const DataTable: React.FC<DataTableProps> = ({
                         aria-label={`Delete ${user.name}`}
                         title="Delete user"
                       >
-                        Delete
+                        <Icon name="trash" size={16} />
+                        <span className="data-table__action-text">Delete</span>
                       </button>
                     )}
                   </div>

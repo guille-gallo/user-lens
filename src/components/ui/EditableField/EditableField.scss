@@ -1,0 +1,126 @@
+@import '../../../styles/index.scss';
+
+.editable-field {
+  margin-bottom: 20px;
+  
+  &__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  
+  &__content {
+    position: relative;
+  }
+  
+  &__value-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: $color-gray-50;
+    border-radius: $radius-lg;
+    border-left: 3px solid transparent;
+    min-height: 48px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: $color-gray-100;
+      border-left-color: $color-secondary; // VW light blue accent
+      
+      .editable-field__edit {
+        opacity: 1;
+      }
+    }
+  }
+  
+  &__value {
+    flex: 1;
+    font-size: 15px;
+    color: $color-text-primary;
+  }
+  
+  &__edit {
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    font-size: 16px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+  }
+  
+  &__input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  &__input {
+    flex: 1;
+    padding: 12px;
+    font-size: 15px;
+    border: 2px solid $color-primary;
+    border-radius: $radius-lg;
+    background-color: $color-white;
+    outline: none;
+    transition: border-color 0.2s ease;
+    
+    &:focus {
+      border-color: $color-primary-dark;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    }
+  }
+  
+  &__actions {
+    display: flex;
+    gap: 4px;
+  }
+  
+  &__save {
+    border: none;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-base;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: $color-success;
+    color: white;
+    
+    &:hover {
+      background-color: darken($color-success, 10%);
+      transform: translateY(-1px);
+    }
+  }
+  
+  &__cancel {
+    border: none;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-base;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: $color-gray-300;
+    color: $color-gray-700;
+    
+    &:hover {
+      background-color: $color-gray-400;
+      transform: translateY(-1px);
+    }
+  }
+}

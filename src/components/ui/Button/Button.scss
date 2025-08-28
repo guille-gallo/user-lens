@@ -1,3 +1,5 @@
+@import '../../../styles/index.scss';
+
 // Button component styles
 .button {
   display: inline-flex;
@@ -5,92 +7,133 @@
   justify-content: center;
   gap: 8px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   position: relative;
   outline: none;
+  letter-spacing: 0.025em;
   
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
   &:focus-visible {
-    outline: 2px solid #0066cc;
+    outline: 2px solid $color-primary;
     outline-offset: 2px;
+  }
+
+  // Ripple effect
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+  }
+  
+  &:active::after {
+    width: 200px;
+    height: 200px;
   }
 
   // Variants
   &--primary {
-    background-color: #0066cc;
+    background-color: $color-primary;
     color: white;
-    border: 2px solid #0066cc;
+    border: 2px solid $color-primary;
+    box-shadow: 0 2px 8px rgba($color-primary, 0.2);
 
     &:hover:not(:disabled) {
-      background-color: #0052a3;
-      border-color: #0052a3;
+      background-color: $color-primary-light;
+      border-color: $color-primary-light;
+      box-shadow: 0 4px 12px rgba($color-primary-light, 0.3);
+      transform: translateY(-1px);
     }
 
     &:active:not(:disabled) {
-      background-color: #004080;
-      border-color: #004080;
+      background-color: $color-primary-dark;
+      border-color: $color-primary-dark;
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba($color-primary, 0.2);
     }
   }
 
   &--secondary {
-    background-color: #6c757d;
+    background-color: $color-secondary;
     color: white;
-    border: 2px solid #6c757d;
+    border: 2px solid $color-secondary;
+    box-shadow: 0 2px 8px rgba($color-secondary, 0.2);
 
     &:hover:not(:disabled) {
-      background-color: #5a6268;
-      border-color: #5a6268;
+      background-color: $color-secondary-dark;
+      border-color: $color-secondary-dark;
+      box-shadow: 0 4px 12px rgba($color-secondary, 0.3);
+      transform: translateY(-1px);
     }
 
     &:active:not(:disabled) {
-      background-color: #495057;
-      border-color: #495057;
+      background-color: darken($color-secondary-dark, 5%);
+      border-color: darken($color-secondary-dark, 5%);
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba($color-secondary, 0.2);
     }
   }
 
   &--danger {
-    background-color: #dc3545;
+    background-color: $color-danger;
     color: white;
-    border: 2px solid #dc3545;
+    border: 2px solid $color-danger;
+    box-shadow: 0 2px 8px rgba($color-danger, 0.2);
 
     &:hover:not(:disabled) {
-      background-color: #c82333;
-      border-color: #c82333;
+      background-color: darken($color-danger, 10%);
+      border-color: darken($color-danger, 10%);
+      box-shadow: 0 4px 12px rgba($color-danger, 0.3);
+      transform: translateY(-1px);
     }
 
     &:active:not(:disabled) {
-      background-color: #bd2130;
-      border-color: #bd2130;
+      background-color: darken($color-danger, 15%);
+      border-color: darken($color-danger, 15%);
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba($color-danger, 0.2);
     }
   }
 
   &--outline {
     background-color: transparent;
-    color: #0066cc;
-    border: 2px solid #0066cc;
+    color: $color-primary;
+    border: 2px solid $color-primary;
+    box-shadow: none;
 
     &:hover:not(:disabled) {
-      background-color: #0066cc;
+      background-color: $color-primary-light;
+      border-color: $color-primary-light;
       color: white;
+      box-shadow: 0 4px 12px rgba($color-primary-light, 0.3);
+      transform: translateY(-1px);
     }
 
     &:active:not(:disabled) {
-      background-color: #0052a3;
-      border-color: #0052a3;
+      background-color: $color-primary;
+      border-color: $color-primary;
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba($color-primary, 0.2);
     }
 
     &.button--danger {
-      color: #dc3545;
-      border-color: #dc3545;
+      color: $color-danger;
+      border-color: $color-danger;
 
       &:hover:not(:disabled) {
         background-color: #dc3545;

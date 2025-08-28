@@ -1,6 +1,6 @@
 // DataTable component styles
-@import '../../../styles/design-system/tokens';
-@import '../../../styles/design-system/mixins';
+@import '../../../styles/tokens';
+@import '../../../styles/mixins';
 
 .data-table {
   width: 100%;
@@ -77,13 +77,19 @@
     @include interactive-focus;
   }
 
-  &__sort-icon {
-    font-size: 12px;
-    opacity: 0.7;
+    &__sort-icon {
+    opacity: 0.6;
     transition: opacity $transition-base;
-
-    .data-table__sort-button:hover & {
+    margin-left: 4px;
+    
+    &--neutral {
+      opacity: 0.4;
+    }
+    
+    &--asc,
+    &--desc {
       opacity: 1;
+      color: $color-primary;
     }
   }
 
@@ -136,26 +142,28 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: $space-1 $space-3;
-    border: 1px solid $color-border-medium;
-    border-radius: $space-1;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px solid $color-gray-300;
+    border-radius: 6px;
     background: $color-white;
-    color: $color-text-secondary;
+    color: $color-gray-600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     @include text-xs;
     @include font-medium;
     white-space: nowrap;
+    min-height: 32px;
     
     @include respond-to(sm) {
-      padding: $space-1 $space-2;
-      @include text-xs;
+      padding: 6px 8px;
+      gap: 4px;
+      min-height: 28px;
     }
 
     &:hover {
-      border-color: $color-border-light;
       transform: translateY(-1px);
-      box-shadow: $shadow-sm;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     &:focus {
@@ -167,19 +175,28 @@
       transform: translateY(0);
     }
 
+    // Hide text on small screens, keep icons
+    .data-table__action-text {
+      @include respond-to(sm) {
+        display: none;
+      }
+    }
+
     &--view {
       &:hover {
         background: $color-primary;
         color: $color-white;
         border-color: $color-primary;
+        box-shadow: 0 2px 8px rgba($color-primary, 0.3);
       }
     }
 
     &--edit {
       &:hover {
-        background: $color-warning;
+        background: $color-secondary;
         color: $color-white;
-        border-color: $color-warning;
+        border-color: $color-secondary;
+        box-shadow: 0 2px 8px rgba($color-secondary, 0.3);
       }
     }
 
@@ -188,6 +205,7 @@
         background: $color-danger;
         color: $color-white;
         border-color: $color-danger;
+        box-shadow: 0 2px 8px rgba($color-danger, 0.3);
       }
     }
   }

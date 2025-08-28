@@ -149,8 +149,18 @@ export const useUserStore = create<UserState>()(
         // sort
         if (sortField) {
           filteredUsers.sort((a, b) => {
-            const aValue = a[sortField];
-            const bValue = b[sortField];
+            let aValue: any = a[sortField];
+            let bValue: any = b[sortField];
+            
+            // Handle nested properties (like company.name)
+            if (sortField === 'company' && typeof aValue === 'object' && typeof bValue === 'object') {
+              aValue = aValue.name;
+              bValue = bValue.name;
+            }
+            
+            // Convert to lowercase for string comparison
+            if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+            if (typeof bValue === 'string') bValue = bValue.toLowerCase();
             
             let comparison = 0;
             if (aValue > bValue) comparison = 1;

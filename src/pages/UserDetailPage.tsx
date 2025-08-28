@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { Header } from '../components/layout';
-import { Button, LoadingSpinner } from '../components/ui';
+import { Button, LoadingSpinner, Toast, EditableField } from '../components/ui';
 import type { User } from '../services/userService';
 import './UserDetailPage.scss';
 
@@ -17,10 +17,15 @@ export const UserDetailPage: React.FC = () => {
     users,
     loading,
     error,
-    fetchUserById
+    fetchUserById,
+    updateUser
   } = useUserStore();
 
   const [user, setUser] = useState<User | null>(null);
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [editValues, setEditValues] = useState<Partial<User>>({});
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -51,6 +56,26 @@ export const UserDetailPage: React.FC = () => {
 
   const handleBack = () => {
     navigate('/');
+  };
+
+  const handleEditField = (field: string) => {
+    setEditingField(field);
+    setEditValues({ ...editValues, [field]: (user as any)[field] });
+  };
+
+  const handleSaveField = async (field: string, value: string | number) => {
+    if (!user) return;
+    
+    const updatedUser = { ...user, [field]: value };
+    await updateUser(user.id, updatedUser);
+    setEditingField(null);
+    setSuccessMessage(`${field} updated successfully`);
+    setShowSuccessToast(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingField(null);
+    setEditValues({});
   };
 
   if (loading) {
@@ -104,43 +129,54 @@ export const UserDetailPage: React.FC = () => {
               👤 Personal Information
             </h3>
             <div className="user-detail-page__fields">
-              <div className="user-detail-page__field">
-                <span className="user-detail-page__label">Full Name</span>
-                <span className="user-detail-page__value">{user.name}</span>
-              </div>
-              <div className="user-detail-page__field">
-                <span className="user-detail-page__label">Username</span>
-                <span className="user-detail-page__value">@{user.username}</span>
-              </div>
-              <div className="user-detail-page__field">
-                <span className="user-detail-page__label">Email</span>
-                <a 
-                  href={`mailto:${user.email}`}
-                  className="user-detail-page__value user-detail-page__link"
-                >
-                  {user.email}
-                </a>
-              </div>
-              <div className="user-detail-page__field">
-                <span className="user-detail-page__label">Phone</span>
-                <a 
-                  href={`tel:${user.phone}`}
-                  className="user-detail-page__value user-detail-page__link"
-                >
-                  {user.phone}
-                </a>
-              </div>
-              <div className="user-detail-page__field">
-                <span className="user-detail-page__label">Website</span>
-                <a 
-                  href={`https://${user.website}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="user-detail-page__value user-detail-page__link"
-                >
-                  {user.website} ↗
-                </a>
-              </div>
+              <EditableField
+                label="Full Name"
+                value={user.name}
+                field="name"
+                isEditing={editingField === 'name'}
+                onEdit={() => handleEditField('name')}
+                onSave={(value) => handleSaveField('name', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Username"
+                value={user.username}
+                field="username"
+                isEditing={editingField === 'username'}
+                onEdit={() => handleEditField('username')}
+                onSave={(value) => handleSaveField('username', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Email"
+                value={user.email}
+                field="email"
+                type="email"
+                isEditing={editingField === 'email'}
+                onEdit={() => handleEditField('email')}
+                onSave={(value) => handleSaveField('email', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Phone"
+                value={user.phone}
+                field="phone"
+                type="tel"
+                isEditing={editingField === 'phone'}
+                onEdit={() => handleEditField('phone')}
+                onSave={(value) => handleSaveField('phone', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Website"
+                value={user.website}
+                field="website"
+                type="url"
+                isEditing={editingField === 'website'}
+                onEdit={() => handleEditField('website')}
+                onSave={(value) => handleSaveField('website', value)}
+                onCancel={handleCancelEdit}
+              />
             </div>
           </div>
 
@@ -199,6 +235,13 @@ export const UserDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      <Toast
+        message={successMessage}
+        type="success"
+        isVisible={showSuccessToast}
+        onClose={() => setShowSuccessToast(false)}
+      />
     </div>
   );
 };

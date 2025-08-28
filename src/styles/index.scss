@@ -1,0 +1,12 @@
+// Design System Main Index
+// ========================
+
+// Import tokens first so variables are available
+@import 'tokens';
+
+// Import base styles that use tokens
+@import 'globals';
+
+// Import mixins and components
+@import 'mixins';
+@import 'components';
