@@ -1,0 +1,77 @@
+// LoadingSpinner component styles
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+
+  &__icon {
+    font-size: 24px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+    color: #0066cc;
+  }
+
+  &__message {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  // Sizes
+  &--small {
+    padding: 16px;
+    
+    .loading-spinner__icon {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .loading-spinner__message {
+      font-size: 12px;
+    }
+  }
+
+  &--medium {
+    padding: 32px;
+    
+    .loading-spinner__icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    
+    .loading-spinner__message {
+      font-size: 14px;
+    }
+  }
+
+  &--large {
+    padding: 48px;
+    
+    .loading-spinner__icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    
+    .loading-spinner__message {
+      font-size: 16px;
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// For page-level loading
+.loading-spinner--fullpage {
+  min-height: 50vh;
+  justify-content: center;
+}

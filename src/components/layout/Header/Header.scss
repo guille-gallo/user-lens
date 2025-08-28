@@ -1,0 +1,85 @@
+// Header component styles
+.header {
+  background-color: #fff;
+  border-bottom: 1px solid #e1e5e9;
+  padding: 24px 0;
+  margin-bottom: 32px;
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  &__text {
+    flex: 1;
+  }
+
+  &__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #212529;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 0;
+    margin-bottom: 24px;
+
+    &__content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 0 16px;
+    }
+
+    &__title {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    &__subtitle {
+      font-size: 14px;
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    &__actions {
+      width: 100%;
+      justify-content: stretch;
+      
+      > * {
+        flex: 1;
+      }
+    }
+  }
+}

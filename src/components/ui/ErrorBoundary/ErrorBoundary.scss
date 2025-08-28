@@ -1,0 +1,74 @@
+// ErrorBoundary component styles
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: #f8f9fa;
+
+  &__content {
+    text-align: center;
+    max-width: 500px;
+    padding: 48px 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &__icon {
+    font-size: 48px;
+    margin-bottom: 24px;
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 16px;
+  }
+
+  &__status {
+    font-size: 18px;
+    font-weight: 600;
+    color: #dc3545;
+    margin-bottom: 12px;
+  }
+
+  &__message {
+    font-size: 16px;
+    color: #6c757d;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .error-boundary {
+    padding: 16px;
+
+    &__content {
+      padding: 32px 24px;
+    }
+
+    &__title {
+      font-size: 24px;
+    }
+
+    &__actions {
+      flex-direction: column;
+      
+      > * {
+        width: 100%;
+      }
+    }
+  }
+}

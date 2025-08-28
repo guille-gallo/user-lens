@@ -1,0 +1,243 @@
+// DataTable component styles
+.data-table {
+  width: 100%;
+
+  &__wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #e1e5e9;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 800px; // Ensures horizontal scroll on mobile
+  }
+
+  &__header-cell {
+    background-color: #f8f9fa;
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e1e5e9;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    &--actions {
+      width: 200px;
+      text-align: center;
+    }
+  }
+
+  &__sort-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-weight: 600;
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #0066cc;
+    }
+
+    &:focus {
+      outline: 2px solid #0066cc;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  &__sort-icon {
+    font-size: 12px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    .data-table__sort-button:hover & {
+      opacity: 1;
+    }
+  }
+
+  &__row {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    &:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.02);
+
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+
+  &__cell {
+    padding: 16px;
+    border-bottom: 1px solid #e1e5e9;
+    vertical-align: middle;
+
+    &--actions {
+      text-align: center;
+      white-space: nowrap;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &__email-link,
+  &__phone-link,
+  &__website-link {
+    color: #0066cc;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #0052a3;
+      text-decoration: underline;
+    }
+
+    &:focus {
+      outline: 2px solid #0066cc;
+      outline-offset: 1px;
+      border-radius: 2px;
+    }
+  }
+
+  // Loading state
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e1e5e9;
+
+    p {
+      margin: 16px 0 0 0;
+      color: #6c757d;
+      font-size: 16px;
+    }
+  }
+
+  &__spinner {
+    font-size: 24px;
+    animation: spin 1s linear infinite;
+  }
+
+  // Empty state
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e1e5e9;
+
+    p {
+      margin: 0 0 8px 0;
+      color: #495057;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    small {
+      color: #6c757d;
+      font-size: 14px;
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .data-table {
+    &__wrapper {
+      border-radius: 8px;
+    }
+
+    &__header-cell {
+      padding: 12px 8px;
+      font-size: 12px;
+
+      &--actions {
+        width: 150px;
+      }
+    }
+
+    &__cell {
+      padding: 12px 8px;
+      font-size: 13px;
+    }
+
+    &__actions {
+      gap: 4px;
+    }
+
+    &__loading,
+    &__empty {
+      padding: 48px 16px;
+
+      p {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .data-table {
+    &__table {
+      min-width: 600px; // Reduced minimum width for very small screens
+    }
+
+    &__header-cell {
+      padding: 10px 6px;
+
+      &--actions {
+        width: 120px;
+      }
+    }
+
+    &__cell {
+      padding: 10px 6px;
+      font-size: 12px;
+    }
+
+    &__actions {
+      flex-direction: column;
+      gap: 2px;
+    }
+  }
+}
