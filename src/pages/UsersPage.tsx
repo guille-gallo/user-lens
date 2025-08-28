@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { Header } from '../components/layout/Header';
-import { SearchBar, Button, DataTable, ConfirmDialog, Toast } from '../components/ui';
+import { 
+  SearchBar, 
+  Button, 
+  DataTable, 
+  ConfirmDialog, 
+  Toast, 
+  UserForm 
+} from '../components/ui';
 import type { User } from '../services/userService';
 import './UsersPage.scss';
 
@@ -9,6 +17,8 @@ import './UsersPage.scss';
  * Users Page - Main page for user management
  */
 export const UsersPage: React.FC = () => {
+  const navigate = useNavigate();
+  
   const {
     users,
     loading,
@@ -19,15 +29,22 @@ export const UsersPage: React.FC = () => {
     setSearchTerm,
     setSorting,
     fetchUsers,
+    createUser,
+    updateUser,
     deleteUser,
     getFilteredAndSortedUsers
   } = useUserStore();
 
-  // State for delete confirmation
+  // State for modals
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  
+  // New states for CRUD operations
+  const [showUserForm, setShowUserForm] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isFormLoading, setIsFormLoading] = useState(false);
 
   // Fetch users on component mount if not already loaded
   useEffect(() => {
@@ -71,21 +88,40 @@ export const UsersPage: React.FC = () => {
   };
 
   const handleEdit = (user: User) => {
-    // TODO: Implement edit functionality
-    console.log('Edit user:', user);
-    alert(`Edit functionality for ${user.name} will be implemented next`);
+    setSelectedUser(user);
+    setShowUserForm(true);
   };
 
   const handleView = (user: User) => {
-    // TODO: Implement view functionality  
-    console.log('View user:', user);
-    alert(`View functionality for ${user.name} will be implemented next`);
+    navigate(`/users/${user.id}`);
   };
 
   const handleAddUser = () => {
-    // TODO: Implement add user functionality
-    console.log('Add new user');
-    alert('Add user functionality will be implemented next');
+    setSelectedUser(null);
+    setShowUserForm(true);
+  };
+
+  // Handle form submission for both create and update
+  const handleFormSubmit = async (userData: Omit<User, 'id'> | Partial<User>) => {
+    setIsFormLoading(true);
+    try {
+      if (selectedUser) {
+        // Update existing user
+        await updateUser(selectedUser.id, userData as Partial<User>);
+        setSuccessMessage(`${userData.name || selectedUser.name} has been updated successfully`);
+      } else {
+        // Create new user
+        await createUser(userData as Omit<User, 'id'>);
+        setSuccessMessage(`${userData.name} has been created successfully`);
+      }
+      setShowSuccessToast(true);
+      setShowUserForm(false);
+      setSelectedUser(null);
+    } catch (error) {
+      console.error('Form submission failed:', error);
+    } finally {
+      setIsFormLoading(false);
+    }
   };
 
   const handleRefresh = () => {
@@ -178,6 +214,18 @@ export const UsersPage: React.FC = () => {
         loading={isDeleting}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+      />
+
+      {/* User Form Modal */}
+      <UserForm
+        isOpen={showUserForm}
+        onClose={() => {
+          setShowUserForm(false);
+          setSelectedUser(null);
+        }}
+        onSubmit={handleFormSubmit}
+        user={selectedUser}
+        loading={isFormLoading}
       />
 
       {/* Success toast notification */}

@@ -1,0 +1,137 @@
+// UserDetail component styles
+.user-detail-modal {
+  .modal__footer {
+    justify-content: space-between;
+  }
+}
+
+.user-detail {
+  &__footer-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  &__section {
+    margin-bottom: 32px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e1e5e9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    row-gap: 20px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+  }
+
+  &__value {
+    font-size: 16px;
+    color: #495057;
+    font-weight: 500;
+    line-height: 1.4;
+
+    &--highlight {
+      color: #0066cc;
+      font-weight: 600;
+    }
+
+    &--italic {
+      font-style: italic;
+      color: #6c757d;
+    }
+  }
+
+  &__link {
+    color: #0066cc;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: #0052a3;
+      text-decoration: underline;
+    }
+
+    &:focus {
+      outline: 2px solid #0066cc;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .user-detail {
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      row-gap: 16px;
+    }
+
+    &__field--full {
+      grid-column: 1;
+    }
+
+    &__section {
+      margin-bottom: 24px;
+    }
+
+    &__section-title {
+      font-size: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+    }
+
+    &__footer-actions {
+      flex-direction: column;
+      width: 100%;
+
+      > * {
+        width: 100%;
+      }
+    }
+  }
+
+  .user-detail-modal {
+    .modal__footer {
+      flex-direction: column;
+      gap: 16px;
+
+      > * {
+        width: 100%;
+      }
+    }
+  }
+}

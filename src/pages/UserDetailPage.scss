@@ -1,0 +1,173 @@
+// UserDetailPage styles
+.user-detail-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+  }
+
+  &__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  &__header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 32px;
+  }
+
+  &__section {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e1e5e9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  &__section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e1e5e9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__fields {
+    display: grid;
+    gap: 20px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+  }
+
+  &__value {
+    font-size: 16px;
+    color: #495057;
+    font-weight: 500;
+    line-height: 1.4;
+
+    &--highlight {
+      color: #0066cc;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    &--italic {
+      font-style: italic;
+      color: #6c757d;
+    }
+  }
+
+  &__link {
+    color: #0066cc;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: #0052a3;
+      text-decoration: underline;
+    }
+
+    &:focus {
+      outline: 2px solid #0066cc;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .user-detail-page {
+    &__content {
+      padding: 0 16px;
+    }
+
+    &__header-actions {
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+
+      > * {
+        width: 100%;
+      }
+    }
+
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    &__section {
+      padding: 20px;
+    }
+
+    &__section-title {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    &__fields {
+      gap: 16px;
+    }
+
+    &__value {
+      font-size: 15px;
+
+      &--highlight {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .user-detail-page {
+    &__content {
+      padding: 0 12px;
+    }
+
+    &__grid {
+      gap: 20px;
+    }
+
+    &__section {
+      padding: 16px;
+    }
+
+    &__fields {
+      gap: 14px;
+    }
+  }
+}
