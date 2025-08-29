@@ -68,7 +68,8 @@ export const UserDetailPage: React.FC = () => {
     
     let updatedUser = { ...user };
     
-    // Handle nested field updates
+    // TODO: move to hook:
+    // handle nested field updates:
     if (field.includes('.')) {
       const fieldParts = field.split('.');
       if (fieldParts.length === 2) {

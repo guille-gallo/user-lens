@@ -1,7 +1,20 @@
 // UserForm component styles
-.user-form-modal {
-  .modal__body {
-    max-height: 60vh;
+.user-form-container {
+  // Styles that apply to both modal and side panel versions
+  
+  // Modal-specific overrides
+  &.responsive-editing-modal {
+    .modal__body {
+      max-height: 60vh;
+    }
+  }
+  
+  // Side panel-specific overrides
+  &.responsive-editing-panel {
+    // Side panel form might need more compact spacing
+    .user-form__section {
+      margin-bottom: 24px;
+    }
   }
 }
 

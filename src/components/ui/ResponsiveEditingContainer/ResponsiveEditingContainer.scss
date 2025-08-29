@@ -1,0 +1,9 @@
+// Responsive Editing Container styles
+.responsive-editing-modal {
+  // Modal-specific overrides for mobile editing
+  .modal__body {
+    max-height: 70vh; // Allow more content on mobile
+  }
+}
+
+//...more styles if needed.

@@ -9,6 +9,8 @@ export { ErrorBoundary } from './ErrorBoundary';
 export { ConfirmDialog } from './ConfirmDialog';
 export { Toast } from './Toast';
 export { Modal } from './Modal';
+export { SidePanel } from './SidePanel';
+export { ResponsiveEditingContainer } from './ResponsiveEditingContainer';
 export { FormField } from './FormField';
 export { UserForm } from './UserForm';
 export { UserDetail } from './UserDetail';

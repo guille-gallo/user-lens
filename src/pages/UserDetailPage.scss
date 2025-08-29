@@ -1,6 +1,6 @@
 // UserDetailPage styles
-@import '../styles/tokens';
-@import '../styles/mixins';
+@import '../styles/_tokens';
+@import '../styles/_mixins';
 
 .user-detail-page {
   min-height: 100vh;
@@ -15,13 +15,12 @@
   &__content {
     width: 100%;
     padding: $space-6;
+    //ensure content doesn't overflow
+    overflow-x: hidden;
     
     @include respond-to(md) {
       padding: $space-4;
     }
-    
-    //ensure content doesn't overflow
-    overflow-x: hidden;
   }
 
   &__header-actions {

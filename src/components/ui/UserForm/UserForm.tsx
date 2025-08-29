@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { User } from '../../../services/userService';
-import { Modal } from '../Modal';
+import { ResponsiveEditingContainer } from '../ResponsiveEditingContainer';
 import { FormField } from '../FormField';
 import { Button } from '../Button/Button';
 import './UserForm.scss';
@@ -234,13 +234,14 @@ export const UserForm: React.FC<UserFormProps> = ({
   );
 
   return (
-    <Modal
+    <ResponsiveEditingContainer
       isOpen={isOpen}
       onClose={onClose}
       title={isEditMode ? 'Edit User' : 'Add New User'}
+      subtitle={isEditMode ? `Editing ${user?.name}` : 'Add a new user to the system'}
       size="large"
       footer={footer}
-      className="user-form-modal"
+      className="user-form-container"
     >
       <form id="user-form" onSubmit={handleSubmit} className="user-form">
         {/* Personal Information */}
@@ -456,6 +457,6 @@ export const UserForm: React.FC<UserFormProps> = ({
           </FormField>
         </div>
       </form>
-    </Modal>
+    </ResponsiveEditingContainer>
   );
 };
