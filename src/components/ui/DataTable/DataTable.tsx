@@ -186,6 +186,22 @@ export const DataTable: React.FC<DataTableProps> = ({
     );
   };
 
+  const handleSelectAllColumns = () => {
+    setColumnVisibility(prev => 
+      prev.map(col => ({ ...col, visible: true }))
+    );
+  };
+
+  const handleUnselectAllColumns = () => {
+    setColumnVisibility(prev => 
+      prev.map(col => 
+        col.essential 
+          ? col //keep essential columns visible
+          : { ...col, visible: false }
+      )
+    );
+  };
+
   const toggleCardExpansion = (userId: number) => {
     setExpandedCards(prev => {
       const newSet = new Set(prev);
@@ -270,6 +286,8 @@ export const DataTable: React.FC<DataTableProps> = ({
             <ColumnToggle
               columns={columnVisibility}
               onToggle={handleColumnToggle}
+              onSelectAll={handleSelectAllColumns}
+              onUnselectAll={handleUnselectAllColumns}
             />
           </div>
         </div>

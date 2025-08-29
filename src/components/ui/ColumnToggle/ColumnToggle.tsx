@@ -12,6 +12,8 @@ export interface ColumnDefinition {
 interface ColumnToggleProps {
   columns: ColumnDefinition[];
   onToggle: (columnKey: string) => void;
+  onSelectAll?: () => void;
+  onUnselectAll?: () => void;
   className?: string;
 }
 
@@ -21,6 +23,8 @@ interface ColumnToggleProps {
 export const ColumnToggle: React.FC<ColumnToggleProps> = ({
   columns,
   onToggle,
+  onSelectAll,
+  onUnselectAll,
   className = ''
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +33,17 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
 
   const visibleCount = columns.filter(col => col.visible).length;
   const totalCount = columns.length;
+  const nonEssentialColumns = columns.filter(col => !col.essential);
+  const hiddenNonEssentialColumns = nonEssentialColumns.filter(col => !col.visible);
+  const allNonEssentialVisible = nonEssentialColumns.length > 0 && hiddenNonEssentialColumns.length === 0;
+
+  const handleToggleAll = () => {
+    if (allNonEssentialVisible) {
+      onUnselectAll?.();
+    } else {
+      onSelectAll?.();
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -111,6 +126,26 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
               <Icon name="x" size={14} />
             </button>
           </div>
+          
+          {/* Toggle All Control */}
+          <div className="column-toggle__controls">
+            <label className="column-toggle__item">
+              <input
+                type="checkbox"
+                className="column-toggle__checkbox"
+                checked={allNonEssentialVisible}
+                onChange={handleToggleAll}
+                disabled={nonEssentialColumns.length === 0}
+              />
+              <span className="column-toggle__checkmark">
+                {allNonEssentialVisible && <Icon name="check" size={12} />}
+              </span>
+              <span className="column-toggle__text">
+                Select All
+              </span>
+            </label>
+          </div>
+          
           <div className="column-toggle__list">
             {columns.map((column) => (
               <label 

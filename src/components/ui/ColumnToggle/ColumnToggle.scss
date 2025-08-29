@@ -19,7 +19,7 @@
     }
     
     &:focus {
-      outline: 2px solid $color-primary;
+      outline: 2px solid $color-secondary-dark;
       outline-offset: 2px;
     }
   }
@@ -97,9 +97,13 @@
     }
     
     &:focus {
-      outline: 2px solid $color-primary;
+      outline: 2px solid $color-secondary-dark;
       outline-offset: 2px;
     }
+  }
+
+  &__controls {
+    border-top: 1px solid $color-border-light;
   }
 
   &__list {
@@ -136,7 +140,9 @@
     transition: background-color $transition-base;
     
     &:hover:not(.column-toggle__item--essential) {
-      background-color: $color-bg-secondary;
+      .column-toggle__text {
+        color: $color-primary-light;
+      }
     }
     
     &--essential {
@@ -168,8 +174,8 @@
     flex-shrink: 0;
     
     .column-toggle__checkbox:checked + & {
-      background-color: $color-primary;
-      border-color: $color-primary;
+      background-color: $color-primary-light;
+      border-color: $color-primary-light;
       color: $color-white;
     }
     
@@ -180,7 +186,7 @@
     }
     
     .column-toggle__checkbox:focus + & {
-      outline: 2px solid $color-primary;
+      outline: 2px solid $color-secondary-dark;
       outline-offset: 2px;
     }
   }

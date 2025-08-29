@@ -139,7 +139,7 @@
     }
 
     &:focus {
-      outline: 2px solid $color-primary;
+      outline: 2px solid $color-primary-light;
       outline-offset: 2px;
       border-radius: $space-1;
     }
