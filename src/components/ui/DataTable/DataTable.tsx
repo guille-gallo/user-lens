@@ -167,6 +167,9 @@ export const DataTable: React.FC<DataTableProps> = ({
     }))
   );
 
+  // Mobile card expansion state
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+
   // Get visible columns
   const visibleColumns = useMemo(() => 
     allColumns.filter(col => 
@@ -182,6 +185,20 @@ export const DataTable: React.FC<DataTableProps> = ({
       )
     );
   };
+
+  const toggleCardExpansion = (userId: number) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
+  };
+
+  const isCardExpanded = (userId: number) => expandedCards.has(userId);
 
   const handleSort = (field: string) => {
     if (!onSort) return;
@@ -249,13 +266,16 @@ export const DataTable: React.FC<DataTableProps> = ({
           </span>
         </div>
         <div className="data-table__toolbar-right">
-          <ColumnToggle
-            columns={columnVisibility}
-            onToggle={handleColumnToggle}
-          />
+          <div className="data-table__column-toggle-wrapper">
+            <ColumnToggle
+              columns={columnVisibility}
+              onToggle={handleColumnToggle}
+            />
+          </div>
         </div>
       </div>
       
+      {/* Desktop Table View */}
       <div className="data-table__wrapper">
         <table className="data-table__table" role="table">
           <thead>
@@ -332,6 +352,126 @@ export const DataTable: React.FC<DataTableProps> = ({
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="data-table__mobile-cards">
+        {users.map((user) => {
+          const expanded = isCardExpanded(user.id);
+          
+          return (
+            <div key={user.id} className={`data-table__card ${expanded ? 'data-table__card--expanded' : ''}`}>
+              <div className="data-table__card-header">
+                <div className="data-table__card-title">
+                  <h3 className="data-table__card-name">{user.name}</h3>
+                  <span className="data-table__card-username">@{user.username}</span>
+                </div>
+                <div className="data-table__card-actions">
+                  <button
+                    className="data-table__card-expand"
+                    onClick={() => toggleCardExpansion(user.id)}
+                    aria-label={expanded ? `Collapse ${user.name} details` : `Expand ${user.name} details`}
+                    title={expanded ? "Show less" : "Show more"}
+                  >
+                    <Icon name={expanded ? "chevron-up" : "chevron-down"} size={16} />
+                  </button>
+                  {onView && (
+                    <button
+                      className="data-table__card-action data-table__card-action--view"
+                      onClick={() => onView(user)}
+                      aria-label={`View ${user.name} details`}
+                      title="View details"
+                    >
+                      <Icon name="eye" size={16} />
+                    </button>
+                  )}
+                  {onEdit && (
+                    <button
+                      className="data-table__card-action data-table__card-action--edit"
+                      onClick={() => onEdit(user)}
+                      aria-label={`Edit ${user.name}`}
+                      title="Edit user"
+                    >
+                      <Icon name="edit" size={16} />
+                    </button>
+                  )}
+                  {onDelete && (
+                    <button
+                      className="data-table__card-action data-table__card-action--delete"
+                      onClick={() => onDelete(user)}
+                      aria-label={`Delete ${user.name}`}
+                      title="Delete user"
+                    >
+                      <Icon name="trash" size={16} />
+                    </button>
+                  )}
+                </div>
+              </div>
+              
+              <div className="data-table__card-content">
+                {/* Essential fields - always visible */}
+                <div className="data-table__card-essential">
+                  <div className="data-table__card-field">
+                    <span className="data-table__card-label">Email</span>
+                    <a 
+                      href={`mailto:${user.email}`} 
+                      className="data-table__card-value data-table__card-value--link"
+                    >
+                      {user.email}
+                    </a>
+                  </div>
+                  
+                  <div className="data-table__card-field">
+                    <span className="data-table__card-label">Company</span>
+                    <span className="data-table__card-value">{user.company.name}</span>
+                  </div>
+                </div>
+
+                {/* Expandable fields - shown when expanded */}
+                <div className={`data-table__card-expandable ${expanded ? 'data-table__card-expandable--visible' : ''}`}>
+                  <div className="data-table__card-field">
+                    <span className="data-table__card-label">Phone</span>
+                    <a 
+                      href={`tel:${user.phone}`} 
+                      className="data-table__card-value data-table__card-value--link"
+                    >
+                      {user.phone}
+                    </a>
+                  </div>
+                  
+                  <div className="data-table__card-field">
+                    <span className="data-table__card-label">Website</span>
+                    <a 
+                      href={`https://${user.website}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="data-table__card-value data-table__card-value--link"
+                    >
+                      {user.website} ↗
+                    </a>
+                  </div>
+                  
+                  <div className="data-table__card-field">
+                    <span className="data-table__card-label">Address</span>
+                    <span className="data-table__card-value">
+                      {user.address.street} {user.address.suite}, {user.address.city} {user.address.zipcode}
+                    </span>
+                  </div>
+                  
+                  <div className="data-table__card-field">
+                    <span className="data-table__card-label">Catch Phrase</span>
+                    <span className="data-table__card-value">"{user.company.catchPhrase}"</span>
+                  </div>
+                  
+                  <div className="data-table__card-field">
+                    <span className="data-table__card-label">Business</span>
+                    <span className="data-table__card-value">{user.company.bs}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

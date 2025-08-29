@@ -29,6 +29,15 @@
     gap: $space-3;
   }
 
+  // Hide column toggle on mobile - cards don't have columns to toggle
+  &__column-toggle-wrapper {
+    display: none;
+
+    @include respond-to(md) {
+      display: block;
+    }
+  }
+
   &__count {
     @include text-sm;
     color: $color-text-muted;
@@ -58,6 +67,13 @@
     &::-webkit-scrollbar-thumb {
       background: $color-gray-400;
       border-radius: $radius-full;
+    }
+
+    // Hide table on mobile (show on desktop)
+    display: none; // Hidden on mobile by default
+
+    @include respond-to(md) {
+      display: block; // Show table on desktop (768px+)
     }
   }
 
@@ -179,7 +195,6 @@
     background: $color-white;
     color: $color-gray-600;
     cursor: pointer;
-    transition: all 0.15s ease;
     @include text-xs;
     @include font-medium;
     white-space: nowrap;
@@ -323,6 +338,265 @@
       height: 32px;
     }
   }
+
+  // Mobile Cards View (replaces table on mobile)
+  &__mobile-cards {
+    display: block; // Show cards on mobile by default
+
+    @include respond-to(md) {
+      display: none; // Hide cards on desktop (768px+)
+    }
+  }
+
+  &__card {
+    background-color: $color-bg-primary;
+    border: 1px solid $color-border-light;
+    border-radius: $radius-lg;
+    padding: $space-4;
+    margin-bottom: $space-3;
+    box-shadow: $shadow-sm;
+
+    &:hover {
+      box-shadow: $shadow-md;
+      border-color: $color-border-medium;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between; 
+    margin-bottom: $space-3;
+    gap: $space-3;
+  }
+
+  &__card-title {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__card-name {
+    @include text-lg;
+    @include font-semibold;
+    color: $color-text-primary;
+    margin: 0 0 $space-1 0;
+    line-height: $line-height-tight;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__card-username {
+    @include text-sm;
+    color: $color-text-secondary;
+    @include font-medium;
+  }
+
+  &__card-actions {
+    display: flex;
+    gap: $space-2;
+    flex-shrink: 0;
+  }
+
+  &__card-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid $color-gray-300;
+    border-radius: $radius-base;
+    background: $color-white;
+    color: $color-gray-600;
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: $shadow-md;
+    }
+
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 1px;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &--view {
+      &:hover {
+        background: $color-primary;
+        color: $color-white;
+        border-color: $color-primary;
+        box-shadow: 0 2px 8px rgba($color-primary, 0.3);
+      }
+    }
+
+    &--edit {
+      &:hover {
+        background: $color-secondary;
+        color: $color-white;
+        border-color: $color-secondary;
+        box-shadow: 0 2px 8px rgba($color-secondary, 0.3);
+      }
+    }
+
+    &--delete {
+      &:hover {
+        background: $color-danger;
+        color: $color-white;
+        border-color: $color-danger;
+        box-shadow: 0 2px 8px rgba($color-danger, 0.3);
+      }
+    }
+  }
+
+  &__card-expand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid $color-gray-300;
+    border-radius: $radius-base;
+    background: $color-white;
+    color: $color-gray-600;
+    cursor: pointer;
+    margin-right: $space-2;
+    
+    &:hover {
+      background: $color-gray-50;
+      border-color: $color-gray-400;
+      transform: translateY(-1px);
+      box-shadow: $shadow-md;
+    }
+
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 1px;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__card--expanded {
+    .data-table__card-expand {
+      background: $color-primary;
+      color: $color-white;
+      border-color: $color-primary;
+    }
+  }
+
+  &__card-essential {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-3;
+    margin-bottom: $space-2;
+  }
+
+  &__card-expandable {
+    display: none;
+    overflow: hidden;
+    
+    &--visible {
+      display: block;
+      border-top: 1px solid $color-border-light;
+      padding-top: $space-3;
+      margin-top: $space-2;
+    }
+
+    .data-table__card-field {
+      margin-bottom: $space-3;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__card-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-3;
+    
+    @include respond-to(sm) {
+      grid-template-columns: 1fr;
+      gap: $space-2;
+    }
+  }
+
+  &__card-field {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  &__card-label {
+    @include text-xs;
+    @include font-medium;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__card-value {
+    @include text-sm;
+    color: $color-text-primary;
+    line-height: $line-height-base;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &--link {
+      color: $color-primary;
+      text-decoration: none;
+      transition: color $transition-base;
+
+      &:hover {
+        color: $color-primary-dark;
+        text-decoration: underline;
+      }
+
+      @include interactive-focus;
+    }
+  }
+
+  // Mobile responsive adjustments for cards
+  @include respond-to(sm) {
+    &__card {
+      padding: $space-3;
+      margin-bottom: $space-2;
+    }
+
+    &__card-header {
+      margin-bottom: $space-2;
+      gap: $space-2;
+    }
+
+    &__card-name {
+      @include text-base;
+    }
+
+    &__card-username {
+      @include text-xs;
+    }
+
+    &__card-actions {
+      gap: $space-1;
+    }
+
+    &__card-action {
+      width: 32px;
+      height: 32px;
+    }
+  }
 }
 
 @keyframes spin {
@@ -334,7 +608,7 @@
   }
 }
 
-// Responsive design
+// Responsive design for legacy mobile table styles
 @media (max-width: 768px) {
   .data-table {
     &__wrapper {
