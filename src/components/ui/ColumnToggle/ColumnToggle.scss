@@ -1,0 +1,253 @@
+@import '../../../styles/tokens';
+@import '../../../styles/mixins';
+
+.column-toggle {
+  position: relative;
+  display: inline-block;
+
+  &__trigger {
+    @include button-base;
+    @include text-sm;
+    background-color: $color-bg-primary;
+    border: 1px solid $color-border-medium;
+    color: $color-text-secondary;
+    gap: $space-2;
+    
+    &:hover {
+      background-color: $color-bg-secondary;
+      border-color: $color-border-dark;
+    }
+    
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+    }
+  }
+
+  &__label {
+    white-space: nowrap;
+  }
+
+  &__chevron {
+    transition: transform $transition-base;
+    
+    .column-toggle__trigger[aria-expanded="true"] & {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: $z-dropdown;
+    min-width: 220px;
+    max-width: 300px;
+    margin-top: $space-1;
+    background-color: $color-bg-primary;
+    border: 1px solid $color-border-medium;
+    border-radius: $radius-base;
+    box-shadow: $shadow-md;
+    overflow: visible;
+    
+    // Ensure dropdown is always on top and visible
+    &::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+  }
+
+  &__header {
+    padding: $space-3 $space-4;
+    border-bottom: 1px solid $color-border-light;
+    background-color: $color-bg-secondary;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+    @include text-sm;
+    @include font-semibold;
+    margin: 0;
+    color: $color-text-primary;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    padding: $space-1;
+    cursor: pointer;
+    border-radius: $radius-sm;
+    color: $color-text-secondary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all $transition-base;
+    
+    &:hover {
+      background-color: $color-bg-primary;
+      color: $color-text-primary;
+    }
+    
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+    }
+  }
+
+  &__list {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: visible;
+    
+    scroll-behavior: smooth;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $color-bg-secondary;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $color-border-medium;
+      border-radius: 3px;
+      
+      &:hover {
+        background: $color-border-dark;
+      }
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-3 $space-4;
+    cursor: pointer;
+    transition: background-color $transition-base;
+    
+    &:hover:not(.column-toggle__item--essential) {
+      background-color: $color-bg-secondary;
+    }
+    
+    &--essential {
+      background-color: $color-bg-tertiary;
+      cursor: not-allowed;
+      
+      &:hover {
+        background-color: $color-bg-tertiary;
+      }
+    }
+  }
+
+  &__checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &__checkmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: 2px solid $color-border-medium;
+    border-radius: $radius-sm;
+    background-color: $color-bg-primary;
+    transition: all $transition-base;
+    flex-shrink: 0;
+    
+    .column-toggle__checkbox:checked + & {
+      background-color: $color-primary;
+      border-color: $color-primary;
+      color: $color-white;
+    }
+    
+    .column-toggle__checkbox:disabled + & {
+      background-color: $color-gray-100;
+      border-color: $color-border-light;
+      color: $color-text-muted;
+    }
+    
+    .column-toggle__checkbox:focus + & {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+    }
+  }
+
+  &__text {
+    @include text-sm;
+    color: $color-text-primary;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    
+    .column-toggle__item--essential & {
+      color: $color-text-muted;
+    }
+  }
+
+  &__essential-badge {
+    @include text-xs;
+    @include font-medium;
+    padding: $space-1 $space-2;
+    background-color: $color-warning-light;
+    color: $color-warning-dark;
+    border-radius: $radius-sm;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: $breakpoint-sm) {
+  .column-toggle {
+    &__dropdown {
+      right: auto;
+      left: 0;
+      min-width: 200px;
+      max-width: calc(100vw - 2rem); // Prevent overflow on small screens
+    }
+    
+    &__label {
+      display: none;
+    }
+  }
+}
+
+// Ensure dropdown doesn't go off-screen on the right
+@media (max-width: $breakpoint-md) {
+  .column-toggle {
+    &__dropdown {
+      right: 0;
+      left: auto;
+      transform: translateX(0);
+      max-width: min(300px, calc(100vw - 2rem));
+    }
+  }
+}
+
+// For very small screens, center the dropdown
+@media (max-width: 480px) {
+  .column-toggle {
+    &__dropdown {
+      right: 50%;
+      left: auto;
+      transform: translateX(50%);
+      min-width: calc(100vw - 2rem);
+      max-width: calc(100vw - 2rem);
+    }
+  }
+}

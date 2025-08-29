@@ -66,10 +66,40 @@ export const UserDetailPage: React.FC = () => {
   const handleSaveField = async (field: string, value: string | number) => {
     if (!user) return;
     
-    const updatedUser = { ...user, [field]: value };
+    let updatedUser = { ...user };
+    
+    // Handle nested field updates
+    if (field.includes('.')) {
+      const fieldParts = field.split('.');
+      if (fieldParts.length === 2) {
+        const [parent, child] = fieldParts;
+        updatedUser = {
+          ...user,
+          [parent]: {
+            ...(user as any)[parent],
+            [child]: value
+          }
+        };
+      } else if (fieldParts.length === 3) {
+        const [parent, nested, child] = fieldParts;
+        updatedUser = {
+          ...user,
+          [parent]: {
+            ...(user as any)[parent],
+            [nested]: {
+              ...(user as any)[parent][nested],
+              [child]: value
+            }
+          }
+        };
+      }
+    } else {
+      updatedUser = { ...user, [field]: value };
+    }
+    
     await updateUser(user.id, updatedUser);
     setEditingField(null);
-    setSuccessMessage(`${field} updated successfully`);
+    setSuccessMessage(`${field.replace(/\./g, ' ')} updated successfully`);
     setShowSuccessToast(true);
   };
 
@@ -186,26 +216,62 @@ export const UserDetailPage: React.FC = () => {
               📍 Address
             </h3>
             <div className="user-detail-page__fields">
-              <div className="user-detail-page__field user-detail-page__field--full">
-                <span className="user-detail-page__label">Street Address</span>
-                <span className="user-detail-page__value">
-                  {user.address.street} {user.address.suite}
-                </span>
-              </div>
-              <div className="user-detail-page__field">
-                <span className="user-detail-page__label">City</span>
-                <span className="user-detail-page__value">{user.address.city}</span>
-              </div>
-              <div className="user-detail-page__field">
-                <span className="user-detail-page__label">Zip Code</span>
-                <span className="user-detail-page__value">{user.address.zipcode}</span>
-              </div>
-              <div className="user-detail-page__field">
-                <span className="user-detail-page__label">Coordinates</span>
-                <span className="user-detail-page__value">
-                  {user.address.geo.lat}, {user.address.geo.lng}
-                </span>
-              </div>
+              <EditableField
+                label="Street"
+                value={user.address.street}
+                field="address.street"
+                isEditing={editingField === 'address.street'}
+                onEdit={() => handleEditField('address.street')}
+                onSave={(value) => handleSaveField('address.street', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Suite"
+                value={user.address.suite}
+                field="address.suite"
+                isEditing={editingField === 'address.suite'}
+                onEdit={() => handleEditField('address.suite')}
+                onSave={(value) => handleSaveField('address.suite', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="City"
+                value={user.address.city}
+                field="address.city"
+                isEditing={editingField === 'address.city'}
+                onEdit={() => handleEditField('address.city')}
+                onSave={(value) => handleSaveField('address.city', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Zip Code"
+                value={user.address.zipcode}
+                field="address.zipcode"
+                isEditing={editingField === 'address.zipcode'}
+                onEdit={() => handleEditField('address.zipcode')}
+                onSave={(value) => handleSaveField('address.zipcode', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Latitude"
+                value={user.address.geo.lat}
+                field="address.geo.lat"
+                type="number"
+                isEditing={editingField === 'address.geo.lat'}
+                onEdit={() => handleEditField('address.geo.lat')}
+                onSave={(value) => handleSaveField('address.geo.lat', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Longitude"
+                value={user.address.geo.lng}
+                field="address.geo.lng"
+                type="number"
+                isEditing={editingField === 'address.geo.lng'}
+                onEdit={() => handleEditField('address.geo.lng')}
+                onSave={(value) => handleSaveField('address.geo.lng', value)}
+                onCancel={handleCancelEdit}
+              />
             </div>
           </div>
 
@@ -215,22 +281,33 @@ export const UserDetailPage: React.FC = () => {
               🏢 Company
             </h3>
             <div className="user-detail-page__fields">
-              <div className="user-detail-page__field user-detail-page__field--full">
-                <span className="user-detail-page__label">Company Name</span>
-                <span className="user-detail-page__value user-detail-page__value--highlight">
-                  {user.company.name}
-                </span>
-              </div>
-              <div className="user-detail-page__field user-detail-page__field--full">
-                <span className="user-detail-page__label">Catch Phrase</span>
-                <span className="user-detail-page__value user-detail-page__value--italic">
-                  "{user.company.catchPhrase}"
-                </span>
-              </div>
-              <div className="user-detail-page__field user-detail-page__field--full">
-                <span className="user-detail-page__label">Business</span>
-                <span className="user-detail-page__value">{user.company.bs}</span>
-              </div>
+              <EditableField
+                label="Company Name"
+                value={user.company.name}
+                field="company.name"
+                isEditing={editingField === 'company.name'}
+                onEdit={() => handleEditField('company.name')}
+                onSave={(value) => handleSaveField('company.name', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Catch Phrase"
+                value={user.company.catchPhrase}
+                field="company.catchPhrase"
+                isEditing={editingField === 'company.catchPhrase'}
+                onEdit={() => handleEditField('company.catchPhrase')}
+                onSave={(value) => handleSaveField('company.catchPhrase', value)}
+                onCancel={handleCancelEdit}
+              />
+              <EditableField
+                label="Business"
+                value={user.company.bs}
+                field="company.bs"
+                isEditing={editingField === 'company.bs'}
+                onEdit={() => handleEditField('company.bs')}
+                onSave={(value) => handleSaveField('company.bs', value)}
+                onCancel={handleCancelEdit}
+              />
             </div>
           </div>
         </div>

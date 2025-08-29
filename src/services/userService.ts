@@ -24,7 +24,7 @@ export interface User {
   };
 }
 
-// TODO: move to constants file.
+// TODO: move to constants.
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
 export const userService = {

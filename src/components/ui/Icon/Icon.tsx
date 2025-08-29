@@ -9,7 +9,8 @@ import {
 import { 
   FaChevronUp, 
   FaChevronDown, 
-  FaSort 
+  FaSort,
+  FaColumns
 } from 'react-icons/fa';
 
 export type IconName = 
@@ -21,7 +22,8 @@ export type IconName =
   | 'x' 
   | 'chevron-up' 
   | 'chevron-down' 
-  | 'chevrons-up-down';
+  | 'chevrons-up-down'
+  | 'columns';
 
 interface IconProps {
   name: IconName;
@@ -40,6 +42,7 @@ const iconMap = {
   'chevron-up': FaChevronUp,
   'chevron-down': FaChevronDown,
   'chevrons-up-down': FaSort,
+  columns: FaColumns,
 };
 
 export const Icon: React.FC<IconProps> = ({ name, size = 16, className, color }) => {

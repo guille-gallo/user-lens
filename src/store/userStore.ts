@@ -9,7 +9,7 @@ interface UserState {
   loading: boolean;
   error: string | null;
   searchTerm: string;
-  sortField: keyof User | null;
+  sortField: string | null;
   sortOrder: 'asc' | 'desc';
   
   // Actions
@@ -18,7 +18,7 @@ interface UserState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   setSearchTerm: (searchTerm: string) => void;
-  setSorting: (field: keyof User, order: 'asc' | 'desc') => void;
+  setSorting: (field: string, order: 'asc' | 'desc') => void;
   
   // Async actions
   fetchUsers: () => Promise<void>;
@@ -149,14 +149,18 @@ export const useUserStore = create<UserState>()(
         // sort
         if (sortField) {
           filteredUsers.sort((a, b) => {
-            let aValue: any = a[sortField];
-            let bValue: any = b[sortField];
-            
-            // Handle nested properties (like company.name)
-            if (sortField === 'company' && typeof aValue === 'object' && typeof bValue === 'object') {
-              aValue = aValue.name;
-              bValue = bValue.name;
-            }
+            // helper function to get nested value
+            const getValue = (obj: any, path: string) => {
+              const keys = path.split('.');
+              let value = obj;
+              for (const key of keys) {
+                value = value?.[key];
+              }
+              return value;
+            };
+
+            let aValue = getValue(a, sortField);
+            let bValue = getValue(b, sortField);
             
             // Convert to lowercase for string comparison
             if (typeof aValue === 'string') aValue = aValue.toLowerCase();

@@ -56,7 +56,7 @@ export const UsersPage: React.FC = () => {
   // Get filtered and sorted users
   const displayUsers = getFilteredAndSortedUsers();
 
-  const handleSort = (field: keyof User, order: 'asc' | 'desc') => {
+  const handleSort = (field: string, order: 'asc' | 'desc') => {
     setSorting(field, order);
   };
 

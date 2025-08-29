@@ -5,6 +5,36 @@
 .data-table {
   width: 100%;
 
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-4;
+    padding: 0 $space-2;
+    
+    @include respond-to(sm) {
+      padding: 0;
+    }
+  }
+
+  &__toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+  }
+
+  &__toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+  }
+
+  &__count {
+    @include text-sm;
+    color: $color-text-muted;
+    font-weight: $font-weight-medium;
+  }
+
   &__wrapper {
     overflow-x: auto;
     border-radius: $radius-lg;

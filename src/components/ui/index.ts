@@ -12,3 +12,5 @@ export { Modal } from './Modal';
 export { FormField } from './FormField';
 export { UserForm } from './UserForm';
 export { UserDetail } from './UserDetail';
+export { ColumnToggle } from './ColumnToggle';
+export type { ColumnDefinition } from './ColumnToggle';

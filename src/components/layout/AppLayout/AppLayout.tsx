@@ -3,9 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { LoadingSpinner } from '../../ui/LoadingSpinner';
 import './AppLayout.scss';
 
-/**
- * Main application layout component
- */
 export const AppLayout: React.FC = () => {
   return (
     <div className="app-layout">
