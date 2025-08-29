@@ -27,8 +27,8 @@
     }
 
     &:focus {
-      border-color: $color-primary;
-      box-shadow: 0 0 0 4px rgba($color-primary, 0.1);
+      border-color: $color-secondary-light;
+      box-shadow: 0 0 0 4px rgba($color-secondary-light, 0.1);
     }
 
     &:hover {
@@ -65,7 +65,7 @@
     }
 
     &:focus {
-      outline: 2px solid #0066cc;
+      outline: 2px solid $color-secondary-light;
       outline-offset: 1px;
     }
   }

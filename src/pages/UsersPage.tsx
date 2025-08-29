@@ -133,24 +133,6 @@ export const UsersPage: React.FC = () => {
       <Header
         title="User Management"
         subtitle={`Managing ${users.length} users from JSONPlaceholder API`}
-        actions={
-          <div className="users-page__header-actions">
-            <Button
-              variant="outline"
-              onClick={handleRefresh}
-              loading={loading}
-              disabled={loading}
-            >
-              Refresh
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleAddUser}
-            >
-              Add User
-            </Button>
-          </div>
-        }
       />
 
       <div className="users-page__content">
@@ -176,17 +158,21 @@ export const UsersPage: React.FC = () => {
             className="users-page__search"
           />
           
-          <div className="users-page__stats">
-            {searchTerm && (
-              <span className="users-page__search-results">
-                {displayUsers.length} of {users.length} users
-              </span>
-            )}
-            {!searchTerm && users.length > 0 && (
-              <span className="users-page__total-results">
-                {users.length} users total
-              </span>
-            )}
+          <div className="users-page__actions">
+            <Button
+              variant="outline"
+              onClick={handleRefresh}
+              loading={loading}
+              disabled={loading}
+            >
+              Refresh
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleAddUser}
+            >
+              Add User
+            </Button>
           </div>
         </div>
 

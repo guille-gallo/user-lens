@@ -19,7 +19,7 @@
     }
     
     &:focus {
-      outline: 2px solid $color-secondary-dark;
+      outline: 2px solid $color-secondary-light;
       outline-offset: 2px;
     }
   }
@@ -97,7 +97,7 @@
     }
     
     &:focus {
-      outline: 2px solid $color-secondary-dark;
+      outline: 2px solid $color-secondary-light;
       outline-offset: 2px;
     }
   }
@@ -186,7 +186,7 @@
     }
     
     .column-toggle__checkbox:focus + & {
-      outline: 2px solid $color-secondary-dark;
+      outline: 2px solid $color-secondary-light;
       outline-offset: 2px;
     }
   }

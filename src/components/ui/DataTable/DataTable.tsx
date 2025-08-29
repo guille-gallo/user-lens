@@ -277,8 +277,8 @@ export const DataTable: React.FC<DataTableProps> = ({
     <div className={`data-table ${className}`}>
       <div className="data-table__toolbar">
         <div className="data-table__toolbar-left">
-          <span className="data-table__count">
-            {users.length} user{users.length !== 1 ? 's' : ''}
+          <span className="data-table__result-count">
+            {users.length} users total
           </span>
         </div>
         <div className="data-table__toolbar-right">

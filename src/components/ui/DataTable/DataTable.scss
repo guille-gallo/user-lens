@@ -23,6 +23,13 @@
     gap: $space-4;
   }
 
+  &__result-count {
+    @include text-sm;
+    color: $color-text-secondary;
+    font-weight: $font-weight-medium;
+    white-space: nowrap;
+  }
+
   &__toolbar-right {
     display: flex;
     align-items: center;
@@ -212,7 +219,7 @@
     }
 
     &:focus {
-      outline: 2px solid $color-primary-light;
+      outline: 2px solid $color-secondary-light;
       outline-offset: 1px;
     }
 
@@ -420,7 +427,7 @@
     }
 
     &:focus {
-      outline: 2px solid $color-primary-light;
+      outline: 2px solid $color-secondary-light;
       outline-offset: 1px;
     }
 
@@ -472,17 +479,12 @@
     &:hover {
       background: $color-gray-50;
       border-color: $color-gray-400;
-      transform: translateY(-1px);
       box-shadow: $shadow-md;
     }
 
     &:focus {
-      outline: 2px solid $color-primary-light;
+      outline: 2px solid $color-secondary-light;
       outline-offset: 1px;
-    }
-
-    &:active {
-      transform: translateY(0);
     }
   }
 
@@ -502,14 +504,17 @@
   }
 
   &__card-expandable {
-    display: none;
+    max-height: 0;
+    opacity: 0;
     overflow: hidden;
     
     &--visible {
-      display: block;
+      max-height: 400px; // Generous height for smooth expansion
+      opacity: 1;
       border-top: 1px solid $color-border-light;
       padding-top: $space-3;
       margin-top: $space-2;
+      transition: max-height 0.25s ease-out, opacity 0.15s ease-out, padding 0.25s ease-out, margin 0.25s ease-out;
     }
 
     .data-table__card-field {
