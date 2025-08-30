@@ -210,105 +210,107 @@ export const UserDetailPage: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Address Information */}
-          <div className="user-detail-page__section">
-            <h3 className="user-detail-page__section-title">
-              📍 Address
-            </h3>
-            <div className="user-detail-page__fields">
-              <EditableField
-                label="Street"
-                value={user.address.street}
-                field="address.street"
-                isEditing={editingField === 'address.street'}
-                onEdit={() => handleEditField('address.street')}
-                onSave={(value) => handleSaveField('address.street', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Suite"
-                value={user.address.suite}
-                field="address.suite"
-                isEditing={editingField === 'address.suite'}
-                onEdit={() => handleEditField('address.suite')}
-                onSave={(value) => handleSaveField('address.suite', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="City"
-                value={user.address.city}
-                field="address.city"
-                isEditing={editingField === 'address.city'}
-                onEdit={() => handleEditField('address.city')}
-                onSave={(value) => handleSaveField('address.city', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Zip Code"
-                value={user.address.zipcode}
-                field="address.zipcode"
-                isEditing={editingField === 'address.zipcode'}
-                onEdit={() => handleEditField('address.zipcode')}
-                onSave={(value) => handleSaveField('address.zipcode', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Latitude"
-                value={user.address.geo.lat}
-                field="address.geo.lat"
-                type="number"
-                isEditing={editingField === 'address.geo.lat'}
-                onEdit={() => handleEditField('address.geo.lat')}
-                onSave={(value) => handleSaveField('address.geo.lat', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Longitude"
-                value={user.address.geo.lng}
-                field="address.geo.lng"
-                type="number"
-                isEditing={editingField === 'address.geo.lng'}
-                onEdit={() => handleEditField('address.geo.lng')}
-                onSave={(value) => handleSaveField('address.geo.lng', value)}
-                onCancel={handleCancelEdit}
-              />
+          
+          <div className="user-detail-page__secondary-grid">
+            {/* Address Information */}
+            <div className="user-detail-page__section">
+              <h3 className="user-detail-page__section-title">
+                📍 Address
+              </h3>
+              <div className="user-detail-page__fields">
+                <EditableField
+                  label="Street"
+                  value={user.address.street}
+                  field="address.street"
+                  isEditing={editingField === 'address.street'}
+                  onEdit={() => handleEditField('address.street')}
+                  onSave={(value) => handleSaveField('address.street', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Suite"
+                  value={user.address.suite}
+                  field="address.suite"
+                  isEditing={editingField === 'address.suite'}
+                  onEdit={() => handleEditField('address.suite')}
+                  onSave={(value) => handleSaveField('address.suite', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="City"
+                  value={user.address.city}
+                  field="address.city"
+                  isEditing={editingField === 'address.city'}
+                  onEdit={() => handleEditField('address.city')}
+                  onSave={(value) => handleSaveField('address.city', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Zip Code"
+                  value={user.address.zipcode}
+                  field="address.zipcode"
+                  isEditing={editingField === 'address.zipcode'}
+                  onEdit={() => handleEditField('address.zipcode')}
+                  onSave={(value) => handleSaveField('address.zipcode', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Latitude"
+                  value={user.address.geo.lat}
+                  field="address.geo.lat"
+                  type="number"
+                  isEditing={editingField === 'address.geo.lat'}
+                  onEdit={() => handleEditField('address.geo.lat')}
+                  onSave={(value) => handleSaveField('address.geo.lat', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Longitude"
+                  value={user.address.geo.lng}
+                  field="address.geo.lng"
+                  type="number"
+                  isEditing={editingField === 'address.geo.lng'}
+                  onEdit={() => handleEditField('address.geo.lng')}
+                  onSave={(value) => handleSaveField('address.geo.lng', value)}
+                  onCancel={handleCancelEdit}
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Company Information */}
-          <div className="user-detail-page__section">
-            <h3 className="user-detail-page__section-title">
-              🏢 Company
-            </h3>
-            <div className="user-detail-page__fields">
-              <EditableField
-                label="Company Name"
-                value={user.company.name}
-                field="company.name"
-                isEditing={editingField === 'company.name'}
-                onEdit={() => handleEditField('company.name')}
-                onSave={(value) => handleSaveField('company.name', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Catch Phrase"
-                value={user.company.catchPhrase}
-                field="company.catchPhrase"
-                isEditing={editingField === 'company.catchPhrase'}
-                onEdit={() => handleEditField('company.catchPhrase')}
-                onSave={(value) => handleSaveField('company.catchPhrase', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Business"
-                value={user.company.bs}
-                field="company.bs"
-                isEditing={editingField === 'company.bs'}
-                onEdit={() => handleEditField('company.bs')}
-                onSave={(value) => handleSaveField('company.bs', value)}
-                onCancel={handleCancelEdit}
-              />
+            {/* Company Information */}
+            <div className="user-detail-page__section">
+              <h3 className="user-detail-page__section-title">
+                🏢 Company
+              </h3>
+              <div className="user-detail-page__fields">
+                <EditableField
+                  label="Company Name"
+                  value={user.company.name}
+                  field="company.name"
+                  isEditing={editingField === 'company.name'}
+                  onEdit={() => handleEditField('company.name')}
+                  onSave={(value) => handleSaveField('company.name', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Catch Phrase"
+                  value={user.company.catchPhrase}
+                  field="company.catchPhrase"
+                  isEditing={editingField === 'company.catchPhrase'}
+                  onEdit={() => handleEditField('company.catchPhrase')}
+                  onSave={(value) => handleSaveField('company.catchPhrase', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Business"
+                  value={user.company.bs}
+                  field="company.bs"
+                  isEditing={editingField === 'company.bs'}
+                  onEdit={() => handleEditField('company.bs')}
+                  onSave={(value) => handleSaveField('company.bs', value)}
+                  onCancel={handleCancelEdit}
+                />
+              </div>
             </div>
           </div>
         </div>

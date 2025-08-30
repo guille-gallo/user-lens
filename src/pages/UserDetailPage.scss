@@ -50,6 +50,22 @@
     }
     
     @include respond-to(lg) {
+      grid-template-columns: 1fr;
+      gap: $space-8;
+    }
+  }
+
+  &__secondary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-8;
+    
+    @include respond-to(md) {
+      grid-template-columns: 1fr;
+      gap: $space-6;
+    }
+    
+    @include respond-to(lg) {
       grid-template-columns: repeat(2, 1fr);
       gap: $space-8;
     }
@@ -130,6 +146,11 @@
       width: 100%;
       gap: $space-1;
       max-width: none;
+    }
+    
+    .user-detail-page__secondary-grid & {
+      max-width: 100%;
+      width: 100%;
     }
     
     @include respond-below(md) {
