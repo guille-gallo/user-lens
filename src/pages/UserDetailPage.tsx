@@ -159,55 +159,58 @@ export const UserDetailPage: React.FC = () => {
             <h3 className="user-detail-page__section-title">
               👤 Personal Information
             </h3>
-            <div className="user-detail-page__fields">
-              <EditableField
-                label="Full Name"
-                value={user.name}
-                field="name"
-                isEditing={editingField === 'name'}
-                onEdit={() => handleEditField('name')}
-                onSave={(value) => handleSaveField('name', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Username"
-                value={user.username}
-                field="username"
-                isEditing={editingField === 'username'}
-                onEdit={() => handleEditField('username')}
-                onSave={(value) => handleSaveField('username', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Email"
-                value={user.email}
-                field="email"
-                type="email"
-                isEditing={editingField === 'email'}
-                onEdit={() => handleEditField('email')}
-                onSave={(value) => handleSaveField('email', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Phone"
-                value={user.phone}
-                field="phone"
-                type="tel"
-                isEditing={editingField === 'phone'}
-                onEdit={() => handleEditField('phone')}
-                onSave={(value) => handleSaveField('phone', value)}
-                onCancel={handleCancelEdit}
-              />
-              <EditableField
-                label="Website"
-                value={user.website}
-                field="website"
-                type="url"
-                isEditing={editingField === 'website'}
-                onEdit={() => handleEditField('website')}
-                onSave={(value) => handleSaveField('website', value)}
-                onCancel={handleCancelEdit}
-              />
+            <div className="user-detail-page__personal-container">
+              <div className="user-detail-page__avatar-section">
+                <img 
+                  src={`https://api.dicebear.com/7.x/personas/svg?seed=${user.username}&backgroundColor=ffffff`}
+                  alt={`${user.name} avatar`}
+                  className="user-detail-page__avatar"
+                />
+                <div className="user-detail-page__username">
+                  {user.username}
+                </div>
+              </div>
+              <div className="user-detail-page__fields">
+                <EditableField
+                  label="Full Name"
+                  value={user.name}
+                  field="name"
+                  isEditing={editingField === 'name'}
+                  onEdit={() => handleEditField('name')}
+                  onSave={(value) => handleSaveField('name', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Email"
+                  value={user.email}
+                  field="email"
+                  type="email"
+                  isEditing={editingField === 'email'}
+                  onEdit={() => handleEditField('email')}
+                  onSave={(value) => handleSaveField('email', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Phone"
+                  value={user.phone}
+                  field="phone"
+                  type="tel"
+                  isEditing={editingField === 'phone'}
+                  onEdit={() => handleEditField('phone')}
+                  onSave={(value) => handleSaveField('phone', value)}
+                  onCancel={handleCancelEdit}
+                />
+                <EditableField
+                  label="Website"
+                  value={user.website}
+                  field="website"
+                  type="url"
+                  isEditing={editingField === 'website'}
+                  onEdit={() => handleEditField('website')}
+                  onSave={(value) => handleSaveField('website', value)}
+                  onCancel={handleCancelEdit}
+                />
+              </div>
             </div>
           </div>
 
