@@ -155,10 +155,7 @@ export const UserDetailPage: React.FC = () => {
       <div className="user-detail-page__content">
         <div className="user-detail-page__grid">
           {/* Personal Information */}
-          <div className="user-detail-page__section">
-            <h3 className="user-detail-page__section-title">
-              👤 Personal Information
-            </h3>
+          <div className="user-detail-page__section user-detail-page__section--personal">
             <div className="user-detail-page__personal-container">
               <div className="user-detail-page__avatar-section">
                 <img 

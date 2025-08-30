@@ -1,16 +1,29 @@
 @import '../../../styles/index.scss';
 
 .editable-field {
-  margin-bottom: 20px;
+  margin-bottom: $space-4;
+  
+  .user-detail-page__personal-container & {
+    margin-bottom: $space-2;
+  }
+  
+  .user-detail-page__section--personal & {
+    margin-bottom: $space-1;
+  }
   
   &__label {
     display: block;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
     color: $color-text-secondary;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    margin-bottom: $space-2;
+    
+    .user-detail-page__section--personal & {
+      font-size: 10px;
+      margin-bottom: $space-1;
+    }
   }
   
   &__content {
@@ -20,13 +33,26 @@
   &__value-wrapper {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
+    gap: $space-3;
+    padding: $space-3;
     background-color: $color-gray-50;
     border-radius: $radius-lg;
     border-left: 3px solid transparent;
     min-height: 48px;
     transition: all 0.2s ease;
+    cursor: pointer;
+    
+    .user-detail-page__personal-container & {
+      padding: $space-2 $space-3;
+      min-height: auto;
+    }
+    
+    .user-detail-page__section--personal & {
+      border: 1px solid $color-border-light;
+      border-left: 2px solid $color-border-medium;
+      padding: $space-2;
+      background-color: $color-white;
+    }
     
     &:hover {
       background-color: $color-gray-100;

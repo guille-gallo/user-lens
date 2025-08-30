@@ -62,12 +62,23 @@
     @include respond-to(md) {
       padding: $space-4;
     }
+    
+    &--personal {
+      background: none;
+      border: none;
+      box-shadow: none;
+      padding: $space-8 0;
+      display: flex;
+      justify-content: center;
+    }
   }
 
   &__personal-container {
     display: flex;
     gap: $space-8;
-    align-items: flex-start;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
     
     @include respond-below(md) {
       flex-direction: column;
@@ -110,11 +121,20 @@
 
   &__fields {
     display: grid;
-    gap: $space-5;
+    gap: $space-3;
     flex: 1;
+    max-width: 50%;
     
-    @include respond-to(md) {
-      gap: $space-4;
+    .user-detail-page__section--personal & {
+      justify-self: center;
+      width: 100%;
+      gap: $space-1;
+      max-width: none;
+    }
+    
+    @include respond-below(md) {
+      gap: $space-2;
+      max-width: 100%;
     }
   }
 
