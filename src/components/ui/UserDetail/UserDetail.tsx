@@ -2,6 +2,7 @@ import React from 'react';
 import type { User } from '../../../services/userService';
 import { Modal } from '../Modal';
 import { Button } from '../Button/Button';
+import { Icon } from '../Icon';
 import './UserDetail.scss';
 
 interface UserDetailProps {
@@ -67,7 +68,7 @@ export const UserDetail: React.FC<UserDetailProps> = ({
         {/* Personal Information */}
         <div className="user-detail__section">
           <h3 className="user-detail__section-title">
-            👤 Personal Information
+            <Icon name="user" /> Personal Information
           </h3>
           <div className="user-detail__grid">
             <div className="user-detail__field">
@@ -113,7 +114,7 @@ export const UserDetail: React.FC<UserDetailProps> = ({
         {/* Address Information */}
         <div className="user-detail__section">
           <h3 className="user-detail__section-title">
-            📍 Address
+            <Icon name="location" /> Address
           </h3>
           <div className="user-detail__grid">
             <div className="user-detail__field user-detail__field--full">
@@ -142,7 +143,7 @@ export const UserDetail: React.FC<UserDetailProps> = ({
         {/* Company Information */}
         <div className="user-detail__section">
           <h3 className="user-detail__section-title">
-            🏢 Company
+            <Icon name="business" /> Company
           </h3>
           <div className="user-detail__grid">
             <div className="user-detail__field user-detail__field--full">

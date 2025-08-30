@@ -4,14 +4,32 @@ import {
   AiOutlineEye, 
   AiOutlineDelete,
   AiOutlineCheck,
-  AiOutlineClose
+  AiOutlineClose,
+  AiOutlineUser,
+  AiOutlineHome,
+  AiOutlineWarning,
+  AiOutlineInfoCircle,
+  AiOutlineSearch,
+  AiOutlineArrowLeft,
+  AiOutlineLink
 } from 'react-icons/ai';
 import { 
   FaChevronUp, 
   FaChevronDown, 
   FaSort,
-  FaColumns
+  FaColumns,
+  FaMapMarkerAlt,
+  FaBuilding
 } from 'react-icons/fa';
+import { 
+  MdBusiness,
+  MdLocationOn,
+  MdMap,
+  MdCheckCircle,
+  MdError,
+  MdWarning,
+  MdInfo
+} from 'react-icons/md';
 
 export type IconName = 
   | 'edit' 
@@ -23,7 +41,21 @@ export type IconName =
   | 'chevron-up' 
   | 'chevron-down' 
   | 'chevrons-up-down'
-  | 'columns';
+  | 'columns'
+  | 'user'
+  | 'home'
+  | 'warning'
+  | 'info'
+  | 'location'
+  | 'building'
+  | 'business'
+  | 'map'
+  | 'check-circle'
+  | 'error'
+  | 'close'
+  | 'search'
+  | 'arrow-left'
+  | 'external-link';
 
 interface IconProps {
   name: IconName;
@@ -43,6 +75,20 @@ const iconMap = {
   'chevron-down': FaChevronDown,
   'chevrons-up-down': FaSort,
   columns: FaColumns,
+  user: AiOutlineUser,
+  home: AiOutlineHome,
+  warning: MdWarning,
+  info: MdInfo,
+  location: MdLocationOn,
+  building: FaBuilding,
+  business: MdBusiness,
+  map: MdMap,
+  'check-circle': MdCheckCircle,
+  error: MdError,
+  close: AiOutlineClose,
+  search: AiOutlineSearch,
+  'arrow-left': AiOutlineArrowLeft,
+  'external-link': AiOutlineLink,
 };
 
 export const Icon: React.FC<IconProps> = ({ name, size = 16, className, color }) => {
@@ -59,8 +105,9 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, className, color })
       className={className}
       style={{ 
         color,
-        display: 'block',
-        flexShrink: 0
+        display: 'inline-block',
+        flexShrink: 0,
+        verticalAlign: 'middle'
       }}
     />
   );

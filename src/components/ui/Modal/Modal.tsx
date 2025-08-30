@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from '../Icon';
 import './Modal.scss';
 
 interface ModalProps {
@@ -68,7 +69,7 @@ export const Modal: React.FC<ModalProps> = ({
             aria-label="Close modal"
             type="button"
           >
-            ✕
+            <Icon name="close" size={20} />
           </button>
         </div>
         

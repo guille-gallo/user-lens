@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
 import { Button } from '../Button';
+import { Icon } from '../Icon';
 import './ErrorBoundary.scss';
 
 /**
@@ -31,7 +32,7 @@ export const ErrorBoundary: React.FC = () => {
     <div className="error-boundary" role="alert">
       <div className="error-boundary__content">
         <div className="error-boundary__icon" aria-hidden="true">
-          ⚠️
+          <Icon name="warning" size={48} />
         </div>
         
         <h1 className="error-boundary__title">

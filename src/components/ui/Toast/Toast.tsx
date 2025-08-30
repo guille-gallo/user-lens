@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Icon } from '../Icon';
 import './Toast.scss';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -51,13 +52,13 @@ export const Toast: React.FC<ToastProps> = ({
   const getIcon = () => {
     switch (type) {
       case 'success':
-        return '✅';
+        return <Icon name="check-circle" size={16} />;
       case 'error':
-        return '❌';
+        return <Icon name="error" size={16} />;
       case 'warning':
-        return '⚠️';
+        return <Icon name="warning" size={16} />;
       default:
-        return 'ℹ️';
+        return <Icon name="info" size={16} />;
     }
   };
 
@@ -82,7 +83,7 @@ export const Toast: React.FC<ToastProps> = ({
         onClick={handleClose}
         aria-label="Close notification"
       >
-        ✕
+        <Icon name="close" size={14} />
       </button>
     </div>
   );

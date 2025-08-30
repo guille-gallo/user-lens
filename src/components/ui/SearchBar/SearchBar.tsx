@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Icon } from '../Icon';
 import './SearchBar.scss';
 
 interface SearchBarProps {
@@ -41,11 +42,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               aria-label="Clear search"
               type="button"
             >
-              ✕
+              <Icon name="close" />
             </button>
           )}
           <div className="search-bar__search-icon" aria-hidden="true">
-            🔍
+            <Icon name="search" />
           </div>
         </div>
       </div>

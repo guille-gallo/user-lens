@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { Header } from '../components/layout';
-import { Button, LoadingSpinner, Toast, EditableField } from '../components/ui';
+import { Button, LoadingSpinner, Toast, EditableField, Icon } from '../components/ui';
 import type { User } from '../services/userService';
 import './UserDetailPage.scss';
 
@@ -215,7 +215,7 @@ export const UserDetailPage: React.FC = () => {
             {/* Address Information */}
             <div className="user-detail-page__section">
               <h3 className="user-detail-page__section-title">
-                📍 Address
+                <Icon name="location" size={20} /> Address
               </h3>
               <div className="user-detail-page__fields">
                 <EditableField
@@ -254,33 +254,26 @@ export const UserDetailPage: React.FC = () => {
                   onSave={(value) => handleSaveField('address.zipcode', value)}
                   onCancel={handleCancelEdit}
                 />
-                <EditableField
-                  label="Latitude"
-                  value={user.address.geo.lat}
-                  field="address.geo.lat"
-                  type="number"
-                  isEditing={editingField === 'address.geo.lat'}
-                  onEdit={() => handleEditField('address.geo.lat')}
-                  onSave={(value) => handleSaveField('address.geo.lat', value)}
-                  onCancel={handleCancelEdit}
-                />
-                <EditableField
-                  label="Longitude"
-                  value={user.address.geo.lng}
-                  field="address.geo.lng"
-                  type="number"
-                  isEditing={editingField === 'address.geo.lng'}
-                  onEdit={() => handleEditField('address.geo.lng')}
-                  onSave={(value) => handleSaveField('address.geo.lng', value)}
-                  onCancel={handleCancelEdit}
-                />
+                <div className="user-detail-page__field">
+                  <span className="user-detail-page__label">Location</span>
+                  <div className="user-detail-page__value">
+                    <a 
+                      href={`https://maps.google.com/?q=${user.address.geo.lat},${user.address.geo.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="user-detail-page__map-link"
+                    >
+                      <Icon name="map" size={16} /> View on Google Maps
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Company Information */}
             <div className="user-detail-page__section">
               <h3 className="user-detail-page__section-title">
-                🏢 Company
+                <Icon name="business" size={20} /> Company
               </h3>
               <div className="user-detail-page__fields">
                 <EditableField

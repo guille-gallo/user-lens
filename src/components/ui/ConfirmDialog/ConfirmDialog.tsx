@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '../Button';
+import { Icon } from '../Icon';
 import './ConfirmDialog.scss';
 
 interface ConfirmDialogProps {
@@ -58,11 +59,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   const getIcon = () => {
     switch (variant) {
       case 'danger':
-        return '⚠️';
+        return <Icon name="warning" size={24} />;
       case 'warning':
-        return '⚡';
+        return <Icon name="warning" size={24} />;
       default:
-        return 'ℹ️';
+        return <Icon name="info" size={24} />;
     }
   };
 
