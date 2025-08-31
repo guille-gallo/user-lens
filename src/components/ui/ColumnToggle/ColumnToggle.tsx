@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Icon } from '../Icon';
+import { BUTTON_LABELS, DATA_TABLE, NAVIGATION } from '../../../constants/ui';
+import { KEYBOARD_KEYS } from '../../../constants/accessibility';
 import './ColumnToggle.scss';
 
 export interface ColumnDefinition {
@@ -89,14 +91,14 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, columnKey: string, essential?: boolean) => {
-    if (e.key === ' ' || e.key === 'Enter') {
+    if (e.key === KEYBOARD_KEYS.SPACE || e.key === KEYBOARD_KEYS.ENTER) {
       e.preventDefault();
       handleToggle(columnKey, essential);
     }
   };
 
   const handleToggleAllKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === ' ' || e.key === 'Enter') {
+    if (e.key === KEYBOARD_KEYS.SPACE || e.key === KEYBOARD_KEYS.ENTER) {
       e.preventDefault();
       handleToggleAll();
     }
@@ -113,12 +115,12 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
         ref={triggerRef}
         className="column-toggle__trigger"
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle column visibility"
-        title="Customize columns"
+        aria-label={BUTTON_LABELS.TOGGLE_COLUMN_VISIBILITY}
+        title={BUTTON_LABELS.CUSTOMIZE_COLUMNS}
       >
         <Icon name="columns" size={16} />
         <span className="column-toggle__label">
-          Columns ({visibleCount}/{totalCount})
+          {DATA_TABLE.COLUMNS_LABEL} ({visibleCount}/{totalCount})
         </span>
         <Icon 
           name={isOpen ? "chevron-up" : "chevron-down"} 
@@ -130,12 +132,12 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
       {isOpen && (
         <div className="column-toggle__dropdown" onClick={handleDropdownClick}>
           <div className="column-toggle__header">
-            <h4 className="column-toggle__title">Show/Hide Columns</h4>
+            <h4 className="column-toggle__title">{DATA_TABLE.SHOW_HIDE_COLUMNS}</h4>
             <button
               className="column-toggle__close"
               onClick={() => setIsOpen(false)}
-              aria-label="Close columns menu"
-              title="Close"
+              aria-label={NAVIGATION.CLOSE_COLUMNS_MENU}
+              title={BUTTON_LABELS.CLOSE}
             >
               <Icon name="x" size={14} />
             </button>
@@ -156,7 +158,7 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
                 {allNonEssentialVisible && <Icon name="check" size={12} />}
               </span>
               <span className="column-toggle__text">
-                Select All
+                {BUTTON_LABELS.SELECT_ALL}
               </span>
             </label>
           </div>

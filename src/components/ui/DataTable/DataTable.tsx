@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { Icon } from '../Icon';
 import { ColumnToggle, type ColumnDefinition } from '../ColumnToggle';
 import type { User } from '../../../services/userService';
+import { BUTTON_LABELS, DATA_TABLE } from '../../../constants/ui';
+import { ARIA_ROLES } from '../../../constants/accessibility';
 import './DataTable.scss';
 
 type SortOrder = 'asc' | 'desc';
@@ -295,7 +297,7 @@ export const DataTable: React.FC<DataTableProps> = ({
       
       {/* Desktop Table View */}
       <div className="data-table__wrapper">
-        <table className="data-table__table" role="table" aria-label="Users data table">
+        <table className="data-table__table" role={ARIA_ROLES.TABLE} aria-label={DATA_TABLE.USERS_DATA_TABLE}>
           <caption className="data-table__caption">
             User information table with {users.length} users. Use column headers to sort data.
           </caption>
@@ -316,9 +318,9 @@ export const DataTable: React.FC<DataTableProps> = ({
                     <button
                       className="data-table__sort-button"
                       onClick={() => handleSort(column.key)}
-                      aria-label={`Sort by ${column.label}${
+                      aria-label={`${DATA_TABLE.SORT_BY} ${column.label}${
                         sortField === column.key 
-                          ? `, currently ${sortOrder === 'asc' ? 'ascending' : 'descending'}` 
+                          ? `, currently ${sortOrder === 'asc' ? DATA_TABLE.ASCENDING : DATA_TABLE.DESCENDING}` 
                           : ''
                       }`}
                       data-sortable="true"
@@ -362,7 +364,7 @@ export const DataTable: React.FC<DataTableProps> = ({
                         className="data-table__action-btn data-table__action-btn--view"
                         onClick={() => onView(user)}
                         aria-label={`View details for ${user.name}`}
-                        title="View details"
+                        title={BUTTON_LABELS.VIEW_DETAILS}
                         type="button"
                       >
                         <Icon name="eye" size={16} />
@@ -374,11 +376,11 @@ export const DataTable: React.FC<DataTableProps> = ({
                         className="data-table__action-btn data-table__action-btn--edit"
                         onClick={() => onEdit(user)}
                         aria-label={`Edit ${user.name}`}
-                        title="Edit user"
+                        title={BUTTON_LABELS.EDIT_USER}
                         type="button"
                       >
                         <Icon name="edit" size={16} />
-                        <span className="data-table__action-text">Edit</span>
+                        <span className="data-table__action-text">{BUTTON_LABELS.EDIT}</span>
                       </button>
                     )}
                     {onDelete && (
@@ -386,11 +388,11 @@ export const DataTable: React.FC<DataTableProps> = ({
                         className="data-table__action-btn data-table__action-btn--delete"
                         onClick={() => onDelete(user)}
                         aria-label={`Delete ${user.name}`}
-                        title="Delete user"
+                        title={BUTTON_LABELS.DELETE_USER}
                         type="button"
                       >
                         <Icon name="trash" size={16} />
-                        <span className="data-table__action-text">Delete</span>
+                        <span className="data-table__action-text">{BUTTON_LABELS.DELETE}</span>
                       </button>
                     )}
                   </div>

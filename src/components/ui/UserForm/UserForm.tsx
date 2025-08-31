@@ -3,6 +3,8 @@ import type { User } from '../../../services/userService';
 import { ResponsiveEditingContainer } from '../ResponsiveEditingContainer';
 import { FormField } from '../FormField';
 import { Button } from '../Button/Button';
+import { PLACEHOLDERS, BUTTON_LABELS, USER_MANAGEMENT } from '../../../constants/ui';
+import { VALIDATION_MESSAGES } from '../../../constants/validation';
 import './UserForm.scss';
 
 interface UserFormProps {
@@ -261,7 +263,7 @@ export const UserForm: React.FC<UserFormProps> = ({
                 className="form-input"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="Enter full name"
+                placeholder={PLACEHOLDERS.FULL_NAME}
                 disabled={loading}
               />
             </FormField>
@@ -278,7 +280,7 @@ export const UserForm: React.FC<UserFormProps> = ({
                 className="form-input"
                 value={formData.username}
                 onChange={(e) => handleInputChange('username', e.target.value)}
-                placeholder="Enter username"
+                placeholder={PLACEHOLDERS.USERNAME}
                 disabled={loading}
               />
             </FormField>
