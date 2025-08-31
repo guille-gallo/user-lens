@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Icon } from '../Icon';
 import { ColumnToggle, type ColumnDefinition } from '../ColumnToggle';
 import type { User } from '../../../services/userService';
+import { useDataTableColumns, useColumnVisibility } from '../../../hooks';
 import { BUTTON_LABELS, DATA_TABLE } from '../../../constants/ui';
 import { ARIA_ROLES } from '../../../constants/accessibility';
 import './DataTable.scss';
@@ -43,166 +44,21 @@ export const DataTable: React.FC<DataTableProps> = ({
   onView,
   className = ''
 }) => {
-  // Define all available columns
-  const allColumns: DataTableColumn[] = useMemo(() => [
-    {
-      key: 'name',
-      label: 'Name',
-      sortable: true,
-      essential: true,
-      defaultVisible: true,
-    },
-    {
-      key: 'username',
-      label: 'Username',
-      sortable: true,
-      essential: false,
-      defaultVisible: true,
-      render: (username: string) => `@${username}`
-    },
-    {
-      key: 'email',
-      label: 'Email',
-      sortable: true,
-      essential: false,
-      defaultVisible: true,
-      render: (email: string) => (
-        <a href={`mailto:${email}`} className="data-table__email-link">
-          {email}
-        </a>
-      )
-    },
-    {
-      key: 'phone',
-      label: 'Phone',
-      sortable: true,
-      essential: false,
-      defaultVisible: true,
-      render: (phone: string) => (
-        <a href={`tel:${phone}`} className="data-table__phone-link">
-          {phone}
-        </a>
-      )
-    },
-    {
-      key: 'website',
-      label: 'Website',
-      sortable: true,
-      essential: false,
-      defaultVisible: false,
-      render: (website: string) => (
-        <a 
-          href={`https://${website}`} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="data-table__website-link"
-        >
-          {website} ↗
-        </a>
-      )
-    },
-    {
-      key: 'address.street',
-      label: 'Street',
-      sortable: true,
-      essential: false,
-      defaultVisible: false,
-      render: (_, user: User) => `${user.address.street} ${user.address.suite}`
-    },
-    {
-      key: 'address.city',
-      label: 'City',
-      sortable: true,
-      essential: false,
-      defaultVisible: false,
-      render: (_, user: User) => user.address.city
-    },
-    {
-      key: 'address.zipcode',
-      label: 'Zip Code',
-      sortable: true,
-      essential: false,
-      defaultVisible: true,
-      render: (_, user: User) => user.address.zipcode
-    },
-    {
-      key: 'address.geo',
-      label: 'Coordinates',
-      sortable: false,
-      essential: false,
-      defaultVisible: false,
-      render: (_, user: User) => `${user.address.geo.lat}, ${user.address.geo.lng}`
-    },
-    {
-      key: 'company.name',
-      label: 'Company',
-      sortable: true,
-      essential: false,
-      defaultVisible: true,
-      render: (_, user: User) => user.company.name
-    },
-    {
-      key: 'company.catchPhrase',
-      label: 'Catch Phrase',
-      sortable: true,
-      essential: false,
-      defaultVisible: false,
-      render: (_, user: User) => `"${user.company.catchPhrase}"`
-    },
-    {
-      key: 'company.bs',
-      label: 'Business',
-      sortable: true,
-      essential: false,
-      defaultVisible: true,
-      render: (_, user: User) => user.company.bs
-    }
-  ], []);
-
-  // Column visibility state
-  const [columnVisibility, setColumnVisibility] = useState<ColumnDefinition[]>(() =>
-    allColumns.map(col => ({
-      key: col.key,
-      label: col.label,
-      visible: col.defaultVisible || col.essential || false,
-      essential: col.essential
-    }))
-  );
+  // Use custom hooks for column management
+  const allColumns = useDataTableColumns();
+  const {
+    columnVisibility,
+    toggleColumn,
+    selectAllColumns,
+    unselectAllColumns,
+    getVisibleColumns
+  } = useColumnVisibility(allColumns);
 
   // Mobile card expansion state
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
 
-  // Get visible columns
-  const visibleColumns = useMemo(() => 
-    allColumns.filter(col => 
-      columnVisibility.find(vis => vis.key === col.key)?.visible
-    ), [allColumns, columnVisibility]);
-
-  const handleColumnToggle = (columnKey: string) => {
-    setColumnVisibility(prev => 
-      prev.map(col => 
-        col.key === columnKey 
-          ? { ...col, visible: !col.visible }
-          : col
-      )
-    );
-  };
-
-  const handleSelectAllColumns = () => {
-    setColumnVisibility(prev => 
-      prev.map(col => ({ ...col, visible: true }))
-    );
-  };
-
-  const handleUnselectAllColumns = () => {
-    setColumnVisibility(prev => 
-      prev.map(col => 
-        col.essential 
-          ? col //keep essential columns visible
-          : { ...col, visible: false }
-      )
-    );
-  };
+  // Get visible columns using hook
+  const visibleColumns = getVisibleColumns();
 
   const toggleCardExpansion = (userId: number) => {
     setExpandedCards(prev => {
@@ -287,9 +143,9 @@ export const DataTable: React.FC<DataTableProps> = ({
           <div className="data-table__column-toggle-wrapper">
             <ColumnToggle
               columns={columnVisibility}
-              onToggle={handleColumnToggle}
-              onSelectAll={handleSelectAllColumns}
-              onUnselectAll={handleUnselectAllColumns}
+              onToggle={toggleColumn}
+              onSelectAll={selectAllColumns}
+              onUnselectAll={unselectAllColumns}
             />
           </div>
         </div>
@@ -346,7 +202,7 @@ export const DataTable: React.FC<DataTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {users.map((user) => (
               <tr key={user.id} className="data-table__row" role="row">
                 {visibleColumns.map((column) => (
                   <td 

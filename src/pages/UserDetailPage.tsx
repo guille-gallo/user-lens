@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { useHeaderActions } from '../components/layout';
-import { useDocumentTitle } from '../hooks';
+import { useDocumentTitle, useUserFieldEditor, useToast } from '../hooks';
 import { Button, LoadingSpinner, Toast, EditableField, Icon } from '../components/ui';
+import { formatFieldName } from '../utils';
 import type { User } from '../services/userService';
 import './UserDetailPage.scss';
 
@@ -24,10 +25,16 @@ export const UserDetailPage: React.FC = () => {
   } = useUserStore();
 
   const [user, setUser] = useState<User | null>(null);
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<Partial<User>>({});
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+
+  // Use custom hooks for separated concerns
+  const { 
+    editingField,
+    handleEditField,
+    handleSaveField,
+    handleCancelEdit
+  } = useUserFieldEditor(user, updateUser);
+
+  const { toast, showSuccess, hideToast } = useToast();
 
   // Set document title based on user data
   useDocumentTitle(user ? `${user.name} Details` : 'User Details');
@@ -82,55 +89,12 @@ export const UserDetailPage: React.FC = () => {
     };
   }, [setHeaderActions, clearHeaderActions, handleBack]);
 
-  const handleEditField = (field: string) => {
-    setEditingField(field);
-    setEditValues({ ...editValues, [field]: (user as any)[field] });
-  };
-
-  const handleSaveField = async (field: string, value: string | number) => {
-    if (!user) return;
-    
-    let updatedUser = { ...user };
-    
-    // TODO: move to hook:
-    // handle nested field updates:
-    if (field.includes('.')) {
-      const fieldParts = field.split('.');
-      if (fieldParts.length === 2) {
-        const [parent, child] = fieldParts;
-        updatedUser = {
-          ...user,
-          [parent]: {
-            ...(user as any)[parent],
-            [child]: value
-          }
-        };
-      } else if (fieldParts.length === 3) {
-        const [parent, nested, child] = fieldParts;
-        updatedUser = {
-          ...user,
-          [parent]: {
-            ...(user as any)[parent],
-            [nested]: {
-              ...(user as any)[parent][nested],
-              [child]: value
-            }
-          }
-        };
-      }
-    } else {
-      updatedUser = { ...user, [field]: value };
+  // Enhanced save handler with toast notification
+  const handleSaveFieldWithToast = async (field: string, value: string | number) => {
+    const success = await handleSaveField(field, value);
+    if (success) {
+      showSuccess(`${formatFieldName(field)} updated successfully`);
     }
-    
-    await updateUser(user.id, updatedUser);
-    setEditingField(null);
-    setSuccessMessage(`${field.replace(/\./g, ' ')} updated successfully`);
-    setShowSuccessToast(true);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingField(null);
-    setEditValues({});
   };
 
   if (loading) {
@@ -178,7 +142,7 @@ export const UserDetailPage: React.FC = () => {
                   field="name"
                   isEditing={editingField === 'name'}
                   onEdit={() => handleEditField('name')}
-                  onSave={(value) => handleSaveField('name', value)}
+                  onSave={(value) => handleSaveFieldWithToast('name', value)}
                   onCancel={handleCancelEdit}
                 />
                 <EditableField
@@ -188,7 +152,7 @@ export const UserDetailPage: React.FC = () => {
                   type="email"
                   isEditing={editingField === 'email'}
                   onEdit={() => handleEditField('email')}
-                  onSave={(value) => handleSaveField('email', value)}
+                  onSave={(value) => handleSaveFieldWithToast('email', value)}
                   onCancel={handleCancelEdit}
                 />
                 <EditableField
@@ -198,7 +162,7 @@ export const UserDetailPage: React.FC = () => {
                   type="tel"
                   isEditing={editingField === 'phone'}
                   onEdit={() => handleEditField('phone')}
-                  onSave={(value) => handleSaveField('phone', value)}
+                  onSave={(value) => handleSaveFieldWithToast('phone', value)}
                   onCancel={handleCancelEdit}
                 />
                 <EditableField
@@ -208,7 +172,7 @@ export const UserDetailPage: React.FC = () => {
                   type="url"
                   isEditing={editingField === 'website'}
                   onEdit={() => handleEditField('website')}
-                  onSave={(value) => handleSaveField('website', value)}
+                  onSave={(value) => handleSaveFieldWithToast('website', value)}
                   onCancel={handleCancelEdit}
                 />
               </div>
@@ -228,7 +192,7 @@ export const UserDetailPage: React.FC = () => {
                   field="address.street"
                   isEditing={editingField === 'address.street'}
                   onEdit={() => handleEditField('address.street')}
-                  onSave={(value) => handleSaveField('address.street', value)}
+                  onSave={(value) => handleSaveFieldWithToast('address.street', value)}
                   onCancel={handleCancelEdit}
                 />
                 <EditableField
@@ -237,7 +201,7 @@ export const UserDetailPage: React.FC = () => {
                   field="address.suite"
                   isEditing={editingField === 'address.suite'}
                   onEdit={() => handleEditField('address.suite')}
-                  onSave={(value) => handleSaveField('address.suite', value)}
+                  onSave={(value) => handleSaveFieldWithToast('address.suite', value)}
                   onCancel={handleCancelEdit}
                 />
                 <EditableField
@@ -246,7 +210,7 @@ export const UserDetailPage: React.FC = () => {
                   field="address.city"
                   isEditing={editingField === 'address.city'}
                   onEdit={() => handleEditField('address.city')}
-                  onSave={(value) => handleSaveField('address.city', value)}
+                  onSave={(value) => handleSaveFieldWithToast('address.city', value)}
                   onCancel={handleCancelEdit}
                 />
                 <EditableField
@@ -255,7 +219,7 @@ export const UserDetailPage: React.FC = () => {
                   field="address.zipcode"
                   isEditing={editingField === 'address.zipcode'}
                   onEdit={() => handleEditField('address.zipcode')}
-                  onSave={(value) => handleSaveField('address.zipcode', value)}
+                  onSave={(value) => handleSaveFieldWithToast('address.zipcode', value)}
                   onCancel={handleCancelEdit}
                 />
                 <div className="user-detail-page__field">
@@ -286,7 +250,7 @@ export const UserDetailPage: React.FC = () => {
                   field="company.name"
                   isEditing={editingField === 'company.name'}
                   onEdit={() => handleEditField('company.name')}
-                  onSave={(value) => handleSaveField('company.name', value)}
+                  onSave={(value) => handleSaveFieldWithToast('company.name', value)}
                   onCancel={handleCancelEdit}
                 />
                 <EditableField
@@ -295,7 +259,7 @@ export const UserDetailPage: React.FC = () => {
                   field="company.catchPhrase"
                   isEditing={editingField === 'company.catchPhrase'}
                   onEdit={() => handleEditField('company.catchPhrase')}
-                  onSave={(value) => handleSaveField('company.catchPhrase', value)}
+                  onSave={(value) => handleSaveFieldWithToast('company.catchPhrase', value)}
                   onCancel={handleCancelEdit}
                 />
                 <EditableField
@@ -304,7 +268,7 @@ export const UserDetailPage: React.FC = () => {
                   field="company.bs"
                   isEditing={editingField === 'company.bs'}
                   onEdit={() => handleEditField('company.bs')}
-                  onSave={(value) => handleSaveField('company.bs', value)}
+                  onSave={(value) => handleSaveFieldWithToast('company.bs', value)}
                   onCancel={handleCancelEdit}
                 />
               </div>
@@ -314,10 +278,10 @@ export const UserDetailPage: React.FC = () => {
       </div>
       
       <Toast
-        message={successMessage}
-        type="success"
-        isVisible={showSuccessToast}
-        onClose={() => setShowSuccessToast(false)}
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
       />
     </div>
   );
