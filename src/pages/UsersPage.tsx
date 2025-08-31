@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
-import { useCompanyMetricsStore } from '../store/companyMetricsStore';
+import { useUserMetricsStore } from '../store/userMetricsStore';
 import { useDocumentTitle } from '../hooks';
 import { 
   SearchBar, 
@@ -40,13 +40,13 @@ export const UsersPage: React.FC = () => {
     getFilteredAndSortedUsers
   } = useUserStore();
 
-  // Company metrics store
+  // User metrics store
   const {
     summary: metricsSummary,
     loading: metricsLoading,
     error: metricsError,
-    fetchCompanyMetrics
-  } = useCompanyMetricsStore();
+    processUserMetrics
+  } = useUserMetricsStore();
 
   // State for modals
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
@@ -66,10 +66,12 @@ export const UsersPage: React.FC = () => {
     }
   }, [fetchUsers, users.length]);
 
-  // Fetch company metrics on component mount
+  // Fetch user metrics when users change
   useEffect(() => {
-    fetchCompanyMetrics();
-  }, [fetchCompanyMetrics]);
+    if (users.length > 0) {
+      processUserMetrics(users);
+    }
+  }, [users, processUserMetrics]);
 
   // Get filtered and sorted users
   const displayUsers = getFilteredAndSortedUsers();

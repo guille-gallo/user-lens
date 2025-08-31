@@ -2,11 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../../store/userStore';
 import { MetricsCard } from '../MetricsCard';
-import type { MetricsSummary } from '../../../services/companyMetricsService';
+import type { UserMetricsSummary } from '../../../services/userMetricsService';
 import './MetricsOverview.scss';
 
 interface MetricsOverviewProps {
-  summary: MetricsSummary | null;
+  summary: UserMetricsSummary | null;
   loading?: boolean;
   error?: string | null;
 }
@@ -17,18 +17,14 @@ export const MetricsOverview: React.FC<MetricsOverviewProps> = ({
   error = null
 }) => {
   const navigate = useNavigate();
-  const { users } = useUserStore();
+  const { setSearchTerm } = useUserStore();
 
-  // Function to find a user by company name and navigate to their detail page
+  // Function to search for all users by company name
   const handleCompanyClick = (companyName: string) => {
-    const user = users.find(user => user.company.name === companyName);
-    if (user) {
-      navigate(`/users/${user.id}`);
-    } else {
-      // If no user found, navigate to the main page and set search for the company
-      navigate('/');
-      // Note: You could also set a search term in the store here if needed
-    }
+    // Set search term to company name to filter users by company
+    setSearchTerm(companyName);
+    // Navigate to main users page where the search will be applied
+    navigate('/');
   };
 
   if (loading) {
@@ -47,7 +43,7 @@ export const MetricsOverview: React.FC<MetricsOverviewProps> = ({
     return (
       <div className="metrics-overview">
         <div className="metrics-overview__error">
-          <p>Unable to load company metrics</p>
+          <p>Unable to load user metrics</p>
         </div>
       </div>
     );
@@ -61,28 +57,28 @@ export const MetricsOverview: React.FC<MetricsOverviewProps> = ({
     <div className="metrics-overview">
       <div className="metrics-overview__cards">
         <MetricsCard
-          title="Most Valuable Company"
-          value={summary.mostValuableCompany.marketValue}
-          subtitle={summary.mostValuableCompany.name}
-          icon="building"
+          title="Total Users"
+          value={summary.totalUsers}
+          subtitle={`${summary.totalUsers} registered users`}
+          icon="users"
           variant="primary"
-          onSubtitleClick={() => handleCompanyClick(summary.mostValuableCompany.name)}
         />
         
         <MetricsCard
-          title="Top Stock Price"
-          value={`$${summary.topStockPrice.price}`}
-          subtitle={summary.topStockPrice.company}
-          icon="chevrons-up-down"
+          title="Active Users"
+          value={`${summary.activeUsers.percentage}%`}
+          subtitle={`${summary.activeUsers.count} of ${summary.totalUsers} users`}
+          icon="user-check"
           variant="success"
         />
         
         <MetricsCard
-          title="Company Rating"
-          value={`${summary.mostValuableCompanyRating}/5`}
-          subtitle={`${summary.mostValuableCompany.name} internal rating`}
-          icon="check-circle"
+          title="Top Company"
+          value={summary.topCompany.userCount}
+          subtitle={`${summary.topCompany.name} (${summary.topCompany.userCount} users)`}
+          icon="building"
           variant="warning"
+          onSubtitleClick={() => handleCompanyClick(summary.topCompany.name)}
         />
       </div>
     </div>
