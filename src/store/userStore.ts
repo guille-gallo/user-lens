@@ -55,7 +55,8 @@ export const useUserStore = create<UserState>()(
           const users = await dataService.getUsers();
           set({ users, loading: false });
         } catch (error) {
-          set({ error: (error as Error).message, loading: false });
+          const errorMessage = error instanceof Error ? error.message : 'Failed to load users';
+          set({ error: errorMessage, loading: false });
         }
       },
 
@@ -74,9 +75,8 @@ export const useUserStore = create<UserState>()(
         try {
           const newUser = await dataService.createUser(userData);
           const currentUsers = get().users;
-          const newId = Math.max(...currentUsers.map(u => u.id), 0) + 1;
-          const userWithId = { ...newUser, id: newId };
-          set({ users: [...currentUsers, userWithId], loading: false });
+          // Use the user exactly as returned from dataService (with correct ID)
+          set({ users: [...currentUsers, newUser], loading: false });
         } catch (error) {
           set({ error: (error as Error).message, loading: false });
         }
@@ -102,27 +102,27 @@ export const useUserStore = create<UserState>()(
       },
 
       deleteUser: async (id) => {
-        // Optimistic update - remove user immediately from UI
+        set({ loading: true, error: null });
+        
+        // Store references for potential rollback
         const currentUsers = get().users;
         const userToDelete = currentUsers.find(user => user.id === id);
-        const filteredUsers = currentUsers.filter(user => user.id !== id);
-        
-        // Update UI immediately for better UX
-        set({ users: filteredUsers });
-
         const selectedUser = get().selectedUser;
-        if (selectedUser && selectedUser.id === id) {
-          set({ selectedUser: null });
-        }
 
         try {
           await dataService.deleteUser(id);
+          
+          // Only update UI after successful deletion
+          const filteredUsers = currentUsers.filter(user => user.id !== id);
+          set({ users: filteredUsers, loading: false });
+
+          if (selectedUser && selectedUser.id === id) {
+            set({ selectedUser: null });
+          }
         } catch (error) {
-          // rollback the optimistic update on error
           set({ 
-            users: currentUsers, 
             error: `Failed to delete ${userToDelete?.name || 'user'}: ${(error as Error).message}`,
-            selectedUser: selectedUser // restore selected user if it was the deleted one
+            loading: false
           });
         }
       },

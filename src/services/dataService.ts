@@ -1,8 +1,14 @@
 import { userService, type User } from './userService';
 
 /**
- * Mock data fallback when API is unavailable
- * This data should match the JSONPlaceholder API structure
+ * Data Service with Smart Timeout & Fallback Strategy
+ * 
+ * Architecture:
+ * - JSONPlaceholder is a fake API that doesn't persist data across sessions
+ * - We use localStorage to simulate persistent data for better UX
+ * - Graceful degradation: API → Cached Data → Mock Data
+ * - All mutations (create/update/delete) happen optimistically in localStorage
+ * - Timeouts are handled internally without exposing errors to users
  */
 const MOCK_USERS: User[] = [
   {
@@ -246,6 +252,39 @@ const STORAGE_KEYS = {
 } as const;
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const API_TIMEOUT = 8000; // 8 seconds
+
+/**
+ * Timeout wrapper that doesn't throw timeout errors
+ * Falls back gracefully instead of showing timeout to users
+ */
+const fetchWithFallback = async <T>(
+  apiCall: () => Promise<T>,
+  fallbackData: () => T | null,
+  operation: string
+): Promise<T> => {
+  try {
+    // Race between API call and timeout
+    const result = await Promise.race([
+      apiCall(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Internal timeout')), API_TIMEOUT)
+      )
+    ]);
+    return result;
+  } catch (error) {
+    console.warn(`⚠️ ${operation} failed:`, (error as Error).message);
+    
+    const fallback = fallbackData();
+    if (fallback) {
+      console.log(`💾 Using fallback data for ${operation}`);
+      return fallback;
+    }
+    
+    // Only throw if no fallback is available
+    throw new Error(`Failed to ${operation.toLowerCase()} - service unavailable`);
+  }
+};
 
 /**
  * Data service with fallback strategy:
@@ -256,87 +295,174 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
  */
 export const dataService = {
   /**
-   * Get all users with fallback strategy
+   * Get all users with smart fallback strategy
    */
   getUsers: async (): Promise<User[]> => {
-    try {
-      console.log('🌐 Attempting to fetch users from API...');
-      const users = await userService.getUsers();
-      
-      // Cache successful response
-      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-      localStorage.setItem(STORAGE_KEYS.LAST_FETCH, Date.now().toString());
-      
-      console.log('✅ Successfully fetched and cached users from API');
-      return users;
-    } catch (error) {
-      console.warn('⚠️ API request failed:', (error as Error).message);
-      
-      // Try to get cached data
-      const cachedUsers = getCachedUsers();
-      if (cachedUsers) {
-        console.log('💾 Using cached users from localStorage');
-        return cachedUsers;
-      }
-      
-      // Fallback to mock data
-      console.log('🎭 Using mock data as fallback');
-      return MOCK_USERS;
-    }
+    return fetchWithFallback(
+      async () => {
+        console.log('🌐 Attempting to fetch users from API...');
+        const users = await userService.getUsers();
+        
+        // Cache successful response
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+        localStorage.setItem(STORAGE_KEYS.LAST_FETCH, Date.now().toString());
+        
+        console.log('✅ Successfully fetched and cached users from API');
+        return users;
+      },
+      () => {
+        // Try cached data first
+        const cachedUsers = getCachedUsers();
+        if (cachedUsers) {
+          console.log('💾 Using cached users from localStorage');
+          return cachedUsers;
+        }
+        
+        // Fallback to mock data
+        console.log('🎭 Using mock data as fallback');
+        return MOCK_USERS;
+      },
+      'Get users'
+    );
   },
 
   /**
-   * Get user by ID with fallback strategy
+   * Get user by ID with smart fallback strategy
    */
   getUserById: async (id: number): Promise<User> => {
-    try {
-      console.log(`🌐 Attempting to fetch user ${id} from API...`);
-      const user = await userService.getUserById(id);
-      console.log(`✅ Successfully fetched user ${id} from API`);
-      return user;
-    } catch (error) {
-      console.warn(`⚠️ API request failed for user ${id}:`, (error as Error).message);
-      
-      // Try to find user in cached data
-      const cachedUsers = getCachedUsers();
-      if (cachedUsers) {
-        const cachedUser = cachedUsers.find(u => u.id === id);
-        if (cachedUser) {
-          console.log(`💾 Using cached user ${id} from localStorage`);
-          return cachedUser;
+    return fetchWithFallback(
+      async () => {
+        console.log(`🌐 Attempting to fetch user ${id} from API...`);
+        const user = await userService.getUserById(id);
+        console.log(`✅ Successfully fetched user ${id} from API`);
+        return user;
+      },
+      () => {
+        // Try cached data first
+        const cachedUsers = getCachedUsers();
+        if (cachedUsers) {
+          const cachedUser = cachedUsers.find(u => u.id === id);
+          if (cachedUser) {
+            console.log(`💾 Using cached user ${id} from localStorage`);
+            return cachedUser;
+          }
         }
-      }
-      
-      // Fallback to mock data
-      const mockUser = MOCK_USERS.find(u => u.id === id);
-      if (mockUser) {
-        console.log(`🎭 Using mock data for user ${id}`);
-        return mockUser;
-      }
-      
-      throw new Error(`User with ID ${id} not found in any data source`);
-    }
+        
+        // Fallback to mock data
+        const mockUser = MOCK_USERS.find(u => u.id === id);
+        if (mockUser) {
+          console.log(`🎭 Using mock data for user ${id}`);
+          return mockUser;
+        }
+        
+        return null; // Will cause the outer function to throw
+      },
+      `Get user ${id}`
+    );
   },
 
   /**
-   * Create user (delegates to userService for now)
+   * Create user - Smart persistence strategy for JSONPlaceholder
+   * Since JSONPlaceholder doesn't persist data, we handle this optimistically:
+   * 1. Try API call (for realistic UX/testing)
+   * 2. Always persist to localStorage regardless of API result
+   * 3. Generate stable local ID for consistent experience
    */
   createUser: async (userData: Omit<User, 'id'>): Promise<User> => {
-    return userService.createUser(userData);
+    // Get current users from localStorage or fallback to cached/mock data
+    const currentUsers = getCurrentUsers();
+    
+    // Generate new ID based on current data
+    const newId = Math.max(...currentUsers.map(u => u.id), 0) + 1;
+    const newUser = { ...userData, id: newId };
+    
+    try {
+      console.log('🌐 Attempting to create user via API...');
+      await Promise.race([
+        userService.createUser(userData),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('API timeout')), API_TIMEOUT)
+        )
+      ]);
+      console.log('✅ API acknowledged user creation');
+    } catch (error) {
+      console.warn('⚠️ API create failed, proceeding with local storage:', (error as Error).message);
+    }
+    
+    // Always persist locally (JSONPlaceholder is fake anyway)
+    const updatedUsers = [...currentUsers, newUser];
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updatedUsers));
+    console.log('💾 User persisted to localStorage');
+    
+    return newUser;
   },
 
   /**
-   * Update user (delegates to userService for now)
+   * Update user - Smart persistence strategy  
    */
   updateUser: async (id: number, userData: Partial<User>): Promise<User> => {
-    return userService.updateUser(id, userData);
+    // Get current users from localStorage or fallback to cached/mock data
+    const currentUsers = getCurrentUsers();
+    
+    const existingUser = currentUsers.find(u => u.id === id);
+    
+    if (!existingUser) {
+      throw new Error(`User with ID ${id} not found`);
+    }
+    
+    const updatedUser = { ...existingUser, ...userData };
+    
+    try {
+      console.log(`🌐 Attempting to update user ${id} via API...`);
+      await Promise.race([
+        userService.updateUser(id, userData),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('API timeout')), API_TIMEOUT)
+        )
+      ]);
+      console.log('✅ API acknowledged user update');
+    } catch (error) {
+      console.warn('⚠️ API update failed, proceeding with local storage:', (error as Error).message);
+    }
+    
+    // Always persist locally
+    const updatedUsers = currentUsers.map(u => u.id === id ? updatedUser : u);
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updatedUsers));
+    console.log('💾 User update persisted to localStorage');
+    
+    return updatedUser;
   },
 
   /**
-   * Delete user (delegates to userService for now)
+   * Delete user - Smart persistence strategy
    */
   deleteUser: async (id: number): Promise<void> => {
-    return userService.deleteUser(id);
+    // Get all current users (cache + any new ones)
+    const allUsers = getCurrentUsers();
+    
+    const userExists = allUsers.some(u => u.id === id);
+    
+    if (!userExists) {
+      throw new Error(`User with ID ${id} not found`);
+    }
+    
+    try {
+      console.log(`🌐 Attempting to delete user ${id} via API...`);
+      await Promise.race([
+        userService.deleteUser(id),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('API timeout')), API_TIMEOUT)
+        )
+      ]);
+      console.log('✅ API acknowledged user deletion');
+    } catch (error) {
+      console.warn('⚠️ API delete failed, proceeding with local storage:', (error as Error).message);
+    }
+    
+    // Always persist locally - remove from current users
+    const updatedUsers = allUsers.filter(u => u.id !== id);
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(updatedUsers));
+    console.log('💾 User deletion persisted to localStorage');
   },
 
   /**
@@ -374,4 +500,20 @@ function getCachedUsers(): User[] | null {
     console.warn('💾 Error reading cache:', error);
     return null;
   }
+}
+
+/**
+ * Get current users from localStorage first, fallback to cache/mock
+ * This ensures we always work with the most current data including new users
+ */
+function getCurrentUsers(): User[] {
+  const currentStoredUsers = localStorage.getItem(STORAGE_KEYS.USERS);
+  if (currentStoredUsers) {
+    try {
+      return JSON.parse(currentStoredUsers);
+    } catch (error) {
+      console.warn('Failed to parse stored users, using fallback');
+    }
+  }
+  return getCachedUsers() || MOCK_USERS;
 }

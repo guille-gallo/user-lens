@@ -318,7 +318,7 @@
       "message": "8 new users registered in the last hour",
       "type": "info",
       "timestamp": "2025-08-31T10:30:00Z",
-      "isRead": false
+      "isRead": true
     },
     {
       "id": "3",

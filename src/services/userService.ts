@@ -1,5 +1,5 @@
 // todo: move to types file.
-// interface based on JSONPlaceholder API structure
+// interface based on JSONPlaceholder structure
 export interface User {
   id: number;
   name: string;
@@ -27,10 +27,20 @@ export interface User {
 // TODO: move to constants.
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
+// Add timeout to all API calls
+const fetchWithTimeout = (url: string, options: RequestInit = {}, timeout = 8000) => {
+  return Promise.race([
+    fetch(url, options),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Request timeout')), timeout)
+    )
+  ]);
+};
+
 export const userService = {
   // Get all users
-  getUsers: async (): Promise<User[]> => {
-    const response = await fetch(`${BASE_URL}/users`);
+  async getUsers(): Promise<User[]> {
+    const response = await fetchWithTimeout(`${BASE_URL}/users`);
     if (!response.ok) {
       throw new Error('Failed to fetch users');
     }
@@ -38,17 +48,17 @@ export const userService = {
   },
 
   // Get user by ID
-  getUserById: async (id: number): Promise<User> => {
-    const response = await fetch(`${BASE_URL}/users/${id}`);
+  async getUserById(id: number): Promise<User> {
+    const response = await fetchWithTimeout(`${BASE_URL}/users/${id}`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch user with ID ${id}`);
+      throw new Error('Failed to fetch user');
     }
     return response.json();
   },
 
-  // Create
-  createUser: async (userData: Omit<User, 'id'>): Promise<User> => {
-    const response = await fetch(`${BASE_URL}/users`, {
+  // Create user
+  async createUser(userData: Omit<User, 'id'>): Promise<User> {
+    const response = await fetchWithTimeout(`${BASE_URL}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,9 +71,9 @@ export const userService = {
     return response.json();
   },
 
-  // Update
-  updateUser: async (id: number, userData: Partial<User>): Promise<User> => {
-    const response = await fetch(`${BASE_URL}/users/${id}`, {
+  // Update user
+  async updateUser(id: number, userData: Partial<User>): Promise<User> {
+    const response = await fetchWithTimeout(`${BASE_URL}/users/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -76,9 +86,9 @@ export const userService = {
     return response.json();
   },
 
-  // Delete
-  deleteUser: async (id: number): Promise<void> => {
-    const response = await fetch(`${BASE_URL}/users/${id}`, {
+  // Delete user
+  async deleteUser(id: number): Promise<void> {
+    const response = await fetchWithTimeout(`${BASE_URL}/users/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {

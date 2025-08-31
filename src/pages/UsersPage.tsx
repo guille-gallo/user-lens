@@ -10,7 +10,7 @@ import {
   ConfirmDialog, 
   Toast, 
   UserForm,
-  MetricsOverview 
+  MetricsOverview
 } from '../components/ui';
 import type { User } from '../services/userService';
 import './UsersPage.scss';
@@ -144,24 +144,12 @@ export const UsersPage: React.FC = () => {
     }
   };
 
-  const handleRefresh = () => {
-    fetchUsers();
-  };
-
   return (
     <div className="users-page">
       <div className="users-page__content">
         {error && (
           <div className="users-page__error" role="alert">
             <strong>Error:</strong> {error}
-            <Button
-              variant="outline"
-              size="small"
-              onClick={handleRefresh}
-              className="users-page__error-retry"
-            >
-              Retry
-            </Button>
           </div>
         )}
 
@@ -181,14 +169,6 @@ export const UsersPage: React.FC = () => {
           />
           
           <div className="users-page__actions">
-            <Button
-              variant="outline"
-              onClick={handleRefresh}
-              loading={loading}
-              disabled={loading}
-            >
-              Refresh
-            </Button>
             <Button
               variant="primary"
               onClick={handleAddUser}
