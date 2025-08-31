@@ -13,8 +13,22 @@
   transition: all 0.2s ease;
   position: relative;
 
+  // Focus styles for keyboard navigation
+  &:focus {
+    outline: 2px solid $color-primary-light;
+    outline-offset: 2px;
+    background-color: $color-gray-50;
+  }
+
   &:hover {
     background-color: $color-gray-50;
+  }
+
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    &:focus {
+      outline: 3px solid currentColor;
+    }
   }
 
   &--unread {

@@ -23,8 +23,10 @@
 
   &__actions {
     display: flex;
+    flex-direction: row;
     gap: $space-3;
     align-items: center;
+    flex-wrap: wrap;
   }
 
   &__loading {
@@ -66,15 +68,36 @@
   }
 
   @include respond-below(md) {
-    padding: $space-md;
-
     &__actions {
-      flex-direction: column;
-      align-items: stretch;
-      gap: $space-xs;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: $space-1;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: visible;
 
       .button {
-        justify-content: center;
+        flex: 0 0 auto;
+        min-width: fit-content;
+        padding: $space-2 $space-3;
+        font-size: $font-size-sm;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  // Extra small screens - make buttons even more compact
+  @include respond-below(sm) {
+    &__actions {
+      gap: $space-1;
+      padding: 0 $space-1;
+
+      .button {
+        padding: $space-2;
+        font-size: $font-size-xs;
+        min-width: auto;
+        flex: 0 0 auto;
       }
     }
   }

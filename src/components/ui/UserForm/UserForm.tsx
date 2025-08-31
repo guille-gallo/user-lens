@@ -217,13 +217,6 @@ export const UserForm: React.FC<UserFormProps> = ({
   const footer = (
     <>
       <Button
-        variant="outline"
-        onClick={onClose}
-        disabled={loading}
-      >
-        Cancel
-      </Button>
-      <Button
         variant="primary"
         type="submit"
         loading={loading}
@@ -231,6 +224,13 @@ export const UserForm: React.FC<UserFormProps> = ({
         form="user-form"
       >
         {isEditMode ? 'Update User' : 'Create User'}
+      </Button>
+      <Button
+        variant="outline"
+        onClick={onClose}
+        disabled={loading}
+      >
+        Cancel
       </Button>
     </>
   );

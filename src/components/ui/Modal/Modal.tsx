@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Icon } from '../Icon';
 import './Modal.scss';
 
@@ -24,21 +24,87 @@ export const Modal: React.FC<ModalProps> = ({
   size = 'medium',
   className = ''
 }) => {
-  React.useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+
+  // Get all focusable elements within the modal
+  const getFocusableElements = () => {
+    if (!modalRef.current) return [];
+    const focusableSelectors = [
+      'button:not([disabled])',
+      'input:not([disabled])',
+      'textarea:not([disabled])',
+      'select:not([disabled])',
+      'a[href]',
+      '[tabindex]:not([tabindex="-1"])'
+    ].join(', ');
+    
+    return Array.from(modalRef.current.querySelectorAll(focusableSelectors)) as HTMLElement[];
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
+        return;
+      }
+
+      // Handle Tab key for focus trapping
+      if (e.key === 'Tab') {
+        const focusableElements = getFocusableElements();
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          // Shift + Tab
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          // Tab
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
+      // Store the currently focused element
+      previousActiveElement.current = document.activeElement as HTMLElement;
+      
+      // Add event listener for keyboard navigation
+      document.addEventListener('keydown', handleKeyDown);
+      
+      // Prevent body scrolling
       document.body.style.overflow = 'hidden';
+      
+      // Focus the modal after a short delay to ensure it's rendered
+      setTimeout(() => {
+        if (modalRef.current) {
+          const focusableElements = getFocusableElements();
+          if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+          } else {
+            // If no focusable elements, focus the modal itself
+            modalRef.current.focus();
+          }
+        }
+      }, 100);
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'unset';
+      
+      // Restore focus to the previously focused element
+      if (previousActiveElement.current && !isOpen) {
+        previousActiveElement.current.focus();
+      }
     };
   }, [isOpen, onClose]);
 
@@ -58,7 +124,12 @@ export const Modal: React.FC<ModalProps> = ({
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className={`modal modal--${size} ${className}`}>
+      <div 
+        ref={modalRef}
+        className={`modal modal--${size} ${className}`}
+        tabIndex={-1}
+        role="document"
+      >
         <div className="modal__header">
           <h2 id="modal-title" className="modal__title">
             {title}

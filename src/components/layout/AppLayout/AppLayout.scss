@@ -66,7 +66,7 @@
     transition: color $transition-base, opacity $transition-base;
     border-radius: $radius-sm;
     padding: $space-1 $space-2;
-    margin: -$space-1 -$space-2;
+    margin: -$space-1 -$space-1;
     display: inline-block;
     
     &:hover {

@@ -127,11 +127,16 @@ export const NotificationsPage = () => {
         )}
 
         {notifications.length === 0 ? (
-          <div className="notifications-page__empty">
+          <div className="notifications-page__empty" role="status" aria-live="polite">
             <p>No notifications yet</p>
           </div>
         ) : (
-          <div className="notifications-page__list">
+          <section 
+            className="notifications-page__list"
+            aria-label="Notifications list"
+            role="region"
+          >
+            <h2 className="sr-only">Notification items</h2>
             {notifications
               .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
               .map((notification) => (
@@ -141,7 +146,7 @@ export const NotificationsPage = () => {
                   onMarkAsRead={handleMarkAsRead}
                 />
               ))}
-          </div>
+          </section>
         )}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { Suspense, createContext, useContext, useState, useCallback } from 'react';
-import { Outlet, useLocation, Link } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { LoadingSpinner } from '../../ui/LoadingSpinner';
 import { NotificationBell } from '../../ui/NotificationBell';
 import { ARIA_LABELS } from '../../../constants/accessibility';
@@ -21,11 +21,7 @@ export const useHeaderActions = () => {
 };
 
 export const AppLayout = () => {
-  const location = useLocation();
   const [headerActions, setHeaderActionsState] = useState<React.ReactNode>(null);
-  
-  // Hide notification bell on notifications page to avoid circular navigation
-  const showNotificationBell = location.pathname !== '/notifications';
 
   const setHeaderActions = useCallback((actions: React.ReactNode) => {
     setHeaderActionsState(actions);
@@ -56,7 +52,7 @@ export const AppLayout = () => {
             </h1>
             <nav className="app-layout__header-actions" role="navigation" aria-label={ARIA_LABELS.PRIMARY_NAVIGATION}>
               {headerActions}
-              {showNotificationBell && <NotificationBell />}
+              <NotificationBell />
             </nav>
           </div>
         </header>

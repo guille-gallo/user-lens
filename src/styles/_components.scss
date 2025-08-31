@@ -169,6 +169,12 @@
   word-break: break-word;
 }
 
+// Accessibility Utilities
+// ------------------------
+.sr-only {
+  @include sr-only;
+}
+
 // Layout Utilities
 // ----------------
 @mixin aspect-ratio($ratio: 1) {

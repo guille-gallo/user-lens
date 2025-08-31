@@ -307,13 +307,29 @@
     {
       "id": "1",
       "title": "New User Registration",
-      "message": "5 new users have registered today",
+      "message": "12 new users have registered today",
       "type": "info",
-      "timestamp": "2025-08-30T10:30:00Z",
-      "isRead": true
+      "timestamp": "2025-08-31T11:45:00Z",
+      "isRead": false
     },
     {
       "id": "2",
+      "title": "New User Registration",
+      "message": "8 new users registered in the last hour",
+      "type": "info",
+      "timestamp": "2025-08-31T10:30:00Z",
+      "isRead": false
+    },
+    {
+      "id": "3",
+      "title": "Top Company Ranking Update",
+      "message": "Monthly company performance rankings have been updated",
+      "type": "info",
+      "timestamp": "2025-08-31T09:15:00Z",
+      "isRead": true
+    },
+    {
+      "id": "4",
       "title": "System Maintenance",
       "message": "Scheduled maintenance will occur tonight at 2 AM EST",
       "type": "warning",
@@ -321,7 +337,7 @@
       "isRead": true
     },
     {
-      "id": "3",
+      "id": "5",
       "title": "Security Alert",
       "message": "Unusual login activity detected for user ID 42",
       "type": "error",
@@ -329,19 +345,59 @@
       "isRead": true
     },
     {
-      "id": "4",
-      "title": "Data Export Complete",
-      "message": "Your requested user data export is ready for download",
+      "id": "6",
+      "title": "New User Registration",
+      "message": "Premium user Sarah Mitchell has joined the platform",
       "type": "success",
-      "timestamp": "2025-08-30T07:20:00Z",
+      "timestamp": "2025-08-30T14:20:00Z",
       "isRead": true
     },
     {
-      "id": "5",
-      "title": "Company Update",
-      "message": "Romaguera-Crona has updated their business information",
+      "id": "7",
+      "title": "User Activity Milestone",
+      "message": "Platform reached 1,000 active users this month",
+      "type": "success",
+      "timestamp": "2025-08-30T12:30:00Z",
+      "isRead": true
+    },
+    {
+      "id": "8",
+      "title": "New User Registration",
+      "message": "3 enterprise users registered from Romaguera-Crona",
+      "type": "info",
+      "timestamp": "2025-08-30T11:15:00Z",
+      "isRead": true
+    },
+    {
+      "id": "9",
+      "title": "System Performance",
+      "message": "Database optimization completed - 25% faster queries",
+      "type": "success",
+      "timestamp": "2025-08-29T18:45:00Z",
+      "isRead": true
+    },
+    {
+      "id": "10",
+      "title": "New User Registration",
+      "message": "Weekend registration spike: 45 new users in 48 hours",
       "type": "info",
       "timestamp": "2025-08-29T16:30:00Z",
+      "isRead": true
+    },
+    {
+      "id": "11",
+      "title": "Feature Update",
+      "message": "New user analytics dashboard is now available",
+      "type": "info",
+      "timestamp": "2025-08-29T14:20:00Z",
+      "isRead": true
+    },
+    {
+      "id": "12",
+      "title": "Top Company Ranking Update",
+      "message": "Deckow-Crist moved up to #2 in user engagement metrics",
+      "type": "info",
+      "timestamp": "2025-08-29T10:15:00Z",
       "isRead": true
     }
   ]

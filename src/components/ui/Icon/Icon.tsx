@@ -7,8 +7,6 @@ import {
   AiOutlineClose,
   AiOutlineUser,
   AiOutlineHome,
-  AiOutlineWarning,
-  AiOutlineInfoCircle,
   AiOutlineSearch,
   AiOutlineArrowLeft,
   AiOutlineLink
@@ -18,7 +16,6 @@ import {
   FaChevronDown, 
   FaSort,
   FaColumns,
-  FaMapMarkerAlt,
   FaBuilding
 } from 'react-icons/fa';
 import { 
@@ -28,7 +25,8 @@ import {
   MdCheckCircle,
   MdError,
   MdWarning,
-  MdInfo
+  MdInfo,
+  MdNotifications
 } from 'react-icons/md';
 import './Icon.scss';
 
@@ -56,7 +54,8 @@ export type IconName =
   | 'close'
   | 'search'
   | 'arrow-left'
-  | 'external-link';
+  | 'external-link'
+  | 'bell';
 
 interface IconProps {
   name: IconName;
@@ -90,6 +89,7 @@ const iconMap = {
   search: AiOutlineSearch,
   'arrow-left': AiOutlineArrowLeft,
   'external-link': AiOutlineLink,
+  bell: MdNotifications,
 };
 
 export const Icon: React.FC<IconProps> = ({ name, size = 16, className, color }) => {
