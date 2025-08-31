@@ -2,13 +2,28 @@
 @import '../styles/_mixins';
 
 .notifications-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: $space-lg;
+  width: 100%;
+
+  &__header {
+    margin-bottom: $space-xl;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    margin: 0 0 $space-xs 0;
+  }
+
+  &__subtitle {
+    font-size: $font-size-lg;
+    color: $color-text-secondary;
+    margin: 0;
+  }
 
   &__actions {
     display: flex;
-    gap: $space-sm;
+    gap: $space-3;
     align-items: center;
   }
 
@@ -17,10 +32,6 @@
     justify-content: center;
     align-items: center;
     min-height: 200px;
-  }
-
-  &__content {
-    margin-top: $space-lg;
   }
 
   &__error {

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Icon } from '../Icon';
-import { ColumnToggle, type ColumnDefinition } from '../ColumnToggle';
+import { ColumnToggle } from '../ColumnToggle';
 import type { User } from '../../../services/userService';
-import { useDataTableColumns, useColumnVisibility } from '../../../hooks';
+import { useDataTableColumns, useColumnVisibility, useTableKeyboardNavigation } from '../../../hooks';
 import { BUTTON_LABELS, DATA_TABLE } from '../../../constants/ui';
-import { ARIA_ROLES } from '../../../constants/accessibility';
+import { ARIA_ROLES, TABLE_NAVIGATION } from '../../../constants/accessibility';
 import './DataTable.scss';
 
 type SortOrder = 'asc' | 'desc';
@@ -54,11 +54,22 @@ export const DataTable: React.FC<DataTableProps> = ({
     getVisibleColumns
   } = useColumnVisibility(allColumns);
 
-  // Mobile card expansion state
-  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
-
   // Get visible columns using hook
   const visibleColumns = getVisibleColumns();
+  
+  // Table keyboard navigation
+  const tableId = 'data-table-main';
+  const {
+    getCellProps,
+    announceRegionId
+  } = useTableKeyboardNavigation({
+    rowCount: users.length,
+    columnCount: visibleColumns.length + 1, // +1 for actions column
+    tableId
+  });
+
+  // Mobile card expansion state
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
 
   const toggleCardExpansion = (userId: number) => {
     setExpandedCards(prev => {
@@ -135,7 +146,13 @@ export const DataTable: React.FC<DataTableProps> = ({
     <div className={`data-table ${className}`}>
       <div className="data-table__toolbar">
         <div className="data-table__toolbar-left">
-          <span className="data-table__result-count">
+          <span 
+            className="data-table__result-count"
+            role="status"
+            aria-live="polite"
+            tabIndex={0}
+            aria-label={`Results summary: ${users.length} users total`}
+          >
             {users.length} users total
           </span>
         </div>
@@ -153,9 +170,15 @@ export const DataTable: React.FC<DataTableProps> = ({
       
       {/* Desktop Table View */}
       <div className="data-table__wrapper">
-        <table className="data-table__table" role={ARIA_ROLES.TABLE} aria-label={DATA_TABLE.USERS_DATA_TABLE}>
+        <table 
+          id={tableId}
+          className="data-table__table" 
+          role={ARIA_ROLES.TABLE} 
+          aria-label={DATA_TABLE.USERS_DATA_TABLE}
+          aria-describedby={announceRegionId}
+        >
           <caption className="data-table__caption">
-            User information table with {users.length} users. Use column headers to sort data.
+            User information table with {users.length} users. Use column headers to sort data. {TABLE_NAVIGATION.NAVIGATION_HINT}
           </caption>
           <thead>
             <tr role="row">
@@ -202,18 +225,39 @@ export const DataTable: React.FC<DataTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {users.map((user, rowIndex) => (
               <tr key={user.id} className="data-table__row" role="row">
-                {visibleColumns.map((column) => (
-                  <td 
-                    key={column.key} 
-                    className="data-table__cell"
-                    role="cell"
-                  >
-                    {getCellValue(user, column)}
-                  </td>
-                ))}
-                <td className="data-table__cell data-table__cell--actions" role="cell">
+                {visibleColumns.map((column, columnIndex) => {
+                  const cellContent = getCellValue(user, column);
+                  // Check if this column uses a render function (returns JSX) or plain text
+                  const hasRenderFunction = column.render !== undefined;
+                  
+                  return (
+                    <td 
+                      key={column.key} 
+                      className="data-table__cell data-table__cell--navigable"
+                      role="cell"
+                      {...getCellProps(rowIndex, columnIndex)}
+                    >
+                      {hasRenderFunction ? (
+                        // For rendered content (links, etc), use as-is but ensure it's in a container
+                        <div className="data-table__cell-content">
+                          {cellContent}
+                        </div>
+                      ) : (
+                        // For plain text content, wrap in span
+                        <span className="data-table__cell-content">
+                          {cellContent}
+                        </span>
+                      )}
+                    </td>
+                  );
+                })}
+                <td 
+                  className="data-table__cell data-table__cell--actions data-table__cell--navigable" 
+                  role="cell"
+                  {...getCellProps(rowIndex, visibleColumns.length)}
+                >
                   <div className="data-table__actions" role="group" aria-label={`Actions for ${user.name}`}>
                     {onView && (
                       <button
@@ -257,6 +301,16 @@ export const DataTable: React.FC<DataTableProps> = ({
             ))}
           </tbody>
         </table>
+        
+        {/* Screen reader announcements for navigation */}
+        <div 
+          id={announceRegionId}
+          className="data-table__announce"
+          aria-live="polite" 
+          aria-atomic="true"
+        >
+          {/* Dynamic announcements will be inserted here */}
+        </div>
       </div>
 
       {/* Mobile Card View */}

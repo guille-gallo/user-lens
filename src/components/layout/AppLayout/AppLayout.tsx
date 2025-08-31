@@ -1,7 +1,8 @@
 import { Suspense, createContext, useContext, useState, useCallback } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Link } from 'react-router-dom';
 import { LoadingSpinner } from '../../ui/LoadingSpinner';
 import { NotificationBell } from '../../ui/NotificationBell';
+import { ARIA_LABELS } from '../../../constants/accessibility';
 import './AppLayout.scss';
 
 interface HeaderContextType {
@@ -39,26 +40,33 @@ export const AppLayout = () => {
       <div className="app-layout">
         {/* Skip Navigation Link */}
         <a href="#main-content" className="app-layout__skip-link">
-          Skip to main content
+          {ARIA_LABELS.SKIP_TO_CONTENT}
         </a>
         
-        {showNotificationBell && (
-          <header className="app-layout__header" role="banner">
-            <div className="app-layout__header-content">
-              <h1 className="app-layout__title">User Lens</h1>
-              <nav className="app-layout__header-actions" role="navigation" aria-label="Primary navigation">
-                {headerActions}
-                <NotificationBell />
-              </nav>
-            </div>
-          </header>
-        )}
+        <header className="app-layout__header" role="banner">
+          <div className="app-layout__header-content">
+            <h1 className="app-layout__title">
+              <Link 
+                to="/" 
+                className="app-layout__title-link"
+                aria-label={ARIA_LABELS.HOME_NAVIGATION}
+              >
+                User Lens
+              </Link>
+            </h1>
+            <nav className="app-layout__header-actions" role="navigation" aria-label={ARIA_LABELS.PRIMARY_NAVIGATION}>
+              {headerActions}
+              {showNotificationBell && <NotificationBell />}
+            </nav>
+          </div>
+        </header>
         
         <main 
           id="main-content" 
           className="app-layout__content" 
           role="main"
           tabIndex={-1}
+          aria-label={ARIA_LABELS.MAIN_CONTENT}
         >
           <Suspense fallback={<LoadingSpinner />}>
             <Outlet />

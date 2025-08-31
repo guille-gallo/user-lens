@@ -28,6 +28,21 @@
     color: $color-text-secondary;
     font-weight: $font-weight-medium;
     white-space: nowrap;
+    border-radius: $border-radius-sm;
+    padding: $space-1 $space-2;
+    outline: none;
+    
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+      background-color: rgba($color-primary, 0.05);
+    }
+    
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+      background-color: rgba($color-primary, 0.05);
+    }
   }
 
   &__toolbar-right {
@@ -189,6 +204,41 @@
         padding: $space-2;
       }
     }
+
+    // Navigable cells for keyboard accessibility
+    &--navigable {
+      position: relative;
+      cursor: pointer;
+      
+      &:focus {
+        outline: 2px solid $color-primary;
+        outline-offset: -2px;
+        background-color: rgba($color-primary, 0.1);
+        z-index: 1;
+      }
+
+      &:focus-visible {
+        outline: 2px solid $color-primary;
+        outline-offset: -2px;
+        background-color: rgba($color-primary, 0.1);
+      }
+    }
+  }
+
+  &__cell-content {
+    display: block;
+    width: 100%;
+    
+    // Ensure links and interactive elements within cells remain accessible
+    a, button {
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+  // Screen reader announcements (visually hidden)
+  &__announce {
+    @include visually-hidden;
   }
 
   &__actions {

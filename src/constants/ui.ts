@@ -90,5 +90,6 @@ export const NOTIFICATIONS = {
 export const METRICS = {
   MOST_VALUABLE_COMPANY: 'Most Valuable Company',
   TOP_STOCK_PRICE: 'Top Stock Price',
-  COMPANY_RATING: 'Company Rating'
+  COMPANY_RATING: 'Company Rating',
+  VIEW_COMPANY_DETAILS: 'View company details'
 } as const;

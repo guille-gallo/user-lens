@@ -14,7 +14,11 @@ export const ARIA_LABELS = {
   ERROR_MESSAGE: 'Error message',
   SUCCESS_MESSAGE: 'Success message',
   SEARCH_RESULTS: 'Search results',
-  USER_ACTIONS: 'User actions'
+  USER_ACTIONS: 'User actions',
+  HOME_NAVIGATION: 'Go to home page',
+  PRIMARY_NAVIGATION: 'Primary navigation',
+  SKIP_TO_CONTENT: 'Skip to main content',
+  MAIN_CONTENT: 'Main content'
 } as const;
 
 /**
@@ -53,4 +57,15 @@ export const KEYBOARD_KEYS = {
   ARROW_DOWN: 'ArrowDown',
   ARROW_LEFT: 'ArrowLeft',
   ARROW_RIGHT: 'ArrowRight'
+} as const;
+
+/**
+ * Table navigation accessibility constants
+ */
+export const TABLE_NAVIGATION = {
+  CELL_TABINDEX_ACTIVE: 0,
+  CELL_TABINDEX_INACTIVE: -1,
+  ANNOUNCE_CELL_POSITION: 'Row {row}, Column {column}',
+  ANNOUNCE_CELL_CONTENT: '{content}. {position}',
+  NAVIGATION_HINT: 'Use arrow keys to navigate table cells, Tab to move to interactive elements'
 } as const;

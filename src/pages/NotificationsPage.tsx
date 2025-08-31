@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiCheck, FiRefreshCw, FiArrowLeft } from 'react-icons/fi';
-import { Header } from '../components/layout/Header';
+import { useHeaderActions } from '../components/layout';
 import { Button } from '../components/ui/Button';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { NotificationCard } from '../components/ui/NotificationCard';
 import { useNotificationStore } from '../store/notificationStore';
+import { useDocumentTitle } from '../hooks';
 import './NotificationsPage.scss';
 
 /**
@@ -13,6 +13,11 @@ import './NotificationsPage.scss';
  */
 export const NotificationsPage = () => {
   const navigate = useNavigate();
+  const { setHeaderActions, clearHeaderActions } = useHeaderActions();
+  
+  // Set document title
+  useDocumentTitle('Notifications');
+  
   const {
     notifications,
     summary,
@@ -32,70 +37,69 @@ export const NotificationsPage = () => {
     fetchSummary();
   }, [fetchNotifications, fetchSummary]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     navigate('/');
-  };
+  }, [navigate]);
 
-  const handleMarkAsRead = async (notificationId: number) => {
+  const handleMarkAsRead = useCallback(async (notificationId: number) => {
     await markAsRead(notificationId);
-  };
+  }, [markAsRead]);
 
-  const handleMarkAllAsRead = async () => {
+  const handleMarkAllAsRead = useCallback(async () => {
     if (summary.unread === 0) return;
     
     setIsMarkingAllRead(true);
     await markAllAsRead();
     setIsMarkingAllRead(false);
-  };
+  }, [summary.unread, markAllAsRead]);
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     clearError();
     fetchNotifications();
     fetchSummary();
-  };
+  }, [clearError, fetchNotifications, fetchSummary]);
 
-  const headerActions = (
-    <div className="notifications-page__actions">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleBack}
-        icon={<FiArrowLeft />}
-      >
-        Back to Users
-      </Button>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleRefresh}
-        disabled={isLoading}
-        icon={<FiRefreshCw />}
-      >
-        Refresh
-      </Button>
-      
-      {summary.unread > 0 && (
+  // Set header actions
+  useEffect(() => {
+    const headerActions = (
+      <div className="notifications-page__actions">
         <Button
-          variant="primary"
-          size="sm"
-          onClick={handleMarkAllAsRead}
-          disabled={isMarkingAllRead}
-          icon={<FiCheck />}
+          variant="outline"
+          onClick={handleRefresh}
+          disabled={isLoading}
         >
-          {isMarkingAllRead ? 'Marking...' : `Mark all read (${summary.unread})`}
+          Refresh
         </Button>
-      )}
-    </div>
-  );
+        
+        <Button
+          variant="outline"
+          onClick={handleBack}
+        >
+          ← Back to Users
+        </Button>
+        
+        {summary.unread > 0 && (
+          <Button
+            variant="primary"
+            onClick={handleMarkAllAsRead}
+            disabled={isMarkingAllRead}
+          >
+            {isMarkingAllRead ? 'Marking...' : `Mark all read (${summary.unread})`}
+          </Button>
+        )}
+      </div>
+    );
+
+    setHeaderActions(headerActions);
+    
+    return () => {
+      clearHeaderActions();
+    };
+  }, [handleBack, handleRefresh, handleMarkAllAsRead, isLoading, isMarkingAllRead, summary.unread, setHeaderActions, clearHeaderActions]);
 
   if (isLoading && notifications.length === 0) {
     return (
       <div className="notifications-page">
-        <Header
-          title="Notifications"
-          subtitle="Stay updated with the latest information"
-        />
         <div className="notifications-page__loading">
           <LoadingSpinner />
         </div>
@@ -105,17 +109,18 @@ export const NotificationsPage = () => {
 
   return (
     <div className="notifications-page">
-      <Header
-        title="Notifications"
-        subtitle={`${summary.total} total${summary.unread > 0 ? `, ${summary.unread} unread` : ''}`}
-        actions={headerActions}
-      />
+      <div className="notifications-page__header">
+        <h1 className="notifications-page__title">Notifications</h1>
+        <p className="notifications-page__subtitle">
+          {`${summary.total} total${summary.unread > 0 ? `, ${summary.unread} unread` : ''}`}
+        </p>
+      </div>
 
       <div className="notifications-page__content">
         {error && (
           <div className="notifications-page__error">
             <p>Failed to load notifications: {error}</p>
-            <Button onClick={handleRefresh} variant="outline" size="sm">
+            <Button onClick={handleRefresh} variant="outline" size="small">
               Try Again
             </Button>
           </div>

@@ -37,7 +37,7 @@ export const UserDetailPage: React.FC = () => {
   const { toast, showSuccess, hideToast } = useToast();
 
   // Set document title based on user data
-  useDocumentTitle(user ? `${user.name} Details` : 'User Details');
+  useDocumentTitle('Details');
 
   useEffect(() => {
     if (!id) return;

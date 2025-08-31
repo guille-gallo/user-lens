@@ -34,16 +34,9 @@
   }
 
   &__content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 $space-6;
     width: 100%;
     //ensure content doesn't overflow
     overflow-x: hidden;
-    
-    @include respond-to(md) {
-      padding: 0 $space-6;
-    }
   }
 
   &__header-actions {

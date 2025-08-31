@@ -36,21 +36,52 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
     return val;
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (onSubtitleClick && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+      onSubtitleClick();
+    }
+  };
+
+  const ariaLabel = subtitle 
+    ? `${title}: ${formatValue(value)}, ${subtitle}${onSubtitleClick ? ', clickable' : ''}`
+    : `${title}: ${formatValue(value)}`;
+
   return (
-    <div className={`metrics-card metrics-card--${variant} ${className}`}>
+    <div 
+      className={`metrics-card metrics-card--${variant} ${className}`}
+      role={onSubtitleClick ? "button" : "region"}
+      aria-label={ariaLabel}
+      tabIndex={0}
+      onClick={onSubtitleClick}
+      onKeyDown={handleKeyDown}
+    >
       <div className="metrics-card__header">
-        <Icon name={icon as any} size={20} className="metrics-card__icon" />
-        <h3 className="metrics-card__title">{title}</h3>
+        <Icon name={icon as any} size={20} className="metrics-card__icon" aria-hidden="true" />
+        <h3 
+          id={`metrics-card-title-${title.replace(/\s+/g, '-').toLowerCase()}`}
+          className="metrics-card__title"
+        >
+          {title}
+        </h3>
       </div>
       <div className="metrics-card__content">
-        <div className="metrics-card__value">{formatValue(value)}</div>
+        <div className="metrics-card__value" aria-label={`${title}: ${formatValue(value)}`}>
+          {formatValue(value)}
+        </div>
         {subtitle && (
-          <div 
-            className={`metrics-card__subtitle ${onSubtitleClick ? 'metrics-card__subtitle--clickable' : ''}`}
-            onClick={onSubtitleClick}
-          >
-            {subtitle}
-          </div>
+          onSubtitleClick ? (
+            <span
+              className="metrics-card__subtitle metrics-card__subtitle--clickable"
+              aria-hidden="true"
+            >
+              {subtitle}
+            </span>
+          ) : (
+            <div className="metrics-card__subtitle">
+              {subtitle}
+            </div>
+          )
         )}
       </div>
     </div>

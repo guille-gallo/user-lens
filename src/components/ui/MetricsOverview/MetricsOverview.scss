@@ -2,12 +2,17 @@
 @import '../../../styles/_mixins';
 
 .metrics-overview {
-  margin-bottom: $space-lg;
+  margin-bottom: $space-xl;
+  padding: $space-lg;
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   &__cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: $space-md;
+    gap: $space-lg;
     width: 100%;
 
     @include respond-to(tablet) {
@@ -16,14 +21,14 @@
 
     @include respond-below(mobile) {
       grid-template-columns: 1fr;
-      gap: $space-sm;
+      gap: $space-md;
     }
   }
 
   &__loading {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: $space-md;
+    gap: $space-lg;
     width: 100%;
 
     @include respond-to(tablet) {
@@ -32,7 +37,7 @@
 
     @include respond-below(mobile) {
       grid-template-columns: 1fr;
-      gap: $space-sm;
+      gap: $space-md;
     }
   }
 
