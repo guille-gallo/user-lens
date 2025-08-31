@@ -30,6 +30,7 @@ import {
   MdWarning,
   MdInfo
 } from 'react-icons/md';
+import './Icon.scss';
 
 export type IconName = 
   | 'edit' 
@@ -98,17 +99,14 @@ export const Icon: React.FC<IconProps> = ({ name, size = 16, className, color })
     console.warn(`Icon "${name}" not found`);
     return null;
   }
+
+  const combinedClassName = className ? `icon ${className}` : 'icon';
   
   return (
     <IconComponent 
       size={size} 
-      className={className}
-      style={{ 
-        color,
-        display: 'inline-block',
-        flexShrink: 0,
-        verticalAlign: 'middle'
-      }}
+      className={combinedClassName}
+      style={color ? { color } : undefined}
     />
   );
 };

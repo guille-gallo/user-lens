@@ -1,1 +1,1 @@
-export { AppLayout } from './AppLayout';
+export { AppLayout, useHeaderActions } from './AppLayout';

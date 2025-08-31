@@ -102,7 +102,7 @@ export const DataTable: React.FC<DataTableProps> = ({
     {
       key: 'address.street',
       label: 'Street',
-      sortable: false,
+      sortable: true,
       essential: false,
       defaultVisible: false,
       render: (_, user: User) => `${user.address.street} ${user.address.suite}`
@@ -120,7 +120,7 @@ export const DataTable: React.FC<DataTableProps> = ({
       label: 'Zip Code',
       sortable: true,
       essential: false,
-      defaultVisible: false,
+      defaultVisible: true,
       render: (_, user: User) => user.address.zipcode
     },
     {
@@ -142,7 +142,7 @@ export const DataTable: React.FC<DataTableProps> = ({
     {
       key: 'company.catchPhrase',
       label: 'Catch Phrase',
-      sortable: false,
+      sortable: true,
       essential: false,
       defaultVisible: false,
       render: (_, user: User) => `"${user.company.catchPhrase}"`
@@ -150,9 +150,9 @@ export const DataTable: React.FC<DataTableProps> = ({
     {
       key: 'company.bs',
       label: 'Business',
-      sortable: false,
+      sortable: true,
       essential: false,
-      defaultVisible: false,
+      defaultVisible: true,
       render: (_, user: User) => user.company.bs
     }
   ], []);
@@ -305,6 +305,8 @@ export const DataTable: React.FC<DataTableProps> = ({
                       className="data-table__sort-button"
                       onClick={() => handleSort(column.key)}
                       aria-label={`Sort by ${column.label}`}
+                      data-sortable="true"
+                      data-field={column.key}
                     >
                       <span>{column.label}</span>
                       <span className="data-table__sort-icon" aria-hidden="true">
@@ -312,7 +314,7 @@ export const DataTable: React.FC<DataTableProps> = ({
                       </span>
                     </button>
                   ) : (
-                    <span>{column.label}</span>
+                    <span data-sortable="false">{column.label}</span>
                   )}
                 </th>
               ))}

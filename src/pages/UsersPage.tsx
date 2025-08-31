@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
-import { Header } from '../components/layout/Header';
+import { useCompanyMetricsStore } from '../store/companyMetricsStore';
 import { 
   SearchBar, 
   Button, 
   DataTable, 
   ConfirmDialog, 
   Toast, 
-  UserForm 
+  UserForm,
+  MetricsOverview 
 } from '../components/ui';
 import type { User } from '../services/userService';
 import './UsersPage.scss';
@@ -35,6 +36,14 @@ export const UsersPage: React.FC = () => {
     getFilteredAndSortedUsers
   } = useUserStore();
 
+  // Company metrics store
+  const {
+    summary: metricsSummary,
+    loading: metricsLoading,
+    error: metricsError,
+    fetchCompanyMetrics
+  } = useCompanyMetricsStore();
+
   // State for modals
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -52,6 +61,11 @@ export const UsersPage: React.FC = () => {
       fetchUsers(); // Only fetch if no cached data
     }
   }, [fetchUsers, users.length]);
+
+  // Fetch company metrics on component mount
+  useEffect(() => {
+    fetchCompanyMetrics();
+  }, [fetchCompanyMetrics]);
 
   // Get filtered and sorted users
   const displayUsers = getFilteredAndSortedUsers();
@@ -130,11 +144,6 @@ export const UsersPage: React.FC = () => {
 
   return (
     <div className="users-page">
-      <Header
-        title="User Management"
-        subtitle={`Managing ${users.length} users from JSONPlaceholder API`}
-      />
-
       <div className="users-page__content">
         {error && (
           <div className="users-page__error" role="alert">
@@ -149,6 +158,13 @@ export const UsersPage: React.FC = () => {
             </Button>
           </div>
         )}
+
+        {/* Company Metrics Overview */}
+        <MetricsOverview
+          summary={metricsSummary}
+          loading={metricsLoading}
+          error={metricsError}
+        />
 
         <div className="users-page__controls">
           <SearchBar

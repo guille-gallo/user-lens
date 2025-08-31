@@ -50,6 +50,10 @@ $color-border-light: $color-gray-200;
 $color-border-medium: $color-gray-300;
 $color-border-dark: $color-gray-400;
 
+// Surface Colors (for cards, modals, etc.)
+$color-surface: $color-white;
+$color-border: $color-border-light;
+
 // Typography
 // -----------
 $font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -91,6 +95,13 @@ $space-12: 3rem;    // 48px
 $space-16: 4rem;    // 64px
 $space-20: 5rem;    // 80px
 
+// Short aliases for common spacing
+$space-xs: $space-2;   // 8px
+$space-sm: $space-3;   // 12px
+$space-md: $space-4;   // 16px
+$space-lg: $space-6;   // 24px
+$space-xl: $space-8;   // 32px
+
 // Border Radius
 // -------------
 $radius-none: 0;
@@ -99,6 +110,11 @@ $radius-base: 0.5rem;  // 8px
 $radius-lg: 0.75rem;   // 12px
 $radius-xl: 1rem;      // 16px
 $radius-full: 9999px;
+
+// Short aliases for border radius
+$border-radius-sm: $radius-sm;
+$border-radius-md: $radius-base;
+$border-radius-lg: $radius-lg;
 
 // Shadows
 // -------

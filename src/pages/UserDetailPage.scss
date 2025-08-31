@@ -12,6 +12,27 @@
     min-height: 50vh;
   }
 
+  &__error {
+    @include flex-center;
+    flex-direction: column;
+    min-height: 50vh;
+    text-align: center;
+    padding: $space-8;
+    
+    h1 {
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
+      color: $color-text-primary;
+      margin-bottom: $space-4;
+    }
+    
+    p {
+      font-size: $font-size-lg;
+      color: $color-text-secondary;
+      margin: 0;
+    }
+  }
+
   &__content {
     max-width: 1200px;
     margin: 0 auto;

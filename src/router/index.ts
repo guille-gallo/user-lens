@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { UsersPage } from '../pages/UsersPage';
 import UserDetailPage from '../pages/UserDetailPage.tsx';
+import { NotificationsPage } from '../pages/NotificationsPage';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 
 /**
@@ -10,6 +11,7 @@ import { ErrorBoundary } from '../components/ui/ErrorBoundary';
  * Routes:
  * - / - Users list page
  * - /users/:id - Individual user detail page
+ * - /notifications - Notifications page
  */
 export const router = createBrowserRouter([
   {
@@ -24,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path: 'users/:id',
         Component: UserDetailPage,
+      },
+      {
+        path: 'notifications',
+        Component: NotificationsPage,
       }
     ]
   },

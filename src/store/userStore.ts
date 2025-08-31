@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '../services/userService';
-import { userService } from '../services/userService';
+import { dataService } from '../services/dataService';
 
 interface UserState {
   users: User[];
@@ -52,7 +52,7 @@ export const useUserStore = create<UserState>()(
       fetchUsers: async () => {
         set({ loading: true, error: null });
         try {
-          const users = await userService.getUsers();
+          const users = await dataService.getUsers();
           set({ users, loading: false });
         } catch (error) {
           set({ error: (error as Error).message, loading: false });
@@ -62,7 +62,7 @@ export const useUserStore = create<UserState>()(
       fetchUserById: async (id) => {
         set({ loading: true, error: null });
         try {
-          const user = await userService.getUserById(id);
+          const user = await dataService.getUserById(id);
           set({ selectedUser: user, loading: false });
         } catch (error) {
           set({ error: (error as Error).message, loading: false });
@@ -72,7 +72,7 @@ export const useUserStore = create<UserState>()(
       createUser: async (userData) => {
         set({ loading: true, error: null });
         try {
-          const newUser = await userService.createUser(userData);
+          const newUser = await dataService.createUser(userData);
           const currentUsers = get().users;
           const newId = Math.max(...currentUsers.map(u => u.id), 0) + 1;
           const userWithId = { ...newUser, id: newId };
@@ -85,7 +85,7 @@ export const useUserStore = create<UserState>()(
       updateUser: async (id, userData) => {
         set({ loading: true, error: null });
         try {
-          const updatedUser = await userService.updateUser(id, userData);
+          const updatedUser = await dataService.updateUser(id, userData);
           const currentUsers = get().users;
           const updatedUsers = currentUsers.map(user => 
             user.id === id ? { ...user, ...updatedUser } : user
@@ -116,7 +116,7 @@ export const useUserStore = create<UserState>()(
         }
 
         try {
-          await userService.deleteUser(id);
+          await dataService.deleteUser(id);
         } catch (error) {
           // rollback the optimistic update on error
           set({ 

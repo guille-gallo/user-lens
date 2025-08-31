@@ -1,0 +1,70 @@
+@import '../styles/_tokens';
+@import '../styles/_mixins';
+
+.notifications-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $space-lg;
+
+  &__actions {
+    display: flex;
+    gap: $space-sm;
+    align-items: center;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+
+  &__content {
+    margin-top: $space-lg;
+  }
+
+  &__error {
+    background: rgba($color-danger, 0.1);
+    border: 1px solid rgba($color-danger, 0.3);
+    border-radius: $border-radius-md;
+    padding: $space-md;
+    margin-bottom: $space-lg;
+    text-align: center;
+
+    p {
+      color: $color-danger;
+      margin: 0 0 $space-sm 0;
+    }
+  }
+
+  &__empty {
+    text-align: center;
+    padding: $space-xl;
+    color: $color-text-secondary;
+
+    p {
+      font-size: $font-size-lg;
+      margin: 0;
+    }
+  }
+
+  &__list {
+    .notification-card:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  @include respond-below(md) {
+    padding: $space-md;
+
+    &__actions {
+      flex-direction: column;
+      align-items: stretch;
+      gap: $space-xs;
+
+      .button {
+        justify-content: center;
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
-import { Header } from '../components/layout';
+import { useHeaderActions } from '../components/layout';
 import { Button, LoadingSpinner, Toast, EditableField, Icon } from '../components/ui';
 import type { User } from '../services/userService';
 import './UserDetailPage.scss';
@@ -12,6 +12,7 @@ import './UserDetailPage.scss';
 export const UserDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { setHeaderActions, clearHeaderActions } = useHeaderActions();
   
   const {
     users,
@@ -54,9 +55,28 @@ export const UserDetailPage: React.FC = () => {
     }
   }, [users, id]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     navigate('/');
-  };
+  }, [navigate]);
+
+  // Set header actions
+  useEffect(() => {
+    const headerActions = (
+      <Button
+        variant="outline"
+        onClick={handleBack}
+      >
+        ← Back to Users
+      </Button>
+    );
+    
+    setHeaderActions(headerActions);
+    
+    // Cleanup when component unmounts
+    return () => {
+      clearHeaderActions();
+    };
+  }, [setHeaderActions, clearHeaderActions, handleBack]);
 
   const handleEditField = (field: string) => {
     setEditingField(field);
@@ -122,36 +142,16 @@ export const UserDetailPage: React.FC = () => {
   if (error || !user) {
     return (
       <div className="user-detail-page">
-        <Header
-          title="User Not Found"
-          subtitle={error || "The requested user could not be found"}
-          actions={
-            <Button variant="outline" onClick={handleBack}>
-              ← Back to Users
-            </Button>
-          }
-        />
+        <div className="user-detail-page__error">
+          <h1>User Not Found</h1>
+          <p>{error || "The requested user could not be found"}</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="user-detail-page">
-      <Header
-        title={user.name}
-        subtitle={`@${user.username} • ${user.company.name}`}
-        actions={
-          <div className="user-detail-page__header-actions">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-            >
-              ← Back to Users
-            </Button>
-          </div>
-        }
-      />
-
       <div className="user-detail-page__content">
         <div className="user-detail-page__grid">
           {/* Personal Information */}
@@ -164,7 +164,7 @@ export const UserDetailPage: React.FC = () => {
                   className="user-detail-page__avatar"
                 />
                 <div className="user-detail-page__username">
-                  {user.username}
+                  @{user.username}
                 </div>
               </div>
               <div className="user-detail-page__fields">

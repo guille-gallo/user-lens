@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "json-server": "json-server --watch db.json --port 3001",
+    "dev:full": "concurrently \"npm run dev\" \"npm run json-server\""
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -30,12 +32,14 @@
     "@types/react-dom": "^19.1.7",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^5.0.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "jest": "^30.1.1",
     "jest-environment-jsdom": "^30.1.1",
+    "json-server": "^1.0.0-beta.3",
     "ts-jest": "^29.4.1",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",

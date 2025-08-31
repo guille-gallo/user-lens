@@ -130,7 +130,9 @@
     @include interactive-focus;
   }
 
-    &__sort-icon {
+  &__sort-icon {
+    display: inline-flex;
+    align-items: center;
     opacity: 0.6;
     transition: opacity $transition-base;
     margin-left: 4px;

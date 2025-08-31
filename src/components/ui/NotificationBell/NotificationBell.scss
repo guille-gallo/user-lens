@@ -1,0 +1,55 @@
+@import '../../../styles/_tokens';
+@import '../../../styles/_mixins';
+
+.notification-bell {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $space-sm;
+  border-radius: $border-radius-sm;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $color-gray-50;
+  }
+
+  &:focus {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  &__icon-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  &__icon {
+    font-size: $font-size-lg;
+    color: $color-text-secondary;
+    transition: color 0.2s ease;
+
+    .notification-bell:hover & {
+      color: $color-text-primary;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: $color-danger;
+    color: white;
+    font-size: 10px;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 8px;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}

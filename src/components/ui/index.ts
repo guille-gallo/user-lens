@@ -15,4 +15,8 @@ export { FormField } from './FormField';
 export { UserForm } from './UserForm';
 export { UserDetail } from './UserDetail';
 export { ColumnToggle } from './ColumnToggle';
+export { MetricsCard } from './MetricsCard';
+export { MetricsOverview } from './MetricsOverview';
+export { NotificationBell } from './NotificationBell';
+export { NotificationCard } from './NotificationCard';
 export type { ColumnDefinition } from './ColumnToggle';
