@@ -7,6 +7,26 @@
   flex-direction: column;
   background-color: $color-bg-secondary;
 
+  &__skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: $color-primary;
+    color: $color-white;
+    padding: $space-2 $space-4;
+    border-radius: $radius-base;
+    font-weight: $font-weight-semibold;
+    text-decoration: none;
+    z-index: $z-modal;
+    transition: top $transition-base;
+    
+    &:focus {
+      top: 6px;
+      outline: 2px solid $color-warning;
+      outline-offset: 2px;
+    }
+  }
+
   &__header {
     background-color: $color-surface;
     border-bottom: 1px solid $color-border;

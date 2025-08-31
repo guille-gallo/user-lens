@@ -88,6 +88,20 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
     //the dropdown will stay open until user clicks outside or closes manually
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent, columnKey: string, essential?: boolean) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      handleToggle(columnKey, essential);
+    }
+  };
+
+  const handleToggleAllKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      handleToggleAll();
+    }
+  };
+
   const handleDropdownClick = (e: React.MouseEvent) => {
     // prevent dropdown from closing when clicking inside it
     e.stopPropagation();
@@ -135,6 +149,7 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
                 className="column-toggle__checkbox"
                 checked={allNonEssentialVisible}
                 onChange={handleToggleAll}
+                onKeyDown={handleToggleAllKeyDown}
                 disabled={nonEssentialColumns.length === 0}
               />
               <span className="column-toggle__checkmark">
@@ -156,6 +171,7 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
                   type="checkbox"
                   checked={column.visible}
                   onChange={() => handleToggle(column.key, column.essential)}
+                  onKeyDown={(e) => handleKeyDown(e, column.key, column.essential)}
                   disabled={column.essential}
                   className="column-toggle__checkbox"
                 />

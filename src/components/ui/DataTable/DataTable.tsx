@@ -295,18 +295,35 @@ export const DataTable: React.FC<DataTableProps> = ({
       
       {/* Desktop Table View */}
       <div className="data-table__wrapper">
-        <table className="data-table__table" role="table">
+        <table className="data-table__table" role="table" aria-label="Users data table">
+          <caption className="data-table__caption">
+            User information table with {users.length} users. Use column headers to sort data.
+          </caption>
           <thead>
-            <tr>
+            <tr role="row">
               {visibleColumns.map((column) => (
-                <th key={column.key} className="data-table__header-cell">
+                <th 
+                  key={column.key} 
+                  className="data-table__header-cell"
+                  role="columnheader"
+                  aria-sort={
+                    sortField === column.key 
+                      ? sortOrder === 'asc' ? 'ascending' : 'descending'
+                      : column.sortable ? 'none' : undefined
+                  }
+                >
                   {column.sortable ? (
                     <button
                       className="data-table__sort-button"
                       onClick={() => handleSort(column.key)}
-                      aria-label={`Sort by ${column.label}`}
+                      aria-label={`Sort by ${column.label}${
+                        sortField === column.key 
+                          ? `, currently ${sortOrder === 'asc' ? 'ascending' : 'descending'}` 
+                          : ''
+                      }`}
                       data-sortable="true"
                       data-field={column.key}
+                      type="button"
                     >
                       <span>{column.label}</span>
                       <span className="data-table__sort-icon" aria-hidden="true">
@@ -318,27 +335,35 @@ export const DataTable: React.FC<DataTableProps> = ({
                   )}
                 </th>
               ))}
-              <th className="data-table__header-cell data-table__header-cell--actions">
+              <th 
+                className="data-table__header-cell data-table__header-cell--actions"
+                role="columnheader"
+              >
                 Actions
               </th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user.id} className="data-table__row">
+            {users.map((user, index) => (
+              <tr key={user.id} className="data-table__row" role="row">
                 {visibleColumns.map((column) => (
-                  <td key={column.key} className="data-table__cell">
+                  <td 
+                    key={column.key} 
+                    className="data-table__cell"
+                    role="cell"
+                  >
                     {getCellValue(user, column)}
                   </td>
                 ))}
-                <td className="data-table__cell data-table__cell--actions">
-                  <div className="data-table__actions">
+                <td className="data-table__cell data-table__cell--actions" role="cell">
+                  <div className="data-table__actions" role="group" aria-label={`Actions for ${user.name}`}>
                     {onView && (
                       <button
                         className="data-table__action-btn data-table__action-btn--view"
                         onClick={() => onView(user)}
-                        aria-label={`View ${user.name} details`}
+                        aria-label={`View details for ${user.name}`}
                         title="View details"
+                        type="button"
                       >
                         <Icon name="eye" size={16} />
                         <span className="data-table__action-text">View</span>
@@ -350,6 +375,7 @@ export const DataTable: React.FC<DataTableProps> = ({
                         onClick={() => onEdit(user)}
                         aria-label={`Edit ${user.name}`}
                         title="Edit user"
+                        type="button"
                       >
                         <Icon name="edit" size={16} />
                         <span className="data-table__action-text">Edit</span>
@@ -361,6 +387,7 @@ export const DataTable: React.FC<DataTableProps> = ({
                         onClick={() => onDelete(user)}
                         aria-label={`Delete ${user.name}`}
                         title="Delete user"
+                        type="button"
                       >
                         <Icon name="trash" size={16} />
                         <span className="data-table__action-text">Delete</span>

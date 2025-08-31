@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Icon } from '../Icon';
 import './EditableField.scss';
 
@@ -17,7 +17,7 @@ interface EditableFieldProps {
 export const EditableField: React.FC<EditableFieldProps> = ({
   label,
   value,
-  field: _field, // unused but kept for potential future use
+  field,
   isEditing,
   onEdit,
   onSave,
@@ -26,10 +26,22 @@ export const EditableField: React.FC<EditableFieldProps> = ({
   disabled = false
 }) => {
   const [editValue, setEditValue] = useState(value);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const fieldId = `editable-field-${field}`;
+  const editButtonId = `edit-${field}`;
+  const saveButtonId = `save-${field}`;
+  const cancelButtonId = `cancel-${field}`;
 
   useEffect(() => {
     setEditValue(value);
   }, [value]);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
 
   const handleSave = () => {
     onSave(editValue);
@@ -37,38 +49,57 @@ export const EditableField: React.FC<EditableFieldProps> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       handleSave();
     } else if (e.key === 'Escape') {
+      e.preventDefault();
       onCancel();
     }
   };
 
   return (
     <div className="editable-field">
-      <label className="editable-field__label">{label}</label>
+      <label htmlFor={fieldId} className="editable-field__label">
+        {label}
+      </label>
       <div className="editable-field__content">
         {isEditing ? (
-          <div className="editable-field__input-wrapper">
+          <div className="editable-field__input-wrapper" role="group" aria-labelledby={fieldId}>
             <input
+              ref={inputRef}
+              id={fieldId}
               type={type}
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={handleKeyDown}
               className="editable-field__input"
-              autoFocus
+              aria-describedby={`${fieldId}-instructions`}
             />
+            <div 
+              id={`${fieldId}-instructions`} 
+              className="editable-field__instructions"
+              aria-live="polite"
+            >
+              Press Enter to save, Escape to cancel
+            </div>
             <div className="editable-field__actions">
               <button
+                id={saveButtonId}
                 onClick={handleSave}
                 className="editable-field__save"
+                aria-label={`Save changes to ${label}`}
                 title="Save changes"
+                type="button"
               >
                 <Icon name="check" size={18} />
               </button>
               <button
+                id={cancelButtonId}
                 onClick={onCancel}
                 className="editable-field__cancel"
+                aria-label={`Cancel editing ${label}`}
                 title="Cancel editing"
+                type="button"
               >
                 <Icon name="x" size={18} />
               </button>
@@ -76,12 +107,21 @@ export const EditableField: React.FC<EditableFieldProps> = ({
           </div>
         ) : (
           <div className="editable-field__value-wrapper">
-            <span className="editable-field__value">{value}</span>
+            <span 
+              id={fieldId}
+              className="editable-field__value"
+              aria-live="polite"
+            >
+              {value}
+            </span>
             {!disabled && (
               <button
+                id={editButtonId}
                 onClick={onEdit}
                 className="editable-field__edit"
-                title="Edit"
+                aria-label={`Edit ${label}`}
+                title={`Edit ${label}`}
+                type="button"
               >
                 <Icon name="edit3" size={16} />
               </button>

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { useHeaderActions } from '../components/layout';
+import { useDocumentTitle } from '../hooks';
 import { Button, LoadingSpinner, Toast, EditableField, Icon } from '../components/ui';
 import type { User } from '../services/userService';
 import './UserDetailPage.scss';
@@ -27,6 +28,9 @@ export const UserDetailPage: React.FC = () => {
   const [editValues, setEditValues] = useState<Partial<User>>({});
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Set document title based on user data
+  useDocumentTitle(user ? `${user.name} Details` : 'User Details');
 
   useEffect(() => {
     if (!id) return;

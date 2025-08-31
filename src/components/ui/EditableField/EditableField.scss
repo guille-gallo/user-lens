@@ -89,6 +89,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-direction: column;
   }
   
   &__input {
@@ -100,16 +101,25 @@
     background-color: $color-white;
     outline: none;
     transition: border-color 0.2s ease;
+    width: 100%;
     
     &:focus {
       border-color: $color-primary-dark;
       box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
     }
   }
+
+  &__instructions {
+    @include visually-hidden;
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+    margin-top: $space-1;
+  }
   
   &__actions {
     display: flex;
     gap: 4px;
+    margin-top: $space-2;
   }
   
   &__save {

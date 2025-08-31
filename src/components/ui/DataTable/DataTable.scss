@@ -94,6 +94,15 @@
     }
   }
 
+  &__caption {
+    @include visually-hidden;
+    caption-side: top;
+    padding: $space-4;
+    text-align: left;
+    font-weight: $font-weight-semibold;
+    color: $color-text-secondary;
+  }
+
   &__header-cell {
     @include table-header;
     position: sticky;

@@ -37,19 +37,29 @@ export const AppLayout = () => {
   return (
     <HeaderContext.Provider value={{ setHeaderActions, clearHeaderActions }}>
       <div className="app-layout">
+        {/* Skip Navigation Link */}
+        <a href="#main-content" className="app-layout__skip-link">
+          Skip to main content
+        </a>
+        
         {showNotificationBell && (
-          <header className="app-layout__header">
+          <header className="app-layout__header" role="banner">
             <div className="app-layout__header-content">
               <h1 className="app-layout__title">User Lens</h1>
-              <div className="app-layout__header-actions">
+              <nav className="app-layout__header-actions" role="navigation" aria-label="Primary navigation">
                 {headerActions}
                 <NotificationBell />
-              </div>
+              </nav>
             </div>
           </header>
         )}
         
-        <main className="app-layout__content">
+        <main 
+          id="main-content" 
+          className="app-layout__content" 
+          role="main"
+          tabIndex={-1}
+        >
           <Suspense fallback={<LoadingSpinner />}>
             <Outlet />
           </Suspense>

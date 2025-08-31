@@ -138,8 +138,11 @@
     padding: $space-3 $space-4;
     cursor: pointer;
     transition: background-color $transition-base;
+    position: relative;
     
     &:hover:not(.column-toggle__item--essential) {
+      background-color: $color-bg-tertiary;
+      
       .column-toggle__text {
         color: $color-primary-light;
       }
@@ -158,7 +161,14 @@
   &__checkbox {
     position: absolute;
     opacity: 0;
-    pointer-events: none;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    z-index: 1;
+    
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
 
   &__checkmark {
@@ -186,6 +196,12 @@
     }
     
     .column-toggle__checkbox:focus + & {
+      outline: 2px solid $color-secondary-light;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 4px rgba($color-secondary-light, 0.2);
+    }
+    
+    .column-toggle__item:focus-within & {
       outline: 2px solid $color-secondary-light;
       outline-offset: 2px;
     }

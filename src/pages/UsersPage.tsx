@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { useCompanyMetricsStore } from '../store/companyMetricsStore';
+import { useDocumentTitle } from '../hooks';
 import { 
   SearchBar, 
   Button, 
@@ -19,6 +20,9 @@ import './UsersPage.scss';
  */
 export const UsersPage: React.FC = () => {
   const navigate = useNavigate();
+  
+  // Set document title for accessibility
+  useDocumentTitle('Users');
   
   const {
     users,
