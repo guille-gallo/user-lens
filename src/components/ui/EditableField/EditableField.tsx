@@ -38,7 +38,8 @@ export const EditableField: React.FC<EditableFieldProps> = ({
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
-      inputRef.current.focus();
+      // Use preventScroll to avoid page movement
+      inputRef.current.focus({ preventScroll: true });
       inputRef.current.select();
     }
   }, [isEditing]);
@@ -65,16 +66,40 @@ export const EditableField: React.FC<EditableFieldProps> = ({
       <div className="editable-field__content">
         {isEditing ? (
           <div className="editable-field__input-wrapper" role="group" aria-labelledby={fieldId}>
-            <input
-              ref={inputRef}
-              id={fieldId}
-              type={type}
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="editable-field__input"
-              aria-describedby={`${fieldId}-instructions`}
-            />
+            <div className="editable-field__input-container">
+              <input
+                ref={inputRef}
+                id={fieldId}
+                type={type}
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="editable-field__input"
+                aria-describedby={`${fieldId}-instructions`}
+              />
+              <div className="editable-field__actions">
+                <button
+                  id={saveButtonId}
+                  onClick={handleSave}
+                  className="editable-field__save"
+                  aria-label={`Save changes to ${label}`}
+                  title="Save changes"
+                  type="button"
+                >
+                  <Icon name="check" size={18} />
+                </button>
+                <button
+                  id={cancelButtonId}
+                  onClick={onCancel}
+                  className="editable-field__cancel"
+                  aria-label={`Cancel editing ${label}`}
+                  title="Cancel editing"
+                  type="button"
+                >
+                  <Icon name="x" size={18} />
+                </button>
+              </div>
+            </div>
             <div 
               id={`${fieldId}-instructions`} 
               className="editable-field__instructions"
@@ -82,31 +107,21 @@ export const EditableField: React.FC<EditableFieldProps> = ({
             >
               Press Enter to save, Escape to cancel
             </div>
-            <div className="editable-field__actions">
-              <button
-                id={saveButtonId}
-                onClick={handleSave}
-                className="editable-field__save"
-                aria-label={`Save changes to ${label}`}
-                title="Save changes"
-                type="button"
-              >
-                <Icon name="check" size={18} />
-              </button>
-              <button
-                id={cancelButtonId}
-                onClick={onCancel}
-                className="editable-field__cancel"
-                aria-label={`Cancel editing ${label}`}
-                title="Cancel editing"
-                type="button"
-              >
-                <Icon name="x" size={18} />
-              </button>
-            </div>
           </div>
         ) : (
-          <div className="editable-field__value-wrapper">
+          <div 
+            className="editable-field__value-wrapper"
+            onClick={!disabled ? onEdit : undefined}
+            role={!disabled ? "button" : undefined}
+            tabIndex={!disabled ? 0 : undefined}
+            onKeyDown={!disabled ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onEdit();
+              }
+            } : undefined}
+            aria-label={!disabled ? `Click to edit ${label}` : undefined}
+          >
             <span 
               id={fieldId}
               className="editable-field__value"
@@ -117,7 +132,10 @@ export const EditableField: React.FC<EditableFieldProps> = ({
             {!disabled && (
               <button
                 id={editButtonId}
-                onClick={onEdit}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit();
+                }}
                 className="editable-field__edit"
                 aria-label={`Edit ${label}`}
                 title={`Edit ${label}`}
