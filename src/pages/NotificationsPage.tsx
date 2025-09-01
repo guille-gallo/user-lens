@@ -24,7 +24,6 @@ export const NotificationsPage = () => {
     isLoading,
     error,
     fetchNotifications,
-    fetchSummary,
     markAsRead,
     markAllAsRead,
     clearError
@@ -33,9 +32,9 @@ export const NotificationsPage = () => {
   const [isMarkingAllRead, setIsMarkingAllRead] = useState(false);
 
   useEffect(() => {
+    // Fetch notifications (which will also update summary automatically)
     fetchNotifications();
-    fetchSummary();
-  }, [fetchNotifications, fetchSummary]);
+  }, [fetchNotifications]);
 
   const handleBack = useCallback(() => {
     navigate('/');
@@ -55,9 +54,8 @@ export const NotificationsPage = () => {
 
   const handleRefresh = useCallback(() => {
     clearError();
-    fetchNotifications();
-    fetchSummary();
-  }, [clearError, fetchNotifications, fetchSummary]);
+    fetchNotifications(true); // Force refresh (summary updates automatically)
+  }, [clearError, fetchNotifications]);
 
   // Set header actions
   useEffect(() => {

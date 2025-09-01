@@ -12,6 +12,7 @@ interface UserState {
   searchTerm: string;
   sortField: string | null;
   sortOrder: 'asc' | 'desc';
+  lastFetch: number; // Timestamp of last fetch
   
   // Actions
   setUsers: (users: User[]) => void;
@@ -22,7 +23,7 @@ interface UserState {
   setSorting: (field: string, order: 'asc' | 'desc') => void;
   
   // Async actions
-  fetchUsers: () => Promise<void>;
+  fetchUsers: (force?: boolean) => Promise<void>;
   fetchUserById: (id: number) => Promise<void>;
   createUser: (userData: Omit<User, 'id'>) => Promise<void>;
   updateUser: (id: number, userData: Partial<User>) => Promise<void>;
@@ -31,6 +32,9 @@ interface UserState {
   // Computed values
   getFilteredAndSortedUsers: () => User[];
 }
+
+// Cache duration for users (10 minutes)
+const USER_CACHE_DURATION = 10 * 60 * 1000;
 
 export const useUserStore = create<UserState>()(
   persist(
@@ -42,10 +46,11 @@ export const useUserStore = create<UserState>()(
       searchTerm: '',
       sortField: null,
       sortOrder: 'asc',
+      lastFetch: 0,
 
       setUsers: (users) => {
         UserFilterCache.clearCache(); // Clear cache when users change
-        set({ users });
+        set({ users, lastFetch: Date.now() });
       },
       setSelectedUser: (user) => set({ selectedUser: user }),
       setLoading: (loading) => set({ loading }),
@@ -53,12 +58,20 @@ export const useUserStore = create<UserState>()(
       setSearchTerm: (searchTerm) => set({ searchTerm }),
       setSorting: (field, order) => set({ sortField: field, sortOrder: order }),
 
-      fetchUsers: async () => {
+      fetchUsers: async (force = false) => {
+        const now = Date.now();
+        const { lastFetch, loading, users } = get();
+        
+        // Skip if recently fetched, currently loading, or have cached data (unless forced)
+        if (!force && (loading || (users.length > 0 && now - lastFetch < USER_CACHE_DURATION))) {
+          return;
+        }
+
         set({ loading: true, error: null });
         try {
           const users = await dataService.getUsers();
           UserFilterCache.clearCache();
-          set({ users, loading: false });
+          set({ users, loading: false, lastFetch: now });
         } catch (error) {
           const errorMessage = StoreErrorHandler.handleError(error, 'Failed to load users');
           set({ error: errorMessage, loading: false });
@@ -145,6 +158,7 @@ export const useUserStore = create<UserState>()(
         searchTerm: state.searchTerm,
         sortField: state.sortField,
         sortOrder: state.sortOrder,
+        lastFetch: state.lastFetch,
       }),
     }
   )

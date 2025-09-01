@@ -1,22 +1,7 @@
 import { create } from 'zustand';
-import type { CompanyMetrics, MetricsSummary } from '../../types';
 import { companyMetricsService } from '../../services';
 import { CompanyMetricsErrorHandler } from '../utils';
-
-/**
- * Async operations handler following Single Responsibility Principle
- */
-class CompanyMetricsOperations {
-  static async fetchAndProcessMetrics(): Promise<{ metrics: CompanyMetrics[]; summary: MetricsSummary }> {
-    // Fetch metrics from service
-    const metrics = await companyMetricsService.getCompanyMetrics();
-    
-    // Process summary (this is already optimized in the service)
-    const summary = companyMetricsService.processMetricsSummary(metrics);
-    
-    return { metrics, summary };
-  }
-}
+import type { CompanyMetrics, MetricsSummary } from '../../types';
 
 interface CompanyMetricsState {
   metrics: CompanyMetrics[];
@@ -53,8 +38,11 @@ export const useCompanyMetricsStore = create<CompanyMetricsState>((set, get) => 
       setLoading(true);
       setError(null);
       
-      // Use the operations handler for better separation of concerns
-      const { metrics, summary } = await CompanyMetricsOperations.fetchAndProcessMetrics();
+      // Fetch metrics from service
+      const metrics = await companyMetricsService.getCompanyMetrics();
+      
+      // Process summary
+      const summary = companyMetricsService.processMetricsSummary(metrics);
       
       setMetrics(metrics);
       setSummary(summary);

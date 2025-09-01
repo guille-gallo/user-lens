@@ -20,11 +20,13 @@ export const UserDetailPage: React.FC = () => {
     users,
     loading,
     error,
+    fetchUsers,
     fetchUserById,
     updateUser
   } = useUserStore();
 
   const [user, setUser] = useState<User | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   // Use custom hooks for separated concerns
   const { 
@@ -40,20 +42,41 @@ export const UserDetailPage: React.FC = () => {
   useDocumentTitle('Details');
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setIsInitializing(false);
+      return;
+    }
     
     const userId = parseInt(id, 10);
-    if (isNaN(userId)) return;
+    if (isNaN(userId)) {
+      setIsInitializing(false);
+      return;
+    }
 
     // First check if user is already in store
     const existingUser = users.find(u => u.id === userId);
+    
     if (existingUser) {
       setUser(existingUser);
+      setIsInitializing(false);
     } else {
-      // Fetch from API if not in store
-      fetchUserById(userId);
+      // If we have loaded users but user not found, try individual fetch
+      if (users.length > 0) {
+        fetchUserById(userId).finally(() => setIsInitializing(false));
+      } else {
+        // If no users loaded yet, fetch all users first
+        fetchUsers().then(() => {
+          const foundUser = users.find(u => u.id === userId);
+          if (foundUser) {
+            setUser(foundUser);
+          } else {
+            // Only fetch individual user if not found in full list
+            fetchUserById(userId);
+          }
+        }).finally(() => setIsInitializing(false));
+      }
     }
-  }, [id, users, fetchUserById]);
+  }, [id, users, fetchUserById, fetchUsers, setIsInitializing]);
 
   // Update user when store changes
   useEffect(() => {
@@ -98,7 +121,7 @@ export const UserDetailPage: React.FC = () => {
     return success;
   };
 
-  if (loading) {
+  if (loading || isInitializing) {
     return (
       <div className="user-detail-page">
         <div className="user-detail-page__loading">
@@ -108,7 +131,7 @@ export const UserDetailPage: React.FC = () => {
     );
   }
 
-  if (error || !user) {
+  if (error || (!user && !isInitializing)) {
     return (
       <div className="user-detail-page">
         <div className="user-detail-page__error">
@@ -118,6 +141,9 @@ export const UserDetailPage: React.FC = () => {
       </div>
     );
   }
+
+  // At this point, user is guaranteed to be non-null
+  if (!user) return null;
 
   return (
     <div className="user-detail-page">
