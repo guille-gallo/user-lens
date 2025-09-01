@@ -13,6 +13,7 @@ export { SidePanel } from './SidePanel';
 export { ResponsiveEditingContainer } from './ResponsiveEditingContainer';
 export { FormField } from './FormField';
 export { UserForm } from './UserForm';
+export { UserFormFields } from './UserFormFields';
 export { UserDetail } from './UserDetail';
 export { ColumnToggle } from './ColumnToggle';
 export { MetricsCard } from './MetricsCard';

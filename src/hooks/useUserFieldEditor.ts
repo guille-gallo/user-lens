@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { User } from '../types';
-import { VALIDATION_PATTERNS, VALIDATION_MESSAGES } from '../constants/validation';
+import { USER_FIELD_CONFIG } from '../constants/fieldConfig';
+import { validateField } from '../utils/validation';
 
 /**
  * Custom hook for managing user field editing operations
@@ -12,7 +13,7 @@ export const useUserFieldEditor = (
 ) => {
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<Partial<User>>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   /**
    * Start editing a field
@@ -29,39 +30,32 @@ export const useUserFieldEditor = (
   /**
    * Save field changes with proper nested object handling
    */
-  const handleSaveField = useCallback(async (field: string, value: string | number): Promise<boolean> => {
+  const handleSaveField = useCallback(async (field: string, value: any): Promise<boolean> => {
     if (!user) return false;
-    
-    // Validate website field
-    if (field === 'website' && typeof value === 'string' && value.trim() && !VALIDATION_PATTERNS.URL.test(value)) {
-      alert(VALIDATION_MESSAGES.INVALID_URL);
-      return false;
+
+    // Frontend validation using unified system
+    const fieldConfig = USER_FIELD_CONFIG[field as keyof typeof USER_FIELD_CONFIG];
+    if (fieldConfig) {
+      const error = validateField(value, fieldConfig);
+      if (error) {
+        alert(error);
+        return false;
+      }
     }
-    
-    // Validate phone field
-    if (field === 'phone' && typeof value === 'string' && value.trim() && !VALIDATION_PATTERNS.PHONE.test(value)) {
-      alert(VALIDATION_MESSAGES.INVALID_PHONE);
-      return false;
-    }
-    
-    // Validate email field
-    if (field === 'email' && typeof value === 'string' && value.trim() && !VALIDATION_PATTERNS.EMAIL.test(value)) {
-      alert(VALIDATION_MESSAGES.INVALID_EMAIL);
-      return false;
-    }
-    
-    setIsLoading(true);
+
     try {
+      setIsSubmitting(true);
+      
       const updatedUser = updateNestedField(user, field, value);
       await onUpdate(user.id, updatedUser);
+      
       setEditingField(null);
-      setEditValues({});
       return true;
     } catch (error) {
-      console.error('Failed to update field:', error);
+      console.error('Error saving field:', error);
       return false;
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   }, [user, onUpdate]);
 
@@ -76,7 +70,7 @@ export const useUserFieldEditor = (
   return {
     editingField,
     editValues,
-    isLoading,
+    isSubmitting,
     handleEditField,
     handleSaveField,
     handleCancelEdit
@@ -133,5 +127,7 @@ function updateNestedField(user: User, field: string, value: string | number): P
         }
       }
     };
-  }  throw new Error(`Unsupported field path depth: ${field}`);
+  }
+
+  throw new Error(`Unsupported field path depth: ${field}`);
 }

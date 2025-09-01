@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import type { User } from '../../../types';
 import { ResponsiveEditingContainer } from '../ResponsiveEditingContainer';
-import { FormField } from '../FormField';
+import { UserFormFields } from '../UserFormFields';
 import { Button } from '../Button/Button';
-import { PLACEHOLDERS } from '../../../constants/ui';
-import { VALIDATION_PATTERNS, VALIDATION_MESSAGES } from '../../../constants/validation';
+import { USER_FIELD_CONFIG } from '../../../constants/fieldConfig';
+import { useValidation } from '../../../hooks/useValidation';
 import './UserForm.scss';
 
 interface UserFormProps {
@@ -38,12 +38,9 @@ interface FormData {
   };
 }
 
-interface FormErrors {
-  [key: string]: string;
-}
-
 /**
  * User Form component for creating and editing users
+ * Uses unified UserFormFields component for consistency
  */
 export const UserForm: React.FC<UserFormProps> = ({
   isOpen,
@@ -53,6 +50,7 @@ export const UserForm: React.FC<UserFormProps> = ({
   loading = false
 }) => {
   const isEditMode = !!user;
+  const { errors, validateForm: validateFormData, clearAllErrors } = useValidation(USER_FIELD_CONFIG);
   
   // Initialize form data
   const [formData, setFormData] = useState<FormData>({
@@ -77,8 +75,6 @@ export const UserForm: React.FC<UserFormProps> = ({
       bs: ''
     }
   });
-
-  const [errors, setErrors] = useState<FormErrors>({});
 
   // Populate form when editing
   useEffect(() => {
@@ -130,48 +126,13 @@ export const UserForm: React.FC<UserFormProps> = ({
         }
       });
     }
-    setErrors({});
-  }, [user, isOpen]);
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = VALIDATION_MESSAGES.REQUIRED;
-    }
-
-    if (!formData.username.trim()) {
-      newErrors.username = VALIDATION_MESSAGES.REQUIRED;
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = VALIDATION_MESSAGES.REQUIRED;
-    } else if (!VALIDATION_PATTERNS.EMAIL.test(formData.email)) {
-      newErrors.email = VALIDATION_MESSAGES.INVALID_EMAIL;
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = VALIDATION_MESSAGES.REQUIRED;
-    } else if (!VALIDATION_PATTERNS.PHONE.test(formData.phone)) {
-      newErrors.phone = VALIDATION_MESSAGES.INVALID_PHONE;
-    }
-
-    if (formData.website.trim() && !VALIDATION_PATTERNS.URL.test(formData.website)) {
-      newErrors.website = VALIDATION_MESSAGES.INVALID_URL;
-    }
-
-    if (!formData.company.name.trim()) {
-      newErrors['company.name'] = VALIDATION_MESSAGES.REQUIRED;
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    clearAllErrors();
+  }, [user, isOpen, clearAllErrors]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    if (!validateFormData(formData)) {
       return;
     }
 
@@ -188,36 +149,21 @@ export const UserForm: React.FC<UserFormProps> = ({
       const keys = field.split('.');
       if (keys.length === 1) {
         return { ...prev, [field]: value };
-      } else if (keys.length === 2) {
-        return {
-          ...prev,
-          [keys[0]]: {
-            ...(prev[keys[0] as keyof FormData] as Record<string, unknown>),
-            [keys[1]]: value
-          }
-        };
-      } else if (keys.length === 3) {
-        return {
-          ...prev,
-          [keys[0]]: {
-            ...(prev[keys[0] as keyof FormData] as Record<string, unknown>),
-            [keys[1]]: {
-              ...((prev[keys[0] as keyof FormData] as Record<string, unknown>)[keys[1]] as Record<string, unknown>),
-              [keys[2]]: value
-            }
-          }
-        };
       }
-      return prev;
-    });
 
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: ''
-      }));
-    }
+      const result = { ...prev };
+      let current: any = result;
+      
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!(keys[i] in current) || typeof current[keys[i]] !== 'object') {
+          current[keys[i]] = {};
+        }
+        current = current[keys[i]];
+      }
+      
+      current[keys[keys.length - 1]] = value;
+      return result;
+    });
   };
 
   const footer = (
@@ -251,220 +197,14 @@ export const UserForm: React.FC<UserFormProps> = ({
       footer={footer}
       className="user-form-container"
     >
-      <form id="user-form" onSubmit={handleSubmit} className="user-form">
-        {/* Personal Information */}
-        <div className="user-form__section">
-          <h3 className="user-form__section-title">Personal Information</h3>
-          
-          <div className="user-form__row">
-            <FormField
-              label="Full Name"
-              required
-              error={errors.name}
-              htmlFor="name"
-            >
-              <input
-                id="name"
-                type="text"
-                className="form-input"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder={PLACEHOLDERS.FULL_NAME}
-                disabled={loading}
-              />
-            </FormField>
-
-            <FormField
-              label="Username"
-              required
-              error={errors.username}
-              htmlFor="username"
-            >
-              <input
-                id="username"
-                type="text"
-                className="form-input"
-                value={formData.username}
-                onChange={(e) => handleInputChange('username', e.target.value)}
-                placeholder={PLACEHOLDERS.USERNAME}
-                disabled={loading}
-              />
-            </FormField>
-          </div>
-
-          <div className="user-form__row">
-            <FormField
-              label="Email"
-              required
-              error={errors.email}
-              htmlFor="email"
-            >
-              <input
-                id="email"
-                type="email"
-                className="form-input"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="Enter email address"
-                disabled={loading}
-              />
-            </FormField>
-
-            <FormField
-              label="Phone"
-              required
-              error={errors.phone}
-              htmlFor="phone"
-            >
-              <input
-                id="phone"
-                type="tel"
-                className="form-input"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder="Enter phone number"
-                disabled={loading}
-              />
-            </FormField>
-          </div>
-
-          <FormField
-            label="Website"
-            htmlFor="website"
-            error={errors.website}
-          >
-            <input
-              id="website"
-              type="text"
-              className="form-input"
-              value={formData.website}
-              onChange={(e) => handleInputChange('website', e.target.value)}
-              placeholder="Enter website (e.g., example.com)"
-              disabled={loading}
-            />
-          </FormField>
-        </div>
-
-        {/* Address Information */}
-        <div className="user-form__section">
-          <h3 className="user-form__section-title">Address</h3>
-          
-          <div className="user-form__row">
-            <FormField
-              label="Street"
-              htmlFor="address.street"
-            >
-              <input
-                id="address.street"
-                type="text"
-                className="form-input"
-                value={formData.address.street}
-                onChange={(e) => handleInputChange('address.street', e.target.value)}
-                placeholder="Enter street address"
-                disabled={loading}
-              />
-            </FormField>
-
-            <FormField
-              label="Suite"
-              htmlFor="address.suite"
-            >
-              <input
-                id="address.suite"
-                type="text"
-                className="form-input"
-                value={formData.address.suite}
-                onChange={(e) => handleInputChange('address.suite', e.target.value)}
-                placeholder="Enter suite/apt"
-                disabled={loading}
-              />
-            </FormField>
-          </div>
-
-          <div className="user-form__row">
-            <FormField
-              label="City"
-              htmlFor="address.city"
-            >
-              <input
-                id="address.city"
-                type="text"
-                className="form-input"
-                value={formData.address.city}
-                onChange={(e) => handleInputChange('address.city', e.target.value)}
-                placeholder="Enter city"
-                disabled={loading}
-              />
-            </FormField>
-
-            <FormField
-              label="Zip Code"
-              htmlFor="address.zipcode"
-            >
-              <input
-                id="address.zipcode"
-                type="text"
-                className="form-input"
-                value={formData.address.zipcode}
-                onChange={(e) => handleInputChange('address.zipcode', e.target.value)}
-                placeholder="Enter zip code"
-                disabled={loading}
-              />
-            </FormField>
-          </div>
-        </div>
-
-        {/* Company Information */}
-        <div className="user-form__section">
-          <h3 className="user-form__section-title">Company Information</h3>
-          
-          <FormField
-            label="Company Name"
-            required
-            error={errors['company.name']}
-            htmlFor="company.name"
-          >
-            <input
-              id="company.name"
-              type="text"
-              className="form-input"
-              value={formData.company.name}
-              onChange={(e) => handleInputChange('company.name', e.target.value)}
-              placeholder="Enter company name"
-              disabled={loading}
-            />
-          </FormField>
-
-          <FormField
-            label="Company Catch Phrase"
-            htmlFor="company.catchPhrase"
-          >
-            <input
-              id="company.catchPhrase"
-              type="text"
-              className="form-input"
-              value={formData.company.catchPhrase}
-              onChange={(e) => handleInputChange('company.catchPhrase', e.target.value)}
-              placeholder="Enter company catch phrase"
-              disabled={loading}
-            />
-          </FormField>
-
-          <FormField
-            label="Business"
-            htmlFor="company.bs"
-          >
-            <input
-              id="company.bs"
-              type="text"
-              className="form-input"
-              value={formData.company.bs}
-              onChange={(e) => handleInputChange('company.bs', e.target.value)}
-              placeholder="Enter business description"
-              disabled={loading}
-            />
-          </FormField>
-        </div>
+      <form id="user-form" onSubmit={handleSubmit} className="user-form" noValidate>
+        <UserFormFields
+          user={formData}
+          errors={errors}
+          onChange={handleInputChange}
+          disabled={loading}
+          mode="form"
+        />
       </form>
     </ResponsiveEditingContainer>
   );

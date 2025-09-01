@@ -90,11 +90,12 @@ export const UserDetailPage: React.FC = () => {
   }, [setHeaderActions, clearHeaderActions, handleBack]);
 
   // Enhanced save handler with toast notification
-  const handleSaveFieldWithToast = async (field: string, value: string | number) => {
+  const handleSaveFieldWithToast = async (field: string, value: string | number): Promise<boolean> => {
     const success = await handleSaveField(field, value);
     if (success) {
       showSuccess(`${formatFieldName(field)} updated successfully`);
     }
+    return success;
   };
 
   if (loading) {
@@ -149,7 +150,6 @@ export const UserDetailPage: React.FC = () => {
                   label="Email"
                   value={user.email}
                   field="email"
-                  type="email"
                   isEditing={editingField === 'email'}
                   onEdit={() => handleEditField('email')}
                   onSave={(value) => handleSaveFieldWithToast('email', value)}
@@ -159,7 +159,6 @@ export const UserDetailPage: React.FC = () => {
                   label="Phone"
                   value={user.phone}
                   field="phone"
-                  type="tel"
                   isEditing={editingField === 'phone'}
                   onEdit={() => handleEditField('phone')}
                   onSave={(value) => handleSaveFieldWithToast('phone', value)}
@@ -169,7 +168,6 @@ export const UserDetailPage: React.FC = () => {
                   label="Website"
                   value={user.website}
                   field="website"
-                  type="text"
                   isEditing={editingField === 'website'}
                   onEdit={() => handleEditField('website')}
                   onSave={(value) => handleSaveFieldWithToast('website', value)}

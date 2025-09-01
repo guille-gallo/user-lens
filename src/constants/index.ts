@@ -5,4 +5,5 @@
 export * from './ui';
 export * from './accessibility';
 export * from './validation';
+export * from './fieldConfig';
 export * from './api';

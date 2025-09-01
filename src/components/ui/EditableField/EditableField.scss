@@ -25,6 +25,18 @@
       margin-bottom: $space-1;
     }
   }
+
+  &__required {
+    color: $color-danger;
+    margin-left: 4px;
+    font-weight: $font-weight-bold;
+    font-size: 14px;
+    display: inline-block;
+    
+    .user-detail-page__section--personal & {
+      font-size: 12px; // Ensure it's still visible in personal section
+    }
+  }
   
   &__content {
     position: relative;
@@ -176,5 +188,16 @@
       background-color: $color-gray-400;
       transform: translateY(-1px);
     }
+  }
+
+  &__error {
+    color: $color-danger;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-sm;
+  }
+
+  &__validation-hint {
+    margin-top: $space-1;
+    font-size: $font-size-xs;
   }
 }

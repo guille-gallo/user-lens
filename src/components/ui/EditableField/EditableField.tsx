@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Icon } from '../Icon';
+import { USER_FIELD_CONFIG } from '../../../constants/fieldConfig';
+import { validateField } from '../../../utils/validation';
 import './EditableField.scss';
 
 interface EditableFieldProps {
@@ -10,7 +12,6 @@ interface EditableFieldProps {
   onEdit: () => void;
   onSave: (value: string | number) => void;
   onCancel: () => void;
-  type?: 'text' | 'email' | 'tel' | 'url' | 'number';
   disabled?: boolean;
 }
 
@@ -22,18 +23,29 @@ export const EditableField: React.FC<EditableFieldProps> = ({
   onEdit,
   onSave,
   onCancel,
-  type = 'text',
   disabled = false
 }) => {
   const [editValue, setEditValue] = useState(value);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fieldId = `editable-field-${field}`;
-  const editButtonId = `edit-${field}`;
-  const saveButtonId = `save-${field}`;
-  const cancelButtonId = `cancel-${field}`;
+
+  // Check if field is required
+  const isRequired = () => {
+    const fieldConfig = USER_FIELD_CONFIG[field];
+    return fieldConfig?.some(rule => rule.required) || false;
+  };
+
+  // Validate field value
+  const validateValue = (value: string | number) => {
+    const fieldConfig = USER_FIELD_CONFIG[field];
+    if (!fieldConfig) return null;
+    return validateField(value, fieldConfig);
+  };
 
   useEffect(() => {
     setEditValue(value);
+    setValidationError(null);
   }, [value]);
 
   useEffect(() => {
@@ -45,6 +57,12 @@ export const EditableField: React.FC<EditableFieldProps> = ({
   }, [isEditing]);
 
   const handleSave = () => {
+    const error = validateValue(editValue);
+    if (error) {
+      setValidationError(error);
+      return;
+    }
+    setValidationError(null);
     onSave(editValue);
   };
 
@@ -54,14 +72,20 @@ export const EditableField: React.FC<EditableFieldProps> = ({
       handleSave();
     } else if (e.key === 'Escape') {
       e.preventDefault();
-      onCancel();
+      handleCancel();
     }
+  };
+
+  const handleCancel = () => {
+    setValidationError(null);
+    onCancel();
   };
 
   return (
     <div className="editable-field">
       <label htmlFor={fieldId} className="editable-field__label">
         {label}
+        {isRequired() && <span className="editable-field__required">*</span>}
       </label>
       <div className="editable-field__content">
         {isEditing ? (
@@ -70,16 +94,16 @@ export const EditableField: React.FC<EditableFieldProps> = ({
               <input
                 ref={inputRef}
                 id={fieldId}
-                type={type}
+                type="text"
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 className="editable-field__input"
                 aria-describedby={`${fieldId}-instructions`}
+                autoComplete="off"
               />
               <div className="editable-field__actions">
                 <button
-                  id={saveButtonId}
                   onClick={handleSave}
                   className="editable-field__save"
                   aria-label={`Save changes to ${label}`}
@@ -89,8 +113,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
                   <Icon name="check" size={18} />
                 </button>
                 <button
-                  id={cancelButtonId}
-                  onClick={onCancel}
+                  onClick={handleCancel}
                   className="editable-field__cancel"
                   aria-label={`Cancel editing ${label}`}
                   title="Cancel editing"
@@ -100,6 +123,11 @@ export const EditableField: React.FC<EditableFieldProps> = ({
                 </button>
               </div>
             </div>
+            {validationError && (
+              <div className="editable-field__error" role="alert" aria-live="polite">
+                {validationError}
+              </div>
+            )}
             <div 
               id={`${fieldId}-instructions`} 
               className="editable-field__instructions"
@@ -131,7 +159,6 @@ export const EditableField: React.FC<EditableFieldProps> = ({
             </span>
             {!disabled && (
               <button
-                id={editButtonId}
                 onClick={(e) => {
                   e.stopPropagation();
                   onEdit();
