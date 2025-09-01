@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import type { CompanyMetrics, MetricsSummary } from '../services/metrics/companyMetricsService';
-import { companyMetricsService } from '../services/metrics/companyMetricsService';
-import { CompanyMetricsErrorHandler } from './utils';
+import type { CompanyMetrics, MetricsSummary } from '../../types';
+import { companyMetricsService } from '../../services';
+import { CompanyMetricsErrorHandler } from '../utils';
 
 /**
  * Async operations handler following Single Responsibility Principle

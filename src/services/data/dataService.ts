@@ -1,4 +1,5 @@
-import { userService, type User } from './userService';
+import { userService } from '../api/userService';
+import type { User } from '../../types';
 
 /**
  * Data Service with Smart Timeout & Fallback Strategy

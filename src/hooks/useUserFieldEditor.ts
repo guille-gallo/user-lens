@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { User } from '../services/userService';
+import type { User } from '../types';
 
 /**
  * Custom hook for managing user field editing operations

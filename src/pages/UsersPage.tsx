@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../store/userStore';
-import { useUserMetricsStore } from '../store/userMetricsStore';
+import { useUserStore, useUserMetricsStore } from '../store';
 import { useDocumentTitle } from '../hooks';
 import { 
   SearchBar, 
@@ -12,7 +11,7 @@ import {
   UserForm,
   MetricsOverview
 } from '../components/ui';
-import type { User } from '../services/userService';
+import type { User } from '../types';
 import './UsersPage.scss';
 
 /**

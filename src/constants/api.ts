@@ -3,6 +3,24 @@
 // HTTP status codes, endpoints, and API-related constants
 
 /**
+ * API base URLs and configuration
+ */
+export const API_CONFIG = {
+  JSONPLACEHOLDER: 'https://jsonplaceholder.typicode.com',
+  LOCAL_API: 'http://localhost:3001',
+  TIMEOUT: 8000, // 8 seconds
+} as const;
+
+/**
+ * API endpoints
+ */
+export const ENDPOINTS = {
+  USERS: '/users',
+  NOTIFICATIONS: '/notifications',
+  METRICS: '/metrics',
+} as const;
+
+/**
  * HTTP status codes
  */
 export const HTTP_STATUS = {

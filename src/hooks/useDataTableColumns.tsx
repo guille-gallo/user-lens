@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import type { User } from '../services/userService';
+import type { User } from '../types';
 
 interface DataTableColumn {
   key: string;

@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User } from '../services/api/userService';
-import { dataService } from '../services/data/dataService';
-import { UserFilterCache, StoreErrorHandler } from './utils';
+import type { User } from '../../types';
+import { dataService } from '../../services';
+import { UserFilterCache, StoreErrorHandler } from '../utils';
 
 interface UserState {
   users: User[];

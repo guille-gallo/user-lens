@@ -1,5 +1,5 @@
 import React from 'react';
-import type { User } from '../../../services/userService';
+import type { User } from '../../../types';
 import { Modal } from '../Modal';
 import { Button } from '../Button/Button';
 import { Icon } from '../Icon';

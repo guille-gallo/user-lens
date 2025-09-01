@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { ColumnDefinition } from '../components/ui/ColumnToggle';
-import type { User } from '../services/userService';
+import type { User } from '../types';
 
 /**
  * Custom hook for managing column visibility state

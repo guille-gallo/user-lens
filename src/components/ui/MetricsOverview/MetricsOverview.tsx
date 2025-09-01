@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../../store/userStore';
+import { useUserStore } from '../../../store';
 import { MetricsCard } from '../MetricsCard';
-import type { UserMetricsSummary } from '../../../services/userMetricsService';
+import type { UserMetricsSummary } from '../../../types';
 import './MetricsOverview.scss';
 
 interface MetricsOverviewProps {

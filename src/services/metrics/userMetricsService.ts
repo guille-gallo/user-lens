@@ -1,35 +1,9 @@
-import type { User } from './userService';
+import type { User, UserMetrics, UserMetricsSummary } from '../../types';
 
-// User metrics interface for dashboard display
-export interface UserMetrics {
-  totalUsers: number;
-  activeUsers: number;
-  activeUsersPercentage: number;
-  newUsersThisMonth: number;
-  userGrowthRate: number;
-  averageUsersPerCompany: number;
-  topCompanyByUsers: {
-    name: string;
-    userCount: number;
-  };
-}
-
-// Aggregated user metrics for display cards
-export interface UserMetricsSummary {
-  totalUsers: number;
-  activeUsers: {
-    count: number;
-    percentage: number;
-  };
-  userGrowth: {
-    newUsers: number;
-    growthRate: number;
-  };
-  topCompany: {
-    name: string;
-    userCount: number;
-  };
-}
+/**
+ * User Metrics Service
+ * Processes user data to generate analytics and insights
+ */
 
 export const userMetricsService = {
   // Process user data to create metrics summary
@@ -66,9 +40,12 @@ export const userMetricsService = {
       return acc;
     }, {} as Record<string, number>);
 
-    const topCompanyEntry = Object.entries(companyUserCounts).reduce(
-      (max, [company, count]) => count > max[1] ? [company, count] : max,
-      ['', 0]
+    // Convert to entries and find top company with proper typing
+    const companyData = Object.entries(companyUserCounts);
+    const topCompanyEntry = companyData.reduce(
+      (max: [string, number], [company, count]: [string, number]) => 
+        count > max[1] ? [company, count] : max,
+      ['', 0] as [string, number]
     );
 
     return {

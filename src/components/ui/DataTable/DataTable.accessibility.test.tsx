@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { DataTable } from './DataTable';
-import type { User } from '../../../services/userService';
+import type { User } from '../../../types';
 
 // Mock data for testing
 const mockUsers: User[] = [

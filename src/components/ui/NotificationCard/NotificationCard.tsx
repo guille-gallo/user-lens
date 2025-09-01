@@ -1,5 +1,5 @@
 import { FiInfo, FiAlertTriangle, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
-import type { Notification } from '../../../services/notificationService';
+import type { Notification } from '../../../types';
 import './NotificationCard.scss';
 
 interface NotificationCardProps {

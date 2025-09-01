@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiBell } from 'react-icons/fi';
-import { useNotificationStore } from '../../../store/notificationStore';
+import { useNotificationStore } from '../../../store';
 import './NotificationBell.scss';
 
 interface NotificationBellProps {

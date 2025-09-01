@@ -1,7 +1,6 @@
 import { create } from 'zustand';
-import type { UserMetricsSummary } from '../services/metrics/userMetricsService';
-import type { User } from '../services/api/userService';
-import { UserMetricsCache, UserMetricsErrorHandler } from './utils';
+import type { UserMetricsSummary, User } from '../../types';
+import { UserMetricsCache, UserMetricsErrorHandler } from '../utils';
 
 interface UserMetricsState {
   summary: UserMetricsSummary | null;

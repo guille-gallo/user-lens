@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { debounce } from '../utils';
 
 /**
  * Custom hook to detect screen size changes
@@ -16,17 +17,12 @@ export const useScreenSize = (breakpoint: number = 768) => {
     checkScreenSize();
 
     // Listen for resize events with debouncing for performance
-    let timeoutId: NodeJS.Timeout;
-    const debouncedCheck = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(checkScreenSize, 100);
-    };
+    const debouncedCheck = debounce(checkScreenSize, 100);
 
     window.addEventListener('resize', debouncedCheck);
     
     return () => {
       window.removeEventListener('resize', debouncedCheck);
-      clearTimeout(timeoutId);
     };
   }, [breakpoint]);
 

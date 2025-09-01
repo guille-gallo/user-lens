@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '../store';
 import { useHeaderActions } from '../components/layout';
 import { useDocumentTitle, useUserFieldEditor, useToast } from '../hooks';
 import { Button, LoadingSpinner, Toast, EditableField, Icon } from '../components/ui';
 import { formatFieldName } from '../utils';
-import type { User } from '../services/userService';
+import type { User } from '../types';
 import './UserDetailPage.scss';
 
 /**

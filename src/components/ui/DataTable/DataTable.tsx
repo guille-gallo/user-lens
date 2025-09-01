@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Icon } from '../Icon';
 import { ColumnToggle } from '../ColumnToggle';
-import type { User } from '../../../services/userService';
+import type { User } from '../../../types';
 import { useDataTableColumns, useColumnVisibility, useTableKeyboardNavigation } from '../../../hooks';
 import { BUTTON_LABELS, DATA_TABLE } from '../../../constants/ui';
 import { ARIA_ROLES, TABLE_NAVIGATION } from '../../../constants/accessibility';

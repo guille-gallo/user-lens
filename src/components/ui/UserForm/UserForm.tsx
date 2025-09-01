@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { User } from '../../../services/userService';
+import type { User } from '../../../types';
 import { ResponsiveEditingContainer } from '../ResponsiveEditingContainer';
 import { FormField } from '../FormField';
 import { Button } from '../Button/Button';

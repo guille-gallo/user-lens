@@ -4,7 +4,7 @@ import { useHeaderActions } from '../components/layout';
 import { Button } from '../components/ui/Button';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { NotificationCard } from '../components/ui/NotificationCard';
-import { useNotificationStore } from '../store/notificationStore';
+import { useNotificationStore } from "../store";
 import { useDocumentTitle } from '../hooks';
 import './NotificationsPage.scss';
 
