@@ -131,12 +131,6 @@ export const UserDetail: React.FC<UserDetailProps> = ({
               <span className="user-detail__label">Zip Code:</span>
               <span className="user-detail__value">{user.address.zipcode}</span>
             </div>
-            <div className="user-detail__field">
-              <span className="user-detail__label">Coordinates:</span>
-              <span className="user-detail__value">
-                {user.address.geo.lat}, {user.address.geo.lng}
-              </span>
-            </div>
           </div>
         </div>
 

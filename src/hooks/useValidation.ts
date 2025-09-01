@@ -5,6 +5,7 @@
 
 import { useState, useCallback } from 'react';
 import { validateField, validateForm, type FieldValidationConfig } from '../utils/validation';
+import { focusFirstErrorField } from '../utils';
 
 export const useValidation = (config: FieldValidationConfig) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -32,6 +33,12 @@ export const useValidation = (config: FieldValidationConfig) => {
   const validateFormData = useCallback((data: Record<string, any>): boolean => {
     const newErrors = validateForm(data, config);
     setErrors(newErrors);
+    
+    // Focus on first error field if validation fails
+    if (Object.keys(newErrors).length > 0) {
+      focusFirstErrorField(newErrors);
+    }
+    
     return Object.keys(newErrors).length === 0;
   }, [config]);
 

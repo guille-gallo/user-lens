@@ -386,40 +386,6 @@ export const UserFormFields: React.FC<UserFormFieldsProps> = ({
             />
           </FormField>
         </div>
-
-        <div className="user-fields__row">
-          <FormField
-            label="Latitude"
-            error={errors['address.geo.lat']}
-            htmlFor="address.geo.lat"
-          >
-            <input
-              id="address.geo.lat"
-              type="text"
-              className="form-input"
-              value={user.address?.geo?.lat || ''}
-              onChange={(e) => onChange('address.geo.lat', e.target.value)}
-              placeholder="Enter latitude"
-              disabled={disabled}
-            />
-          </FormField>
-
-          <FormField
-            label="Longitude"
-            error={errors['address.geo.lng']}
-            htmlFor="address.geo.lng"
-          >
-            <input
-              id="address.geo.lng"
-              type="text"
-              className="form-input"
-              value={user.address?.geo?.lng || ''}
-              onChange={(e) => onChange('address.geo.lng', e.target.value)}
-              placeholder="Enter longitude"
-              disabled={disabled}
-            />
-          </FormField>
-        </div>
       </div>
 
       {/* Company Information */}

@@ -77,7 +77,7 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: false,
-      render: (_, user: User) => `${user.address.street} ${user.address.suite}`
+      render: (_: unknown, user: User) => `${user.address.street} ${user.address.suite}`
     },
     {
       key: 'address.city',
@@ -85,7 +85,7 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: false,
-      render: (_, user: User) => user.address.city
+      render: (_: unknown, user: User) => user.address.city
     },
     {
       key: 'address.zipcode',
@@ -93,15 +93,7 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: true,
-      render: (_, user: User) => user.address.zipcode
-    },
-    {
-      key: 'address.geo',
-      label: 'Coordinates',
-      sortable: false,
-      essential: false,
-      defaultVisible: false,
-      render: (_, user: User) => `${user.address.geo.lat}, ${user.address.geo.lng}`
+      render: (_: unknown, user: User) => user.address.zipcode
     },
     {
       key: 'company.name',
@@ -109,7 +101,7 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: true,
-      render: (_, user: User) => user.company.name
+      render: (_: unknown, user: User) => user.company.name
     },
     {
       key: 'company.catchPhrase',
@@ -117,7 +109,7 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: false,
-      render: (_, user: User) => `"${user.company.catchPhrase}"`
+      render: (_: unknown, user: User) => `"${user.company.catchPhrase}"`
     },
     {
       key: 'company.bs',
@@ -125,7 +117,7 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: true,
-      render: (_, user: User) => user.company.bs
+      render: (_: unknown, user: User) => user.company.bs
     }
   ], []);
 };

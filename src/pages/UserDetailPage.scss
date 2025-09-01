@@ -229,6 +229,14 @@
     }
   }
 
+  &__no-location {
+    color: $color-text-muted;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+  }
+
   &__link {
     color: $color-primary;
     text-decoration: none;

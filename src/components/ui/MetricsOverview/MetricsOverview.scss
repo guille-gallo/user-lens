@@ -3,17 +3,74 @@
 
 .metrics-overview {
   margin-bottom: $space-xl;
-  padding: $space-lg;
   background-color: $color-surface;
   border: 1px solid $color-border;
   border-radius: $border-radius-lg;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-lg $space-lg $space-md $space-lg;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: $color-text-primary;
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: $color-text-secondary;
+
+    &:hover {
+      background-color: $color-bg-tertiary;
+      border-color: $color-primary;
+      color: $color-primary;
+    }
+
+    &:focus {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      
+      &:hover {
+        background: transparent;
+        border-color: $color-border;
+        color: $color-text-secondary;
+      }
+    }
+
+    .icon {
+      transition: transform 0.2s ease;
+    }
+  }
 
   &__cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: $space-lg;
     width: 100%;
+    padding: $space-lg;
+    animation: slideDown 0.3s ease-out;
 
     @include respond-to(tablet) {
       grid-template-columns: repeat(3, 1fr);
@@ -30,6 +87,8 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: $space-lg;
     width: 100%;
+    padding: $space-lg;
+    animation: slideDown 0.3s ease-out;
 
     @include respond-to(tablet) {
       grid-template-columns: repeat(3, 1fr);
@@ -38,6 +97,20 @@
     @include respond-below(mobile) {
       grid-template-columns: 1fr;
       gap: $space-md;
+    }
+  }
+
+  &__error {
+    background: $color-surface;
+    border-radius: $border-radius-md;
+    padding: $space-lg;
+    text-align: center;
+    color: $color-text-secondary;
+    animation: slideDown 0.3s ease-out;
+
+    p {
+      margin: 0;
+      font-size: $font-size-sm;
     }
   }
 
@@ -65,19 +138,16 @@
       animation: skeleton-loading 1.5s infinite;
     }
   }
+}
 
-  &__error {
-    background: $color-surface;
-    border: 1px solid $color-border;
-    border-radius: $border-radius-md;
-    padding: $space-md;
-    text-align: center;
-    color: $color-text-secondary;
-
-    p {
-      margin: 0;
-      font-size: $font-size-sm;
-    }
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

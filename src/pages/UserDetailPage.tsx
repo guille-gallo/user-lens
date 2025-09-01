@@ -4,7 +4,7 @@ import { useUserStore } from '../store';
 import { useHeaderActions } from '../components/layout';
 import { useDocumentTitle, useUserFieldEditor, useToast } from '../hooks';
 import { Button, LoadingSpinner, Toast, EditableField, Icon } from '../components/ui';
-import { formatFieldName } from '../utils';
+import { formatFieldName, hasValidCoordinates } from '../utils';
 import type { User } from '../types';
 import './UserDetailPage.scss';
 
@@ -223,14 +223,20 @@ export const UserDetailPage: React.FC = () => {
                 <div className="user-detail-page__field">
                   <span className="user-detail-page__label">Location</span>
                   <div className="user-detail-page__value">
-                    <a 
-                      href={`https://maps.google.com/?q=${user.address.geo.lat},${user.address.geo.lng}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="user-detail-page__map-link"
-                    >
-                      <Icon name="map" size={16} /> View on Google Maps
-                    </a>
+                    {hasValidCoordinates(user.address?.geo?.lat, user.address?.geo?.lng) ? (
+                      <a 
+                        href={`https://maps.google.com/?q=${user.address.geo.lat},${user.address.geo.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="user-detail-page__map-link"
+                      >
+                        <Icon name="map" size={16} /> View on Google Maps
+                      </a>
+                    ) : (
+                      <span className="user-detail-page__no-location">
+                        <Icon name="location" size={16} /> No location coordinates available
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
