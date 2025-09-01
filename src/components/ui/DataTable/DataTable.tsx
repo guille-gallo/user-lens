@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { Icon } from '../Icon';
 import { ColumnToggle } from '../ColumnToggle';
 import { DataTableDesktop } from './DataTableDesktop';
@@ -15,7 +15,7 @@ import './DataTable.scss';
  * Delegates desktop/mobile rendering to specialized components
  * Handles shared business logic and state management
  */
-export const DataTable: React.FC<DataTableProps> = ({
+const DataTableComponent: React.FC<DataTableProps> = ({
   users,
   loading = false,
   onSort,
@@ -36,11 +36,11 @@ export const DataTable: React.FC<DataTableProps> = ({
     getVisibleColumns
   } = useColumnVisibility(allColumns);
 
-  // Get visible columns using hook
-  const visibleColumns = getVisibleColumns();
+  // Memoize visible columns to prevent recalculation on every render
+  const visibleColumns = useMemo(() => getVisibleColumns(), [getVisibleColumns]);
 
-  // Shared business logic
-  const handleSort = (field: string) => {
+  // Memoized sort handler to prevent child re-renders
+  const handleSort = useCallback((field: string) => {
     if (!onSort) return;
     
     let newOrder: SortOrder = 'asc';
@@ -49,18 +49,20 @@ export const DataTable: React.FC<DataTableProps> = ({
     }
     
     onSort(field, newOrder);
-  };
+  }, [onSort, sortField, sortOrder]);
 
-  const getSortIcon = (field: string) => {
+  // Memoized sort icon function
+  const getSortIcon = useCallback((field: string) => {
     if (sortField !== field) {
       return <Icon name="chevrons-up-down" size={14} className="data-table__sort-icon--neutral" />;
     }
     return sortOrder === 'asc' ? 
       <Icon name="chevron-up" size={14} className="data-table__sort-icon--asc" /> : 
       <Icon name="chevron-down" size={14} className="data-table__sort-icon--desc" />;
-  };
+  }, [sortField, sortOrder]);
 
-  const getCellValue = (user: User, column: DataTableColumn) => {
+  // Memoized cell value function
+  const getCellValue = useCallback((user: User, column: DataTableColumn) => {
     // Use centralized utility for nested property access
     const value = getNestedValue(user, column.key);
     
@@ -69,7 +71,7 @@ export const DataTable: React.FC<DataTableProps> = ({
     }
     
     return String(value || '');
-  };
+  }, []);
 
   // Loading state
   if (loading) {
@@ -152,3 +154,5 @@ export const DataTable: React.FC<DataTableProps> = ({
     </div>
   );
 };
+
+export const DataTable = memo(DataTableComponent);
