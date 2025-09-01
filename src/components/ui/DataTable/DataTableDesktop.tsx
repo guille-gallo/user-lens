@@ -1,0 +1,157 @@
+import React from 'react';
+import { DataTableActions } from './DataTableActions';
+import { useTableKeyboardNavigation } from '../../../hooks';
+import { DATA_TABLE } from '../../../constants/ui';
+import { ARIA_ROLES, TABLE_NAVIGATION } from '../../../constants/accessibility';
+import type { DataTableBaseProps, DataTableColumn } from './DataTableTypes';
+import type { User } from '../../../types';
+
+interface DataTableDesktopProps extends DataTableBaseProps {
+  handleSort: (field: string) => void;
+  getSortIcon: (field: string) => React.ReactNode;
+  getCellValue: (user: User, column: DataTableColumn) => React.ReactNode;
+}
+
+/**
+ * DataTableDesktop - Desktop table view component
+ * Handles table rendering, sorting, and keyboard navigation
+ * Follows Single Responsibility Principle - only handles desktop table view
+ */
+export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
+  users,
+  visibleColumns,
+  sortField,
+  sortOrder,
+  onEdit,
+  onDelete,
+  onView,
+  handleSort,
+  getSortIcon,
+  getCellValue
+}) => {
+  // Table keyboard navigation
+  const tableId = 'data-table-main';
+  const {
+    getCellProps,
+    announceRegionId
+  } = useTableKeyboardNavigation({
+    rowCount: users.length,
+    columnCount: visibleColumns.length + 1, // +1 for actions column
+    tableId
+  });
+
+  return (
+    <div className="data-table__wrapper">
+      <table 
+        id={tableId}
+        className="data-table__table" 
+        role={ARIA_ROLES.TABLE} 
+        aria-label={DATA_TABLE.USERS_DATA_TABLE}
+        aria-describedby={announceRegionId}
+      >
+        <caption className="data-table__caption">
+          User information table with {users.length} users. Use column headers to sort data. {TABLE_NAVIGATION.NAVIGATION_HINT}
+        </caption>
+        <thead>
+          <tr role="row">
+            {visibleColumns.map((column) => (
+              <th 
+                key={column.key} 
+                className="data-table__header-cell"
+                role="columnheader"
+                aria-sort={
+                  sortField === column.key 
+                    ? sortOrder === 'asc' ? 'ascending' : 'descending'
+                    : column.sortable ? 'none' : undefined
+                }
+              >
+                {column.sortable ? (
+                  <button
+                    className="data-table__sort-button"
+                    onClick={() => handleSort(column.key)}
+                    aria-label={`${DATA_TABLE.SORT_BY} ${column.label}${
+                      sortField === column.key 
+                        ? `, currently ${sortOrder === 'asc' ? DATA_TABLE.ASCENDING : DATA_TABLE.DESCENDING}` 
+                        : ''
+                    }`}
+                    data-sortable="true"
+                    data-field={column.key}
+                    type="button"
+                  >
+                    <span>{column.label}</span>
+                    <span className="data-table__sort-icon" aria-hidden="true">
+                      {getSortIcon(column.key)}
+                    </span>
+                  </button>
+                ) : (
+                  <span data-sortable="false">{column.label}</span>
+                )}
+              </th>
+            ))}
+            <th 
+              className="data-table__header-cell data-table__header-cell--actions"
+              role="columnheader"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user, rowIndex) => (
+            <tr key={user.id} className="data-table__row" role="row">
+              {visibleColumns.map((column, columnIndex) => {
+                const cellContent = getCellValue(user, column);
+                // Check if this column uses a render function (returns JSX) or plain text
+                const hasRenderFunction = column.render !== undefined;
+                
+                return (
+                  <td 
+                    key={column.key} 
+                    className="data-table__cell data-table__cell--navigable"
+                    role="cell"
+                    {...getCellProps(rowIndex, columnIndex)}
+                  >
+                    {hasRenderFunction ? (
+                      // For rendered content (links, etc), use as-is but ensure it's in a container
+                      <div className="data-table__cell-content">
+                        {cellContent}
+                      </div>
+                    ) : (
+                      // For plain text content, wrap in span
+                      <span className="data-table__cell-content">
+                        {cellContent}
+                      </span>
+                    )}
+                  </td>
+                );
+              })}
+              <td 
+                className="data-table__cell data-table__cell--actions data-table__cell--navigable" 
+                role="cell"
+                {...getCellProps(rowIndex, visibleColumns.length)}
+              >
+                <DataTableActions
+                  user={user}
+                  onView={onView}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  variant="desktop"
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      
+      {/* Screen reader announcements for navigation */}
+      <div 
+        id={announceRegionId}
+        className="data-table__announce"
+        aria-live="polite" 
+        aria-atomic="true"
+      >
+        {/* Dynamic announcements will be inserted here */}
+      </div>
+    </div>
+  );
+};

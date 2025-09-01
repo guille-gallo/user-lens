@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { NotificationService, type Notification, type NotificationSummary } from '../services/api/notificationService';
+import { NotificationService } from '../services';
+import type { Notification, NotificationSummary } from '../types';
 import { NotificationErrorHandler, NotificationStateUtils } from './utils';
 
 interface NotificationState {

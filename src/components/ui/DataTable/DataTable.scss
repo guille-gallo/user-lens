@@ -443,6 +443,14 @@
   }
 
   &__card-title {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-2;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__card-user-info {
     flex: 1;
     min-width: 0;
   }
@@ -528,14 +536,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border: 1px solid $color-gray-300;
     border-radius: $radius-base;
     background: $color-white;
     color: $color-gray-600;
     cursor: pointer;
-    margin-right: $space-2;
+    flex-shrink: 0;
     
     &:hover {
       background: $color-gray-50;

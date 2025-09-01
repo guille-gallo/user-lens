@@ -45,12 +45,28 @@
     @include respond-to(md) {
       padding: 0 $space-4;
     }
+    
+    // Allow header to grow on very narrow screens
+    @media (max-width: 590px) {
+      height: auto;
+      min-height: 64px;
+      flex-wrap: wrap;
+      gap: $space-2;
+      padding: $space-3 $space-4;
+    }
   }
 
   &__header-actions {
     display: flex;
     align-items: center;
     gap: $space-3;
+  }
+
+  // Fix for notifications page actions overflow on narrow screens
+  @media (max-width: 590px) {
+    .notifications-page__actions {
+      gap: $space-2;
+    }
   }
 
   &__title {
