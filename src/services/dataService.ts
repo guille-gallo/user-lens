@@ -511,7 +511,7 @@ function getCurrentUsers(): User[] {
   if (currentStoredUsers) {
     try {
       return JSON.parse(currentStoredUsers);
-    } catch (error) {
+    } catch {
       console.warn('Failed to parse stored users, using fallback');
     }
   }

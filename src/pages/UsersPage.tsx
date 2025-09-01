@@ -182,7 +182,7 @@ export const UsersPage: React.FC = () => {
           users={displayUsers}
           loading={loading}
           onSort={handleSort}
-          sortField={sortField as any}
+          sortField={sortField}
           sortOrder={sortOrder}
           onEdit={handleEdit}
           onDelete={handleDelete}

@@ -1,12 +1,12 @@
 import React from 'react';
-import { Icon } from '../Icon';
+import { Icon, type IconName } from '../Icon';
 import './MetricsCard.scss';
 
 interface MetricsCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
-  icon: string;
+  icon: IconName;
   variant?: 'primary' | 'secondary' | 'success' | 'warning';
   className?: string;
   onSubtitleClick?: () => void;
@@ -57,7 +57,7 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
       onKeyDown={handleKeyDown}
     >
       <div className="metrics-card__header">
-        <Icon name={icon as any} size={20} className="metrics-card__icon" aria-hidden="true" />
+        <Icon name={icon} size={20} className="metrics-card__icon" aria-hidden="true" />
         <h3 
           id={`metrics-card-title-${title.replace(/\s+/g, '-').toLowerCase()}`}
           className="metrics-card__title"

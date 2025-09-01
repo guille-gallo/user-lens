@@ -21,7 +21,7 @@ export const VALIDATION_MESSAGES = {
  */
 export const VALIDATION_PATTERNS = {
   EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  PHONE: /^[\+]?[1-9]?[\d\s\-\(\)\.]{10,}$/,
+  PHONE: /^[+]?[1-9]?[\d\s\-().]{10,}$/,
   URL: /^https?:\/\/.+\..+$/,
   ZIP_CODE: /^\d{5}(-\d{4})?$/,
   NAME: /^[a-zA-Z\s]+$/

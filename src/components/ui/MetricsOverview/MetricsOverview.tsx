@@ -60,7 +60,7 @@ export const MetricsOverview: React.FC<MetricsOverviewProps> = ({
           title="Total Users"
           value={summary.totalUsers}
           subtitle={`${summary.totalUsers} registered users`}
-          icon="users"
+          icon="user"
           variant="primary"
         />
         
@@ -68,7 +68,7 @@ export const MetricsOverview: React.FC<MetricsOverviewProps> = ({
           title="Active Users"
           value={`${summary.activeUsers.percentage}%`}
           subtitle={`${summary.activeUsers.count} of ${summary.totalUsers} users`}
-          icon="user-check"
+          icon="check-circle"
           variant="success"
         />
         

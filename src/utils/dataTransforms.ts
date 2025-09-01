@@ -16,26 +16,34 @@ export const formatFieldName = (field: string): string => {
 /**
  * Get nested object value by string path
  */
-export const getNestedValue = (obj: Record<string, any>, path: string): any => {
-  return path.split('.').reduce((current, key) => current?.[key], obj);
+export const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => {
+  return path.split('.').reduce<unknown>((current, key) => {
+    if (current && typeof current === 'object') {
+      return (current as Record<string, unknown>)[key];
+    }
+    return undefined;
+  }, obj);
 };
 
 /**
  * Set nested object value by string path
  */
 export const setNestedValue = (
-  obj: Record<string, any>, 
+  obj: Record<string, unknown>, 
   path: string, 
-  value: any
-): Record<string, any> => {
+  value: unknown
+): Record<string, unknown> => {
   const keys = path.split('.');
   const result = { ...obj };
   
-  let current = result;
+  let current: Record<string, unknown> = result;
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
-    current[key] = { ...current[key] };
-    current = current[key];
+    const currentValue = current[key];
+    current[key] = typeof currentValue === 'object' && currentValue !== null 
+      ? { ...currentValue as Record<string, unknown> } 
+      : {};
+    current = current[key] as Record<string, unknown>;
   }
   
   current[keys[keys.length - 1]] = value;
@@ -51,8 +59,8 @@ export const sortByNestedField = <T>(
   order: 'asc' | 'desc' = 'asc'
 ): T[] => {
   return [...array].sort((a, b) => {
-    const aValue = getNestedValue(a as any, fieldPath);
-    const bValue = getNestedValue(b as any, fieldPath);
+    const aValue = getNestedValue(a as Record<string, unknown>, fieldPath);
+    const bValue = getNestedValue(b as Record<string, unknown>, fieldPath);
     
     // Handle null/undefined values
     if (aValue == null && bValue == null) return 0;
@@ -85,7 +93,7 @@ export const filterBySearchTerm = <T>(
   
   return array.filter(item => 
     searchFields.some(field => {
-      const value = getNestedValue(item as any, field);
+      const value = getNestedValue(item as Record<string, unknown>, field);
       return value?.toString().toLowerCase().includes(normalizedSearch);
     })
   );
@@ -94,7 +102,7 @@ export const filterBySearchTerm = <T>(
 /**
  * Debounce function for performance optimization
  */
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number
 ): ((...args: Parameters<T>) => void) => {
@@ -118,7 +126,7 @@ export const isValidEmail = (email: string): boolean => {
  * Validate phone format (basic)
  */
 export const isValidPhone = (phone: string): boolean => {
-  const phoneRegex = /^[\+]?[1-9]?[\d\s\-\(\)\.]{10,}$/;
+  const phoneRegex = /^[+]?[1-9]?[\d\s\-().]{10,}$/;
   return phoneRegex.test(phone);
 };
 

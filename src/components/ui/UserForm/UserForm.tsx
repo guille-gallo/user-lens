@@ -3,8 +3,7 @@ import type { User } from '../../../services/userService';
 import { ResponsiveEditingContainer } from '../ResponsiveEditingContainer';
 import { FormField } from '../FormField';
 import { Button } from '../Button/Button';
-import { PLACEHOLDERS, BUTTON_LABELS, USER_MANAGEMENT } from '../../../constants/ui';
-import { VALIDATION_MESSAGES } from '../../../constants/validation';
+import { PLACEHOLDERS } from '../../../constants/ui';
 import './UserForm.scss';
 
 interface UserFormProps {
@@ -186,7 +185,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         return {
           ...prev,
           [keys[0]]: {
-            ...(prev[keys[0] as keyof FormData] as any),
+            ...(prev[keys[0] as keyof FormData] as Record<string, unknown>),
             [keys[1]]: value
           }
         };
@@ -194,9 +193,9 @@ export const UserForm: React.FC<UserFormProps> = ({
         return {
           ...prev,
           [keys[0]]: {
-            ...(prev[keys[0] as keyof FormData] as any),
+            ...(prev[keys[0] as keyof FormData] as Record<string, unknown>),
             [keys[1]]: {
-              ...(prev[keys[0] as keyof FormData] as any)[keys[1]],
+              ...((prev[keys[0] as keyof FormData] as Record<string, unknown>)[keys[1]] as Record<string, unknown>),
               [keys[2]]: value
             }
           }

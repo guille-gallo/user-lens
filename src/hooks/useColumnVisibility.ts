@@ -1,11 +1,19 @@
 import { useState, useCallback } from 'react';
 import type { ColumnDefinition } from '../components/ui/ColumnToggle';
+import type { User } from '../services/userService';
 
 /**
  * Custom hook for managing column visibility state
  * Extracts column visibility logic from DataTable component
  */
-export const useColumnVisibility = (initialColumns: any[]) => {
+export const useColumnVisibility = (initialColumns: Array<{
+  key: string;
+  label: string;
+  sortable?: boolean;
+  defaultVisible?: boolean;
+  essential?: boolean;
+  render?: (value: unknown, user: User) => React.ReactNode;
+}>) => {
   const [columnVisibility, setColumnVisibility] = useState<ColumnDefinition[]>(() =>
     initialColumns.map(col => ({
       key: col.key,

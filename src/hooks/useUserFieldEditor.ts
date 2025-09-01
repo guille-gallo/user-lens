@@ -67,8 +67,12 @@ export const useUserFieldEditor = (
 /**
  * Utility: Get value from nested field path
  */
-function getNestedFieldValue(obj: any, path: string): any {
-  return path.split('.').reduce((current, key) => current?.[key], obj);
+function getNestedFieldValue(obj: unknown, path: string): unknown {
+  return path.split('.').reduce((current: unknown, key: string) => {
+    return current && typeof current === 'object' && key in current 
+      ? (current as Record<string, unknown>)[key] 
+      : undefined;
+  }, obj);
 }
 
 /**
@@ -85,27 +89,30 @@ function updateNestedField(user: User, field: string, value: string | number): P
   if (fieldParts.length === 2) {
     // Nested field update (e.g., "address.city")
     const [parent, child] = fieldParts;
+    const parentValue = (user as unknown as Record<string, unknown>)[parent];
     return {
       [parent]: {
-        ...(user as any)[parent],
+        ...(typeof parentValue === 'object' && parentValue !== null ? parentValue : {}),
         [child]: value
       }
     };
   }
-  
+
   if (fieldParts.length === 3) {
     // Double nested field update (e.g., "address.geo.lat")
     const [parent, nested, child] = fieldParts;
+    const parentValue = (user as unknown as Record<string, unknown>)[parent];
+    const nestedValue = typeof parentValue === 'object' && parentValue !== null 
+      ? (parentValue as Record<string, unknown>)[nested] 
+      : {};
     return {
       [parent]: {
-        ...(user as any)[parent],
+        ...(typeof parentValue === 'object' && parentValue !== null ? parentValue : {}),
         [nested]: {
-          ...(user as any)[parent][nested],
+          ...(typeof nestedValue === 'object' && nestedValue !== null ? nestedValue : {}),
           [child]: value
         }
       }
     };
-  }
-  
-  throw new Error(`Unsupported field path depth: ${field}`);
+  }  throw new Error(`Unsupported field path depth: ${field}`);
 }

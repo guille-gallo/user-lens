@@ -4,18 +4,17 @@ import { UserForm } from './UserForm';
 
 // Mock the child components
 jest.mock('../Modal', () => ({
-  Modal: ({ children, title, isOpen }: any) => 
+  Modal: ({ children, title, isOpen }: { children: React.ReactNode; title: string; isOpen: boolean }) => 
     isOpen ? <div data-testid="modal"><h1>{title}</h1>{children}</div> : null
 }));
 
 jest.mock('../FormField', () => ({
-  FormField: ({ children, label }: any) => 
-    <div><label>{label}</label>{children}</div>
+  FormField: ({ children }: { children: React.ReactNode }) => <div data-testid="form-field">{children}</div>
 }));
 
 jest.mock('../Button/Button', () => ({
-  Button: ({ children, onClick, type }: any) => 
-    <button onClick={onClick} type={type}>{children}</button>
+  Button: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => 
+    <button data-testid="button" {...props}>{children}</button>
 }));
 
 const mockUser = {

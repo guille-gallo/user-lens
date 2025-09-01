@@ -15,7 +15,7 @@ interface DataTableColumn {
   sortable?: boolean;
   essential?: boolean; // Cannot be hidden
   defaultVisible?: boolean;
-  render?: (value: any, user: User) => React.ReactNode;
+  render?: (value: unknown, user: User) => React.ReactNode;
 }
 
 interface DataTableProps {
@@ -108,9 +108,9 @@ export const DataTable: React.FC<DataTableProps> = ({
   const getCellValue = (user: User, column: DataTableColumn) => {
     // Handle nested property access first to get the actual value
     const keys = column.key.split('.');
-    let value: any = user;
+    let value: unknown = user;
     for (const key of keys) {
-      value = value?.[key];
+      value = (value as Record<string, unknown>)?.[key];
     }
     
     if (column.render) {

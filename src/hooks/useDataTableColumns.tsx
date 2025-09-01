@@ -7,7 +7,7 @@ interface DataTableColumn {
   sortable?: boolean;
   essential?: boolean;
   defaultVisible?: boolean;
-  render?: (value: any, user: User) => React.ReactNode;
+  render?: (value: unknown, user: User) => React.ReactNode;
 }
 
 /**
@@ -36,9 +36,9 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: true,
-      render: (email: string) => (
-        <a href={`mailto:${email}`} className="data-table__email-link">
-          {email}
+      render: (email: unknown) => (
+        <a href={`mailto:${String(email)}`} className="data-table__email-link">
+          {String(email)}
         </a>
       )
     },
@@ -48,9 +48,9 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: true,
-      render: (phone: string) => (
-        <a href={`tel:${phone}`} className="data-table__phone-link">
-          {phone}
+      render: (phone: unknown) => (
+        <a href={`tel:${String(phone)}`} className="data-table__phone-link">
+          {String(phone)}
         </a>
       )
     },
@@ -60,14 +60,14 @@ export const useDataTableColumns = (): DataTableColumn[] => {
       sortable: true,
       essential: false,
       defaultVisible: false,
-      render: (website: string) => (
+      render: (website: unknown) => (
         <a 
-          href={`https://${website}`} 
+          href={`https://${String(website)}`} 
           target="_blank" 
           rel="noopener noreferrer"
           className="data-table__website-link"
         >
-          {website} ↗
+          {String(website)} ↗
         </a>
       )
     },

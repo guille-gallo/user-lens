@@ -150,11 +150,15 @@ export const useUserStore = create<UserState>()(
         if (sortField) {
           filteredUsers.sort((a, b) => {
             // helper function to get nested value
-            const getValue = (obj: any, path: string) => {
+            const getValue = (obj: unknown, path: string): unknown => {
               const keys = path.split('.');
               let value = obj;
               for (const key of keys) {
-                value = value?.[key];
+                if (value && typeof value === 'object' && key in value) {
+                  value = (value as Record<string, unknown>)[key];
+                } else {
+                  return undefined;
+                }
               }
               return value;
             };
@@ -167,8 +171,23 @@ export const useUserStore = create<UserState>()(
             if (typeof bValue === 'string') bValue = bValue.toLowerCase();
             
             let comparison = 0;
-            if (aValue > bValue) comparison = 1;
-            if (aValue < bValue) comparison = -1;
+            
+            // Handle null/undefined values
+            if (aValue == null && bValue == null) comparison = 0;
+            else if (aValue == null) comparison = 1;
+            else if (bValue == null) comparison = -1;
+            // Compare values of same type
+            else if (typeof aValue === typeof bValue) {
+              if (aValue > bValue) comparison = 1;
+              else if (aValue < bValue) comparison = -1;
+            }
+            // Fallback: convert to strings and compare
+            else {
+              const aStr = String(aValue);
+              const bStr = String(bValue);
+              if (aStr > bStr) comparison = 1;
+              else if (aStr < bStr) comparison = -1;
+            }
             
             return sortOrder === 'asc' ? comparison : -comparison;
           });
