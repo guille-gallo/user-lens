@@ -169,7 +169,7 @@ export const UserDetailPage: React.FC = () => {
                   label="Website"
                   value={user.website}
                   field="website"
-                  type="url"
+                  type="text"
                   isEditing={editingField === 'website'}
                   onEdit={() => handleEditField('website')}
                   onSave={(value) => handleSaveFieldWithToast('website', value)}

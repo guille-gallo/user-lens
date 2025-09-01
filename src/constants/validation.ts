@@ -9,7 +9,7 @@ export const VALIDATION_MESSAGES = {
   REQUIRED: 'This field is required',
   INVALID_EMAIL: 'Please enter a valid email address',
   INVALID_PHONE: 'Please enter a valid phone number',
-  INVALID_URL: 'Please enter a valid URL',
+  INVALID_URL: 'Please enter a valid website (e.g., example.com)',
   MIN_LENGTH: 'Minimum length is {min} characters',
   MAX_LENGTH: 'Maximum length is {max} characters',
   INVALID_ZIP: 'Please enter a valid zip code',
@@ -22,7 +22,7 @@ export const VALIDATION_MESSAGES = {
 export const VALIDATION_PATTERNS = {
   EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   PHONE: /^[+]?[1-9]?[\d\s\-().]{10,}$/,
-  URL: /^https?:\/\/.+\..+$/,
+  URL: /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$/,
   ZIP_CODE: /^\d{5}(-\d{4})?$/,
   NAME: /^[a-zA-Z\s]+$/
 } as const;

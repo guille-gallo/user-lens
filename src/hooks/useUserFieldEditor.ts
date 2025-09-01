@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { User } from '../types';
+import { VALIDATION_PATTERNS, VALIDATION_MESSAGES } from '../constants/validation';
 
 /**
  * Custom hook for managing user field editing operations
@@ -30,6 +31,24 @@ export const useUserFieldEditor = (
    */
   const handleSaveField = useCallback(async (field: string, value: string | number): Promise<boolean> => {
     if (!user) return false;
+    
+    // Validate website field
+    if (field === 'website' && typeof value === 'string' && value.trim() && !VALIDATION_PATTERNS.URL.test(value)) {
+      alert(VALIDATION_MESSAGES.INVALID_URL);
+      return false;
+    }
+    
+    // Validate phone field
+    if (field === 'phone' && typeof value === 'string' && value.trim() && !VALIDATION_PATTERNS.PHONE.test(value)) {
+      alert(VALIDATION_MESSAGES.INVALID_PHONE);
+      return false;
+    }
+    
+    // Validate email field
+    if (field === 'email' && typeof value === 'string' && value.trim() && !VALIDATION_PATTERNS.EMAIL.test(value)) {
+      alert(VALIDATION_MESSAGES.INVALID_EMAIL);
+      return false;
+    }
     
     setIsLoading(true);
     try {

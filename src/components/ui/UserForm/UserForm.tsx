@@ -4,6 +4,7 @@ import { ResponsiveEditingContainer } from '../ResponsiveEditingContainer';
 import { FormField } from '../FormField';
 import { Button } from '../Button/Button';
 import { PLACEHOLDERS } from '../../../constants/ui';
+import { VALIDATION_PATTERNS, VALIDATION_MESSAGES } from '../../../constants/validation';
 import './UserForm.scss';
 
 interface UserFormProps {
@@ -136,25 +137,31 @@ export const UserForm: React.FC<UserFormProps> = ({
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = VALIDATION_MESSAGES.REQUIRED;
     }
 
     if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
+      newErrors.username = VALIDATION_MESSAGES.REQUIRED;
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = VALIDATION_MESSAGES.REQUIRED;
+    } else if (!VALIDATION_PATTERNS.EMAIL.test(formData.email)) {
+      newErrors.email = VALIDATION_MESSAGES.INVALID_EMAIL;
     }
 
     if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone is required';
+      newErrors.phone = VALIDATION_MESSAGES.REQUIRED;
+    } else if (!VALIDATION_PATTERNS.PHONE.test(formData.phone)) {
+      newErrors.phone = VALIDATION_MESSAGES.INVALID_PHONE;
+    }
+
+    if (formData.website.trim() && !VALIDATION_PATTERNS.URL.test(formData.website)) {
+      newErrors.website = VALIDATION_MESSAGES.INVALID_URL;
     }
 
     if (!formData.company.name.trim()) {
-      newErrors['company.name'] = 'Company name is required';
+      newErrors['company.name'] = VALIDATION_MESSAGES.REQUIRED;
     }
 
     setErrors(newErrors);
@@ -324,14 +331,15 @@ export const UserForm: React.FC<UserFormProps> = ({
           <FormField
             label="Website"
             htmlFor="website"
+            error={errors.website}
           >
             <input
               id="website"
-              type="url"
+              type="text"
               className="form-input"
               value={formData.website}
               onChange={(e) => handleInputChange('website', e.target.value)}
-              placeholder="Enter website URL"
+              placeholder="Enter website (e.g., example.com)"
               disabled={loading}
             />
           </FormField>
