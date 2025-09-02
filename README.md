@@ -2,6 +2,8 @@
 
 A modern React application for user management with comprehensive CRUD operations, responsive design, and robust testing infrastructure.
 
+Link to demo: [Video Demo](https://drive.google.com/file/d/1EOOwQgjZXXsK_PWmzcGrjyt7ayu1W8No/view?usp=sharing)
+
 ## 🏗️ Architecture
 
 Built with enterprise-grade patterns and scalable architecture:
