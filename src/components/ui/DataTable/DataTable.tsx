@@ -11,10 +11,8 @@ import './DataTable.scss';
 
 /**
  * DataTable - Main orchestrator component
- * Follows Composition over Inheritance pattern
- * Delegates desktop/mobile rendering to specialized components
- * Handles shared business logic and state management
  */
+
 const DataTableComponent: React.FC<DataTableProps> = ({
   users,
   loading = false,
@@ -125,7 +123,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
         </div>
       </div>
       
-      {/* Desktop View - CSS controls visibility */}
+      {/* Desktop View */}
       <DataTableDesktop
         users={users}
         visibleColumns={visibleColumns}
@@ -140,7 +138,7 @@ const DataTableComponent: React.FC<DataTableProps> = ({
         getCellValue={getCellValue}
       />
 
-      {/* Mobile View - CSS controls visibility */}
+      {/* Mobile View */}
       <DataTableMobile
         users={users}
         visibleColumns={visibleColumns}

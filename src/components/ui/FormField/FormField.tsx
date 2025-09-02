@@ -11,7 +11,7 @@ interface FormFieldProps {
 }
 
 /**
- * Reusable form field wrapper component with label and error handling
+ * FormField wrapper component
  */
 export const FormField: React.FC<FormFieldProps> = ({
   label,

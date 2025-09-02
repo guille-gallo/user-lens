@@ -11,7 +11,7 @@ interface UserFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (userData: Omit<User, 'id'> | Partial<User>) => Promise<void>;
-  user?: User | null; // If provided, it's edit mode
+  user?: User | null;
   loading?: boolean;
 }
 
@@ -40,7 +40,6 @@ interface FormData {
 
 /**
  * User Form component for creating and editing users
- * Uses unified UserFormFields component for consistency
  */
 export const UserForm: React.FC<UserFormProps> = ({
   isOpen,

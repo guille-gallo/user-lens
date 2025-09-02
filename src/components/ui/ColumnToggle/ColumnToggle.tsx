@@ -58,8 +58,6 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // TODO: lift up to higher layer
-  // handle dropdown positioning to prevent cutoff:
   useEffect(() => {
     if (isOpen && dropdownRef.current && triggerRef.current) {
       const dropdown = dropdownRef.current.querySelector('.column-toggle__dropdown') as HTMLElement;
@@ -86,8 +84,6 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
   const handleToggle = (columnKey: string, essential?: boolean) => {
     if (essential) return; // Cannot toggle essential columns
     onToggle(columnKey);
-    // Keep dropdown open after toggling a column
-    //the dropdown will stay open until user clicks outside or closes manually
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, columnKey: string, essential?: boolean) => {
@@ -105,7 +101,6 @@ export const ColumnToggle: React.FC<ColumnToggleProps> = ({
   };
 
   const handleDropdownClick = (e: React.MouseEvent) => {
-    // prevent dropdown from closing when clicking inside it
     e.stopPropagation();
   };
 

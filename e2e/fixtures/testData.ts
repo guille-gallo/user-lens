@@ -1,6 +1,6 @@
 /**
  * Test fixtures for consistent test data
- * Senior-level approach: Type-safe, reusable test data
+ * Type-safe, reusable test data definitions
  */
 
 export interface TestUser {

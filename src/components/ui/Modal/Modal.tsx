@@ -13,7 +13,7 @@ interface ModalProps {
 }
 
 /**
- * Reusable Modal component for dialogs and forms
+ * Modal component for dialogs and forms
  */
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -27,7 +27,6 @@ export const Modal: React.FC<ModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
 
-  // Get all focusable elements within the modal
   const getFocusableElements = () => {
     if (!modalRef.current) return [];
     const focusableSelectors = [

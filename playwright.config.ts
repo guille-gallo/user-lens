@@ -1,11 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Simplified Playwright configuration for Senior Frontend Developer Assessment
- * Features:
- * - Chrome only testing (focused and reliable)
- * - Basic reporting
- * - Essential configuration for maintainability
+ * Playwright configuration for E2E testing
  */
 export default defineConfig({
   // Test directory

@@ -30,13 +30,11 @@ export const EditableField: React.FC<EditableFieldProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const fieldId = `editable-field-${field}`;
 
-  // Check if field is required
   const isRequired = () => {
     const fieldConfig = USER_FIELD_CONFIG[field];
     return fieldConfig?.some(rule => rule.required) || false;
   };
 
-  // Validate field value
   const validateValue = (value: string | number) => {
     const fieldConfig = USER_FIELD_CONFIG[field];
     if (!fieldConfig) return null;
@@ -50,7 +48,6 @@ export const EditableField: React.FC<EditableFieldProps> = ({
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
-      // Use preventScroll to avoid page movement
       inputRef.current.focus({ preventScroll: true });
       inputRef.current.select();
     }

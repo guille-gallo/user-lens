@@ -2,8 +2,8 @@ import { Page, expect } from '@playwright/test';
 import { TestUser, TestNotification } from '../fixtures/testData';
 
 /**
- * Senior-level test utilities
- * Provides reusable functions for common E2E operations
+ * Test utilities for E2E testing
+ * Provides reusable functions for common operations
  */
 export class TestUtils {
   

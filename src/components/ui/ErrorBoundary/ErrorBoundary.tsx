@@ -5,7 +5,7 @@ import { Icon } from '../Icon';
 import './ErrorBoundary.scss';
 
 /**
- * Error Boundary component for React Router
+ * Error Boundary component
  */
 export const ErrorBoundary: React.FC = () => {
   const error = useRouteError();

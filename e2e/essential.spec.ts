@@ -2,8 +2,7 @@ import { test, expect } from '@playwright/test';
 
 /**
  * Essential E2E Tests - Chrome Only
- * Basic test suite for Senior Frontend Developer Assessment
- * Focused on core functionality verification
+ * Core functionality verification tests
  */
 
 test.describe('Essential E2E Tests', () => {

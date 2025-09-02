@@ -15,7 +15,6 @@ export interface SidePanelProps {
 
 /**
  * Side Panel component for desktop editing interfaces
- * Provides contextual editing without losing the main view
  */
 export const SidePanel: React.FC<SidePanelProps> = ({
   isOpen,
@@ -29,7 +28,6 @@ export const SidePanel: React.FC<SidePanelProps> = ({
 }) => {
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Handle escape key
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
@@ -46,7 +44,6 @@ export const SidePanel: React.FC<SidePanelProps> = ({
     };
   }, [isOpen, onClose]);
 
-  // Focus management
   useEffect(() => {
     if (isOpen && panelRef.current) {
       const focusableElement = panelRef.current.querySelector(

@@ -21,11 +21,8 @@ export const MetricsOverview: React.FC<MetricsOverviewProps> = ({
   const { setSearchTerm } = useUserStore();
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Function to search for all users by company name
   const handleCompanyClick = (companyName: string) => {
-    // Set search term to company name to filter users by company
     setSearchTerm(companyName);
-    // Navigate to main users page where the search will be applied
     navigate('/');
   };
 

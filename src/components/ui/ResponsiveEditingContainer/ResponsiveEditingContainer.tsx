@@ -18,11 +18,6 @@ export interface ResponsiveEditingContainerProps {
 
 /**
  * Responsive Editing Container
- * 
- * Automatically switches between:
- * - Side Panel for desktop (maintains context)
- * - Modal for mobile/tablet (better space utilization)
- * 
  */
 export const ResponsiveEditingContainer: React.FC<ResponsiveEditingContainerProps> = ({
   isOpen,

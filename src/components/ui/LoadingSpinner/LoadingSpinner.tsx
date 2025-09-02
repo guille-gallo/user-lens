@@ -8,7 +8,7 @@ interface LoadingSpinnerProps {
 }
 
 /**
- * loading Spinner component
+ * Loading Spinner component
  */
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   message = 'Loading...',

@@ -7,7 +7,7 @@ import { ARIA_LABELS } from '../../../constants/accessibility';
 import './Header.scss';
 
 /**
- * Header Component - Self-contained header that manages its own actions based on route
+ * Header Component
  */
 export const Header: React.FC = () => {
   const location = useLocation();
@@ -17,27 +17,16 @@ export const Header: React.FC = () => {
   // Notification store for conditional actions
   const { 
     summary, 
-    isLoading, 
-    markAllAsRead, 
-    fetchNotifications, 
-    clearError 
+    markAllAsRead
   } = useNotificationStore();
 
   const [isMarkingAllRead, setIsMarkingAllRead] = React.useState(false);
-
-  // Determine current page context
   const isUserDetailPage = location.pathname.startsWith('/users/') && params.id;
   const isNotificationsPage = location.pathname === '/notifications';
 
-  // Navigation handlers
   const handleBackToUsers = React.useCallback(() => {
     navigate('/');
   }, [navigate]);
-
-  const handleRefreshNotifications = React.useCallback(() => {
-    clearError();
-    fetchNotifications(true); // Force refresh
-  }, [clearError, fetchNotifications]);
 
   const handleMarkAllAsRead = React.useCallback(async () => {
     if (summary.unread === 0) return;
@@ -47,7 +36,6 @@ export const Header: React.FC = () => {
     setIsMarkingAllRead(false);
   }, [summary.unread, markAllAsRead]);
 
-  // Render page-specific actions
   const renderPageActions = () => {
     if (isUserDetailPage) {
       return (
@@ -64,15 +52,6 @@ export const Header: React.FC = () => {
     if (isNotificationsPage) {
       return (
         <div className="header__actions-group">
-          <Button
-            variant="outline"
-            onClick={handleRefreshNotifications}
-            disabled={isLoading}
-            className="header__action"
-          >
-            Refresh
-          </Button>
-          
           <Button
             variant="outline"
             onClick={handleBackToUsers}

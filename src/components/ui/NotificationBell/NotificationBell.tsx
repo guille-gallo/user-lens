@@ -18,12 +18,11 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
   const { summary, fetchSummary } = useNotificationStore();
 
   useEffect(() => {
-    // Fetch summary on mount (respects caching)
     fetchSummary();
     
     // Set up polling for real-time updates (every 2 minutes, respects caching)
     const interval = setInterval(() => {
-      fetchSummary(false); // Don't force, let cache handle it
+      fetchSummary(false);
     }, 120000); // 2 minutes
     
     return () => clearInterval(interval);
