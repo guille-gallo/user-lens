@@ -49,6 +49,17 @@ The development server uses JSON Server with a mock database (`db.json`) contain
 - Notifications data
 - Company metrics
 
+**Data Persistence Strategy:**
+
+The application implements data persistence approach to provide a fully functional demo experience:
+
+- **JSONPlaceholder API**: Production build uses JSONPlaceholder (https://jsonplaceholder.typicode.com) - a fake REST API that doesn't persist data across sessions
+- **localStorage Caching**: All CRUD operations are cached locally to simulate persistent data storage
+- **Fallback Strategy**: API → Cache → Mock Data for graceful degradation
+- **User Experience**: Enables complete CRUD functionality for reviewers despite using a non-persistent API
+
+This approach ensures the application demonstrates full functionality while using publicly available testing APIs.
+
 ## 💻 Development
 
 ### Start Development Server
@@ -153,6 +164,7 @@ The application implements a scalable design system with:
 - **Design Tokens**: Centralized color, spacing, typography variables
 - **Component Library**: Reusable UI components with consistent styling
 - **Responsive Design**: Mobile-first approach with breakpoint management
+- **Adaptive UX Patterns**: Context-sensitive interaction models (modals, sidepanels, in-place editing)
 - **SCSS Architecture**: Modular stylesheets with mixins and utilities
 
 ## 🔄 State Management
@@ -169,13 +181,14 @@ Zustand store architecture with:
 Service layer architecture with:
 
 - **HTTP Service**: Centralized HTTP client with error handling
-- **API Services**: Domain-specific API interactions
-- **Data Service**: Data transformation and caching
-- **Mock Service**: Development data mocking
+- **API Services**: Domain-specific API interactions (JSONPlaceholder integration)
+- **Data Service**: Smart caching with localStorage persistence for demo functionality
+- **Mock Service**: Development data mocking with graceful fallback strategy
 
 ## 📱 Features
 
 - **User Management**: Complete CRUD operations for user data
+- **Adaptive Editing Workflows**: Context-aware editing patterns - in-place editing in detail views, sidepanel for desktop table interactions, and modal overlays for mobile touch interfaces
 - **Responsive Design**: Optimized for desktop, tablet, and mobile
 - **Search & Filtering**: Real-time user search functionality
 - **Data Validation**: Form validation with error handling
@@ -192,7 +205,17 @@ Service layer architecture with:
 - **Error Boundaries**: Graceful error handling
 - **Performance**: Optimized rendering and state management
 
-## 🚦 Available Scripts
+## � Documentation
+
+For detailed technical information:
+
+- **[DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)**: UI/CSS framework choices, responsive strategies, and UX interaction patterns
+- **[ACCESSIBILITY.md](./ACCESSIBILITY.md)**: WCAG compliance, keyboard navigation, and screen reader support
+- **[PERFORMANCE.md](./PERFORMANCE.md)**: Performance optimizations, metrics, and caching strategies  
+- **[COMPONENT_DESIGN.md](./COMPONENT_DESIGN.md)**: Reusable component architecture and design decisions
+- **[AI_USAGE.md](./AI_USAGE.md)**: AI tool integration and development workflow documentation
+
+## �🚦 Available Scripts
 
 | Script | Description |
 |--------|-------------|

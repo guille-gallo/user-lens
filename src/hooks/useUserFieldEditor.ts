@@ -38,7 +38,7 @@ export const useUserFieldEditor = (
     if (fieldConfig) {
       const error = validateField(value, fieldConfig);
       if (error) {
-        alert(error);
+        console.error('Validation error:', error);
         return false;
       }
     }

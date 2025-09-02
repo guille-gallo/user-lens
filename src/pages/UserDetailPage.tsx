@@ -8,7 +8,7 @@ import type { User } from '../types';
 import './UserDetailPage.scss';
 
 /**
- * User Detail Page - Showcase individual user information
+ * User Detail Page - Display individual user information
  */
 export const UserDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

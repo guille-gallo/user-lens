@@ -61,3 +61,57 @@
    - **<480px**: Card layout with touch-optimized interactions
 
 **Result**: Maintains full functionality across all devices while providing optimal UX for each screen size.
+
+## 🎯 User Interaction Patterns
+
+### Multi-Modal Editing Strategy
+
+**The Challenge**: Providing efficient editing workflows that accommodate different user contexts and device capabilities.
+
+**Our Solution**: Context-aware editing patterns that optimize for user intent and device constraints.
+
+#### 1. **In-Place Editing (Detail View)**
+
+**Where**: User Detail Page (`/users/:id`)
+**Why**: 
+- **Focus Mode**: Users visiting the detail view are explicitly seeking comprehensive user information
+- **Context Switching Reduction**: Eliminates modal overlays when the entire page is dedicated to one user
+- **Field Visibility**: All editable fields visible simultaneously for bulk editing scenarios
+- **Mental Model**: Matches desktop application patterns where detail views are inherently editable
+
+```typescript
+// Detail view editing optimizes for focused interaction
+const { editingField, handleEditField, handleSaveField } = useUserFieldEditor(user, updateUser);
+```
+
+#### 2. **Sidepanel Editing (Desktop Table View)**
+
+**Where**: Users Page on desktop (>768px)
+**Why**:
+- **Context Preservation**: Maintains table view context while editing - users can reference other entries
+- **Workflow Efficiency**: Quick edits without full page navigation
+- **Data Comparison**: Enables side-by-side comparison with other users during editing
+- **Desktop Real Estate**: Utilizes available horizontal space effectively
+
+#### 3. **Modal Editing (Mobile)**
+
+**Where**: Users Page on mobile (<768px)  
+**Why**:
+- **Screen Space Optimization**: Modal overlays maximize form space on limited mobile screens
+- **Touch Interface**: Prevents accidental touches on background table elements
+- **Focus Isolation**: Creates clear interaction boundaries on touch devices
+- **Platform Conventions**: Aligns with mobile platform patterns (iOS/Android modal presentations)
+
+### Design Philosophy
+
+This multi-modal approach follows **progressive enhancement principles**:
+
+1. **Base Experience**: In-place editing provides the fundamental editing capability
+2. **Enhanced Desktop**: Sidepanel adds efficiency for power users with larger screens
+3. **Mobile Optimization**: Modal pattern adapts to touch interface constraints
+
+**Benefits**:
+- **User Efficiency**: Each context provides the optimal editing experience
+- **Cognitive Load**: Consistent patterns reduce learning curve across devices
+- **Accessibility**: Each pattern supports different interaction modalities
+- **Performance**: Avoids one-size-fits-all solutions that compromise on specific use cases
