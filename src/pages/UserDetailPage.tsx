@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useUserStore } from '../store';
-import { useHeaderActions } from '../components/layout';
 import { useDocumentTitle, useUserFieldEditor, useToast } from '../hooks';
-import { Button, LoadingSpinner, Toast, EditableField, Icon } from '../components/ui';
+import { LoadingSpinner, Toast, EditableField, Icon } from '../components/ui';
 import { formatFieldName, hasValidCoordinates } from '../utils';
 import type { User } from '../types';
 import './UserDetailPage.scss';
@@ -13,8 +12,6 @@ import './UserDetailPage.scss';
  */
 export const UserDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { setHeaderActions, clearHeaderActions } = useHeaderActions();
   
   const {
     users,
@@ -88,29 +85,6 @@ export const UserDetailPage: React.FC = () => {
       }
     }
   }, [users, id]);
-
-  const handleBack = useCallback(() => {
-    navigate('/');
-  }, [navigate]);
-
-  // Set header actions
-  useEffect(() => {
-    const headerActions = (
-      <Button
-        variant="outline"
-        onClick={handleBack}
-      >
-        ← Back to Users
-      </Button>
-    );
-    
-    setHeaderActions(headerActions);
-    
-    // Cleanup when component unmounts
-    return () => {
-      clearHeaderActions();
-    };
-  }, [setHeaderActions, clearHeaderActions, handleBack]);
 
   // Enhanced save handler with toast notification
   const handleSaveFieldWithToast = async (field: string, value: string | number): Promise<boolean> => {

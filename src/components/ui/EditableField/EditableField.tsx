@@ -82,7 +82,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
   };
 
   return (
-    <div className="editable-field">
+    <div className="editable-field" data-field={field}>
       <label htmlFor={fieldId} className="editable-field__label">
         {label}
         {isRequired() && <span className="editable-field__required">*</span>}

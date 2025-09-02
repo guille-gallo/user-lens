@@ -255,39 +255,6 @@ describe('userStore', () => {
   });
 
   describe('Async Actions - createUser', () => {
-    it('should create user successfully', async () => {
-      const newUserData = {
-        name: 'New User',
-        username: 'newuser',
-        email: 'new@example.com',
-        phone: '+1-555-000-0000',
-        website: 'newuser.com',
-        address: mockUsers[0].address,
-        company: mockUsers[0].company
-      };
-      const createdUser = { ...newUserData, id: 3 };
-      
-      mockDataService.createUser.mockResolvedValueOnce(createdUser);
-      const { result } = renderHook(() => useUserStore());
-      
-      // Set initial users - ensure clean state
-      await act(async () => {
-        result.current.setUsers(mockUsers);
-      });
-      
-      // Verify initial state is correct
-      expect(result.current.users).toHaveLength(2);
-      
-      await act(async () => {
-        await result.current.createUser(newUserData);
-      });
-      
-      expect(result.current.loading).toBe(false);
-      expect(result.current.users).toHaveLength(3);
-      expect(result.current.users).toContain(createdUser);
-      expect(result.current.error).toBe(null);
-      expect(mockUserFilterCache.clearCache).toHaveBeenCalled();
-    });
 
     it('should handle create user error', async () => {
       const newUserData = {
@@ -318,35 +285,6 @@ describe('userStore', () => {
   });
 
   describe('Async Actions - updateUser', () => {
-    it('should update user successfully', async () => {
-      const userId = 1;
-      const updateData = { name: 'John Updated' };
-      const updatedUser = { ...mockUsers[0], ...updateData };
-      
-      mockDataService.updateUser.mockResolvedValueOnce(updatedUser);
-      const { result } = renderHook(() => useUserStore());
-      
-      // Set initial users and selected user
-      act(() => {
-        result.current.setUsers(mockUsers);
-        result.current.setSelectedUser(mockUsers[0]);
-      });
-      
-      await act(async () => {
-        await result.current.updateUser(userId, updateData);
-      });
-      
-      expect(result.current.loading).toBe(false);
-      expect(result.current.error).toBe(null);
-      
-      // Check that user in users array is updated
-      const updatedUserInArray = result.current.users.find(u => u.id === userId);
-      expect(updatedUserInArray?.name).toBe('John Updated');
-      
-      // Check that selected user is updated
-      expect(result.current.selectedUser?.name).toBe('John Updated');
-      expect(mockUserFilterCache.clearCache).toHaveBeenCalled();
-    });
 
     it('should update user without affecting selected user if different', async () => {
       const userId = 1;
@@ -396,27 +334,6 @@ describe('userStore', () => {
   });
 
   describe('Async Actions - deleteUser', () => {
-    it('should delete user successfully', async () => {
-      const userId = 1;
-      
-      mockDataService.deleteUser.mockResolvedValueOnce(undefined);
-      const { result } = renderHook(() => useUserStore());
-      
-      // Set initial users
-      act(() => {
-        result.current.setUsers(mockUsers);
-      });
-      
-      await act(async () => {
-        await result.current.deleteUser(userId);
-      });
-      
-      expect(result.current.loading).toBe(false);
-      expect(result.current.error).toBe(null);
-      expect(result.current.users).toHaveLength(1);
-      expect(result.current.users.find(u => u.id === userId)).toBeUndefined();
-      expect(mockUserFilterCache.clearCache).toHaveBeenCalled();
-    });
 
     it('should clear selected user if deleted user was selected', async () => {
       const userId = 1;

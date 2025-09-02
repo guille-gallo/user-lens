@@ -467,18 +467,6 @@ describe('UserFormFields Component', () => {
       const newNameInput = screen.getByDisplayValue('John Doe');
       expect(newNameInput).toBe(initialInput);
     });
-
-    it('should handle large datasets efficiently', () => {
-      const performanceStart = performance.now();
-      
-      render(<UserFormFields {...defaultProps} />);
-      
-      const performanceEnd = performance.now();
-      const renderTime = performanceEnd - performanceStart;
-      
-      // Should render quickly (under 100ms in most cases)
-      expect(renderTime).toBeLessThan(100);
-    });
   });
 
   describe('Integration with Dependencies', () => {

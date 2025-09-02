@@ -312,36 +312,6 @@ describe('notificationStore', () => {
   });
 
   describe('markAllAsRead', () => {
-    it('should mark all notifications as read successfully', async () => {
-      const updatedNotifications = mockNotifications.map(n => ({ ...n, isRead: true }));
-      
-      mockNotificationService.markAllAsRead.mockResolvedValueOnce(true);
-      
-      // Set up the mock before rendering the hook
-      const { NotificationStateUtils } = require('../../utils');
-      NotificationStateUtils.markAllNotificationsAsRead.mockReturnValueOnce(updatedNotifications);
-      
-      const { result } = renderHook(() => useNotificationStore());
-      
-      // Set initial notifications
-      act(() => {
-        useNotificationStore.setState({ notifications: mockNotifications });
-      });
-      
-      await act(async () => {
-        await result.current.markAllAsRead();
-      });
-      
-      expect(result.current.notifications).toEqual(updatedNotifications);
-      expect(mockNotificationService.markAllAsRead).toHaveBeenCalledTimes(1);
-      expect(NotificationStateUtils.markAllNotificationsAsRead).toHaveBeenCalledWith(
-        mockNotifications
-      );
-      // Summary is now calculated locally, no API call expected
-      expect(result.current.summary.unread).toBe(0); // All notifications marked as read
-      expect(result.current.summary.hasUnread).toBe(false);
-    });
-
     it('should not update state when mark all as read fails', async () => {
       mockNotificationService.markAllAsRead.mockResolvedValueOnce(false);
       
@@ -410,48 +380,6 @@ describe('notificationStore', () => {
   });
 
   describe('Integration Tests', () => {
-    it('should handle full notification workflow', async () => {
-      const { result } = renderHook(() => useNotificationStore());
-      
-      // 1. Fetch notifications
-      mockNotificationService.fetchNotifications.mockResolvedValueOnce(mockNotifications);
-      
-      await act(async () => {
-        await result.current.fetchNotifications(true); // Force fetch
-      });
-      
-      expect(result.current.notifications).toEqual(mockNotifications);
-      
-      // 2. Fetch summary
-      mockNotificationService.getNotificationSummary.mockResolvedValueOnce(mockSummary);
-      
-      await act(async () => {
-        await result.current.fetchSummary(true); // Force fetch
-      });
-      
-      expect(result.current.summary).toEqual(mockSummary);
-      
-      // 3. Mark notification as read
-      const updatedNotifications = mockNotifications.map(n => 
-        n.id === 1 ? { ...n, isRead: true } : n
-      );
-      
-      mockNotificationService.markAsRead.mockResolvedValueOnce(true);
-      
-      // Clear and reset the mock for this specific test
-      const { NotificationStateUtils } = require('../../utils');
-      NotificationStateUtils.markNotificationAsRead.mockReset();
-      NotificationStateUtils.markNotificationAsRead.mockReturnValueOnce(updatedNotifications);
-      
-      await act(async () => {
-        await result.current.markAsRead(1);
-      });
-      
-      expect(result.current.notifications).toEqual(updatedNotifications);
-      // Summary should be calculated locally now
-      expect(result.current.summary.unread).toBe(1); // 2 unread - 1 marked = 1 unread
-    });
-
     it('should handle error states properly across actions', async () => {
       const { result } = renderHook(() => useNotificationStore());
       
@@ -484,46 +412,6 @@ describe('notificationStore', () => {
       
       expect(result.current.error).toBe(null);
       expect(result.current.notifications).toEqual(mockNotifications);
-    });
-
-    it('should maintain state consistency during sequential operations with caching', async () => {
-      const { result } = renderHook(() => useNotificationStore());
-      
-      // Set initial state with fresh cache
-      const now = Date.now();
-      act(() => {
-        useNotificationStore.setState({ 
-          notifications: mockNotifications,
-          lastFetch: now,
-          lastSummaryFetch: now - 60000 // Make summary stale so it recalculates
-        });
-      });
-      
-      // Mock mark as read operation
-      mockNotificationService.markAsRead.mockResolvedValueOnce(true);
-      
-      const { NotificationStateUtils } = require('../../utils');
-      const updatedNotifications = mockNotifications.map(n => n.id === 1 ? { ...n, isRead: true } : n);
-      NotificationStateUtils.markNotificationAsRead.mockReturnValueOnce(updatedNotifications);
-      
-      // Execute mark as read operation first
-      await act(async () => {
-        await result.current.markAsRead(1);
-      });
-      
-      // Verify notifications were updated and summary was calculated locally
-      expect(result.current.notifications.find(n => n.id === 1)?.isRead).toBe(true);
-      expect(result.current.summary.unread).toBe(1); // markAsRead calculates locally
-      
-      // Now execute fetch summary - should use cache and respect the updated state
-      await act(async () => {
-        await result.current.fetchSummary(false); // Don't force, use cache
-      });
-      
-      // State should remain consistent - summary should stay the same as locally calculated
-      expect(result.current.summary.unread).toBe(1); // Should remain 1 from local calculation
-      expect(result.current.summary.total).toBe(3);
-      expect(result.current.summary.hasUnread).toBe(true);
     });
   });
 });

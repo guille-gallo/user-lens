@@ -1,7 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useHeaderActions } from '../components/layout';
-import { Button } from '../components/ui/Button';
+import { useEffect } from 'react';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { NotificationCard } from '../components/ui/NotificationCard';
 import { useNotificationStore } from "../store";
@@ -12,9 +9,6 @@ import './NotificationsPage.scss';
  * Notifications page component
  */
 export const NotificationsPage = () => {
-  const navigate = useNavigate();
-  const { setHeaderActions, clearHeaderActions } = useHeaderActions();
-  
   // Set document title
   useDocumentTitle('Notifications');
   
@@ -24,76 +18,17 @@ export const NotificationsPage = () => {
     isLoading,
     error,
     fetchNotifications,
-    markAsRead,
-    markAllAsRead,
-    clearError
+    markAsRead
   } = useNotificationStore();
-
-  const [isMarkingAllRead, setIsMarkingAllRead] = useState(false);
 
   useEffect(() => {
     // Fetch notifications (which will also update summary automatically)
     fetchNotifications();
   }, [fetchNotifications]);
 
-  const handleBack = useCallback(() => {
-    navigate('/');
-  }, [navigate]);
-
-  const handleMarkAsRead = useCallback(async (notificationId: number) => {
+  const handleMarkAsRead = async (notificationId: number) => {
     await markAsRead(notificationId);
-  }, [markAsRead]);
-
-  const handleMarkAllAsRead = useCallback(async () => {
-    if (summary.unread === 0) return;
-    
-    setIsMarkingAllRead(true);
-    await markAllAsRead();
-    setIsMarkingAllRead(false);
-  }, [summary.unread, markAllAsRead]);
-
-  const handleRefresh = useCallback(() => {
-    clearError();
-    fetchNotifications(true); // Force refresh (summary updates automatically)
-  }, [clearError, fetchNotifications]);
-
-  // Set header actions
-  useEffect(() => {
-    const headerActions = (
-      <div className="notifications-page__actions">
-        <Button
-          variant="outline"
-          onClick={handleRefresh}
-          disabled={isLoading}
-        >
-          Refresh
-        </Button>
-        
-        <Button
-          variant="outline"
-          onClick={handleBack}
-        >
-          ← Back to Users
-        </Button>
-        
-        {summary.unread > 0 && (
-          <Button
-            variant="primary"
-            onClick={handleMarkAllAsRead}
-            disabled={isMarkingAllRead}
-          >
-            {isMarkingAllRead ? 'Marking...' : `Mark all read (${summary.unread})`}
-          </Button>
-        )}
-      </div>
-    );
-
-    setHeaderActions(headerActions);
-    
-    return () => {
-      clearHeaderActions();
-    };
-  }, [handleBack, handleRefresh, handleMarkAllAsRead, isLoading, isMarkingAllRead, summary.unread, setHeaderActions, clearHeaderActions]);
+  };
 
   if (isLoading && notifications.length === 0) {
     return (
@@ -118,9 +53,6 @@ export const NotificationsPage = () => {
         {error && (
           <div className="notifications-page__error">
             <p>Failed to load notifications: {error}</p>
-            <Button onClick={handleRefresh} variant="outline" size="small">
-              Try Again
-            </Button>
           </div>
         )}
 
