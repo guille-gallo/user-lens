@@ -1,15 +1,7 @@
 {
-  "version": 2,
   "functions": {
-    "api/server.js": {
-      "includeFiles": "db.json",
-      "maxDuration": 10
+    "api/*.js": {
+      "runtime": "nodejs18.x"
     }
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/server.js"
-    }
-  ]
+  }
 }
