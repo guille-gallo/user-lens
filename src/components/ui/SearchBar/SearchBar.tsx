@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useId } from 'react';
 import { Icon } from '../Icon';
 import './SearchBar.scss';
 
@@ -7,31 +7,37 @@ interface SearchBarProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  label?: string;
 }
 
 /**
- * SearchBar component
+ * A memoized and forward-ref enabled search bar component with improved accessibility.
  */
-export const SearchBar: React.FC<SearchBarProps> = ({
+export const SearchBar = React.memo(forwardRef<HTMLInputElement, SearchBarProps>(({
   value,
   onChange,
   placeholder = "Search...",
-  className = ""
-}) => {
+  className = "",
+  label = "Search"
+}, ref) => {
+  const id = useId();
+
   const handleClear = () => {
     onChange('');
   };
 
   return (
     <div className={`search-bar ${className}`}>
+      <label htmlFor={id} className="sr-only">{label}</label>
       <div className="search-bar__input-wrapper">
         <input
+          ref={ref}
+          id={id}
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           className="search-bar__input"
-          aria-label="Search input"
           role="searchbox"
         />
         <div className="search-bar__icons">
@@ -40,16 +46,15 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               onClick={handleClear}
               className="search-bar__clear"
               aria-label="Clear search"
-              type="button"
             >
               <Icon name="close" />
             </button>
           )}
-          <div className="search-bar__search-icon" aria-hidden="true">
-            <Icon name="search" />
-          </div>
+          <Icon name="search" className="search-bar__icon" />
         </div>
       </div>
     </div>
   );
-};
+}));
+
+SearchBar.displayName = 'SearchBar';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useDeferredValue } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore, useUserMetricsStore } from '../store';
 import { useDocumentTitle } from '../hooks';
@@ -39,6 +39,8 @@ export const UsersPage: React.FC = () => {
     getFilteredAndSortedUsers
   } = useUserStore();
 
+  const deferredSearchTerm = useDeferredValue(searchTerm);
+
   // User metrics store
   const {
     summary: metricsSummary,
@@ -73,7 +75,7 @@ export const UsersPage: React.FC = () => {
   }, [users, processUserMetrics]);
 
   // Get filtered and sorted users
-  const displayUsers = getFilteredAndSortedUsers();
+  const displayUsers = getFilteredAndSortedUsers(deferredSearchTerm);
 
   const handleSort = (field: string, order: 'asc' | 'desc') => {
     setSorting(field, order);

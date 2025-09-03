@@ -30,7 +30,7 @@ interface UserState {
   deleteUser: (id: number) => Promise<void>;
   
   // Computed values
-  getFilteredAndSortedUsers: () => User[];
+  getFilteredAndSortedUsers: (searchTerm?: string) => User[];
 }
 
 // Cache duration for users (10 minutes)
@@ -146,9 +146,10 @@ export const useUserStore = create<UserState>()(
         }
       },
 
-      getFilteredAndSortedUsers: () => {
+      getFilteredAndSortedUsers: (customSearchTerm?: string) => {
         const { users, searchTerm, sortField, sortOrder } = get();
-        return UserFilterCache.getFilteredAndSortedUsers(users, searchTerm, sortField, sortOrder);
+        const term = customSearchTerm !== undefined ? customSearchTerm : searchTerm;
+        return UserFilterCache.getFilteredAndSortedUsers(users, term, sortField, sortOrder);
       },
     }),
     {
