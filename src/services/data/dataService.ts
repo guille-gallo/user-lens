@@ -71,7 +71,8 @@ export const dataService = {
     return fetchWithFallback(
       async () => {
         console.log('🌐 Attempting to fetch users from API...');
-        const users = await userService.getUsers();
+        const response = await userService.getUsers();
+        const users = response.data;
         
         // Cache successful response
         localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));

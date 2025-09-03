@@ -1,0 +1,51 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Jon Marquardt III",
+      "username": "Benjamin_Olson84",
+      "email": "Dorthy39@gmail.com",
+      "address": {
+        "street": "9588 Cortez Wells",
+        "suite": "Suite 245",
+        "city": "North Joeboro",
+        "zipcode": "66761-3353",
+        "geo": {
+          "lat": 89.7261,
+          "lng": -153.925
+        }
+      },
+      "phone": "1-826-364-9052 x31711",
+      "website": "adolescent-lobster.org",
+      "company": {
+        "name": "Hodkiewicz LLC",
+        "catchPhrase": "Face to face full-range emulation",
+        "bs": "empower cutting-edge synergies"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Elias Wolf DVM",
+      "username": "Myron38",
+      "email": "Jennings77@gmail.com",
+      "address": {
+        "street": "320 Forest Road",
+        "suite": "Suite 670",
+        "city": "Tracyside",
+        "zipcode": "36224",
+        "geo": {
+          "lat": -55.6464,
+          "lng": -13.9354
+        }
+      },
+      "phone": "367.856.7540 x7575",
+      "website": "trustworthy-department.name",
+      "company": {
+        "name": "Kemmer Inc",
+        "catchPhrase": "Profound needs-based framework",
+        "bs": "whiteboard extensible initiatives"
+      }
+    }
+  ],
+  "notifications": []
+}

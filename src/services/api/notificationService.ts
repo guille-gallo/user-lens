@@ -7,7 +7,9 @@ import type { Notification, NotificationSummary } from '../../types';
  */
 class NotificationServiceImpl extends BaseHttpService {
   constructor() {
-    super(API_CONFIG.LOCAL_API);
+    // Use Vercel API in production, local API in development
+    const apiUrl = import.meta.env.PROD ? API_CONFIG.VERCEL_API : API_CONFIG.LOCAL_API;
+    super(apiUrl);
   }
 
   /**
