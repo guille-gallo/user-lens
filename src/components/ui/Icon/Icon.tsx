@@ -14,6 +14,8 @@ import {
 import { 
   FaChevronUp, 
   FaChevronDown, 
+  FaChevronLeft,
+  FaChevronRight,
   FaSort,
   FaColumns,
   FaBuilding
@@ -38,7 +40,9 @@ export type IconName =
   | 'check' 
   | 'x' 
   | 'chevron-up' 
-  | 'chevron-down' 
+  | 'chevron-down'
+  | 'chevron-left'
+  | 'chevron-right'
   | 'chevrons-up-down'
   | 'columns'
   | 'user'
@@ -73,6 +77,8 @@ const iconMap = {
   x: AiOutlineClose,
   'chevron-up': FaChevronUp,
   'chevron-down': FaChevronDown,
+  'chevron-left': FaChevronLeft,
+  'chevron-right': FaChevronRight,
   'chevrons-up-down': FaSort,
   columns: FaColumns,
   user: AiOutlineUser,

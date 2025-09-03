@@ -3,6 +3,27 @@
  * Extracted from individual service files for better organization
  */
 
+// ===== PAGINATION TYPES =====
+export interface PaginationParams {
+  page: number;
+  limit: number;
+  searchTerm?: string;
+  sortField?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
+
 // ===== USER TYPES =====
 export interface User {
   id: number;
@@ -121,9 +142,12 @@ export interface ApiResponse<T> {
 
 export interface PaginatedResponse<T> {
   data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  hasNext: boolean;
-  hasPrev: boolean;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
 }

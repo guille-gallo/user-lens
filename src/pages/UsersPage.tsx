@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useDeferredValue } from 'react';
+import React, { useEffect, useState, useDeferredValue, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore, useUserMetricsStore } from '../store';
 import { useDocumentTitle } from '../hooks';
@@ -9,7 +9,8 @@ import {
   ConfirmDialog, 
   Toast, 
   UserForm,
-  MetricsOverview
+  MetricsOverview,
+  Pagination
 } from '../components/ui';
 import type { User } from '../types';
 import './UsersPage.scss';
@@ -30,16 +31,23 @@ export const UsersPage: React.FC = () => {
     searchTerm,
     sortField,
     sortOrder,
+    currentPage,
+    pageSize,
+    totalUsers,
+    totalPages,
+    hasNextPage,
+    hasPrevPage,
     setSearchTerm,
     setSorting,
+    setPageSize,
     fetchUsers,
     createUser,
     updateUser,
     deleteUser,
-    getFilteredAndSortedUsers
+    goToNextPage,
+    goToPrevPage,
+    goToPage
   } = useUserStore();
-
-  const deferredSearchTerm = useDeferredValue(searchTerm);
 
   // User metrics store
   const {
@@ -48,6 +56,14 @@ export const UsersPage: React.FC = () => {
     error: metricsError,
     processUserMetrics
   } = useUserMetricsStore();
+
+  // React 18 useDeferredValue for search performance
+  // This defers the search term to avoid blocking the input field
+  const deferredSearchTerm = useDeferredValue(searchTerm);
+  const isPending = searchTerm !== deferredSearchTerm;
+  
+  // AbortController ref for cancelling previous requests
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // State for modals
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
@@ -60,12 +76,29 @@ export const UsersPage: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isFormLoading, setIsFormLoading] = useState(false);
 
-  // Fetch users on component mount if not already loaded
+  // Single effect to handle initial load and search changes
   useEffect(() => {
-    if (users.length === 0) {
-      fetchUsers(); // Only fetch if no cached data
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
-  }, [fetchUsers, users.length]);
+    
+    // Create new AbortController for this request
+    abortControllerRef.current = new AbortController();
+    
+    fetchUsers({ 
+      page: 1, 
+      limit: 20,
+      searchTerm: deferredSearchTerm 
+    }, true, abortControllerRef.current.signal); // Always force refresh for search changes
+    
+    // Cleanup on unmount
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [deferredSearchTerm, fetchUsers]); // Only depend on deferred search term
 
   // Fetch user metrics when users change
   useEffect(() => {
@@ -74,11 +107,14 @@ export const UsersPage: React.FC = () => {
     }
   }, [users, processUserMetrics]);
 
-  // Get filtered and sorted users
-  const displayUsers = getFilteredAndSortedUsers(deferredSearchTerm);
+  // With pagination, we use the users directly from the store
+  // since filtering and sorting are done on the server
+  const displayUsers = users;
 
   const handleSort = (field: string, order: 'asc' | 'desc') => {
     setSorting(field, order);
+    // Refetch with new sorting
+    fetchUsers({ page: 1, sortField: field, sortOrder: order }, true);
   };
 
   const handleDelete = (user: User) => {
@@ -145,6 +181,24 @@ export const UsersPage: React.FC = () => {
     }
   };
 
+  // Pagination handlers
+  const handlePageChange = (page: number) => {
+    goToPage(page);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    fetchUsers({ page: 1, limit: size }, true); // Reset to page 1 with new page size
+  };
+
+  const handleNextPage = () => {
+    goToNextPage();
+  };
+
+  const handlePrevPage = () => {
+    goToPrevPage();
+  };
+
   return (
     <div className="users-page">
       <div className="users-page__content">
@@ -166,7 +220,7 @@ export const UsersPage: React.FC = () => {
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Search users by name, email, company..."
-            className="users-page__search"
+            className={`users-page__search ${isPending ? 'users-page__search--searching' : ''}`}
           />
           
           <div className="users-page__actions">
@@ -181,7 +235,7 @@ export const UsersPage: React.FC = () => {
 
         <DataTable
           users={displayUsers}
-          loading={loading}
+          loading={loading || isPending}
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}
@@ -189,6 +243,22 @@ export const UsersPage: React.FC = () => {
           onDelete={handleDelete}
           onView={handleView}
           className="users-page__table"
+        />
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalUsers}
+          pageSize={pageSize}
+          hasNext={hasNextPage}
+          hasPrev={hasPrevPage}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          onNext={handleNextPage}
+          onPrev={handlePrevPage}
+          loading={loading}
+          className="users-page__pagination"
         />
       </div>
 

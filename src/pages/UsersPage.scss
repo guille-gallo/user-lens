@@ -54,6 +54,25 @@
   &__search {
     flex: 1;
     max-width: 500px;
+
+    &--searching {
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #e1e5e9;
+        border-top: 2px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        z-index: 1;
+        transform: translateY(-50%);
+      }
+    }
   }
 
   &__actions {
@@ -149,4 +168,20 @@
       gap: 8px;
     }
   }
+}
+
+// Pagination styles for UsersPage
+.users-page {
+  &__pagination {
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e1e5e9;
+    margin-top: 16px;
+  }
+}
+
+// Keyframes for search loading animation
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
 }

@@ -18,7 +18,8 @@
     "test:e2e:report": "playwright show-report",
     "test:all": "npm run test && npm run test:e2e",
     "json-server": "json-server --watch db.json --port 3001",
-    "dev:full": "concurrently \"npm run dev\" \"npm run json-server\""
+    "dev:full": "concurrently \"npm run dev\" \"npm run json-server\"",
+    "generate-data": "node scripts/generate-data.js"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -26,10 +27,12 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.8.2",
     "sass": "^1.91.0",
-    "zustand": "^5.0.8"
+    "zustand": "^5.0.8",
+    "json-server": "^0.17.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@faker-js/faker": "^10.0.0",
     "@playwright/test": "^1.55.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
@@ -46,7 +49,6 @@
     "globals": "^16.3.0",
     "jest": "^30.1.1",
     "jest-environment-jsdom": "^30.1.1",
-    "json-server": "^1.0.0-beta.3",
     "ts-jest": "^29.4.1",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",

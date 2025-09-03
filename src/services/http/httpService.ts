@@ -93,11 +93,11 @@ export class BaseHttpService {
   }
 
   /**
-   * Enhanced GET request with error handling
+   * Enhanced GET request with error handling and cancellation support
    */
-  protected async get<T>(endpoint: string): Promise<T> {
+  protected async get<T>(endpoint: string, signal?: AbortSignal): Promise<T> {
     try {
-      const response = await fetchWithTimeout(`${this.baseUrl}${endpoint}`);
+      const response = await fetchWithTimeout(`${this.baseUrl}${endpoint}`, { signal });
       if (!response.ok) {
         this.handleError(response, endpoint, 'GET');
       }
@@ -108,14 +108,15 @@ export class BaseHttpService {
   }
 
   /**
-   * Enhanced POST request with error handling
+   * Enhanced POST request with error handling and cancellation support
    */
-  protected async post<T>(endpoint: string, data: unknown): Promise<T> {
+  protected async post<T>(endpoint: string, data: unknown, signal?: AbortSignal): Promise<T> {
     try {
       const response = await fetchWithTimeout(`${this.baseUrl}${endpoint}`, {
         method: HTTP_METHODS.POST,
         headers: this.defaultHeaders,
         body: JSON.stringify(data),
+        signal,
       });
       if (!response.ok) {
         this.handleError(response, endpoint, 'POST');
@@ -127,14 +128,15 @@ export class BaseHttpService {
   }
 
   /**
-   * Enhanced PUT request with error handling
+   * Enhanced PUT request with error handling and cancellation support
    */
-  protected async put<T>(endpoint: string, data: unknown): Promise<T> {
+  protected async put<T>(endpoint: string, data: unknown, signal?: AbortSignal): Promise<T> {
     try {
       const response = await fetchWithTimeout(`${this.baseUrl}${endpoint}`, {
         method: HTTP_METHODS.PUT,
         headers: this.defaultHeaders,
         body: JSON.stringify(data),
+        signal,
       });
       if (!response.ok) {
         this.handleError(response, endpoint, 'PUT');
@@ -146,12 +148,13 @@ export class BaseHttpService {
   }
 
   /**
-   * Enhanced DELETE request with error handling
+   * Enhanced DELETE request with error handling and cancellation support
    */
-  protected async delete(endpoint: string): Promise<void> {
+  protected async delete(endpoint: string, signal?: AbortSignal): Promise<void> {
     try {
       const response = await fetchWithTimeout(`${this.baseUrl}${endpoint}`, {
         method: HTTP_METHODS.DELETE,
+        signal,
       });
       if (!response.ok) {
         this.handleError(response, endpoint, 'DELETE');
