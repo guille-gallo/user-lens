@@ -8,7 +8,7 @@
 export const API_CONFIG = {
   JSONPLACEHOLDER: 'https://jsonplaceholder.typicode.com',
   LOCAL_API: 'http://localhost:3001',
-  VERCEL_API: 'https://user-lens-4yvhlzqlx-guillermos-projects-cc2deb38.vercel.app/api',
+  VERCEL_API: '/api', // Use relative path in production
   TIMEOUT: 8000, // 8 seconds
 } as const;
 
