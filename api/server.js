@@ -12,18 +12,24 @@ module.exports = (req, res) => {
     return;
   }
 
-  // Create json-server instance
-  const server = jsonServer.create();
-  const router = jsonServer.router(path.join(__dirname, '../db.json'));
-  const middlewares = jsonServer.defaults();
+  try {
+    // Create json-server instance
+    const server = jsonServer.create();
+    const router = jsonServer.router(path.join(__dirname, '../db.json'));
+    const middlewares = jsonServer.defaults({
+      noCors: true // Disable json-server's CORS since we handle it above
+    });
 
-  // Rewrite the URL to remove /api prefix for json-server
-  const originalUrl = req.url;
-  req.url = req.url.replace('/api', '');
-
-  server.use(middlewares);
-  server.use(router);
-  
-  // Handle the request
-  server.handle(req, res);
+    server.use(middlewares);
+    server.use(router);
+    
+    // Handle the request
+    server(req, res);
+  } catch (error) {
+    console.error('Serverless function error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message 
+    });
+  }
 };
