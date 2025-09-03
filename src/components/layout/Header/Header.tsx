@@ -1,108 +1,84 @@
 import React from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Button } from '../../ui/Button';
-import { NotificationBell } from '../../ui/NotificationBell';
-import { useNotificationStore } from '../../../store';
+import { Link } from 'react-router-dom';
 import { ARIA_LABELS } from '../../../constants/accessibility';
 import './Header.scss';
 
+export interface HeaderProps {
+  /**
+   * The application title/name displayed in the header
+   */
+  title?: string;
+  /**
+   * URL for the home/root link (defaults to "/")
+   */
+  homeUrl?: string;
+  /**
+   * Action buttons or elements to display in the header
+   */
+  actions?: React.ReactNode;
+  /**
+   * Notification component or element
+   */
+  notifications?: React.ReactNode;
+  /**
+   * Additional CSS class name for styling
+   */
+  className?: string;
+  /**
+   * ARIA label for home navigation link
+   */
+  homeAriaLabel?: string;
+  /**
+   * ARIA label for primary navigation
+   */
+  navigationAriaLabel?: string;
+}
+
 /**
- * Header Component
+ * Generic Header Component
+ * 
+ * A reusable header component that follows composition patterns.
+ * Accepts title, actions, and notifications as props to remain generic
+ * and reusable across different pages and contexts.
  */
-export const Header: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const params = useParams();
-  
-  // Notification store for conditional actions
-  const { 
-    summary, 
-    markAllAsRead
-  } = useNotificationStore();
-
-  const [isMarkingAllRead, setIsMarkingAllRead] = React.useState(false);
-  const isUserDetailPage = location.pathname.startsWith('/users/') && params.id;
-  const isNotificationsPage = location.pathname === '/notifications';
-
-  const handleBackToUsers = React.useCallback(() => {
-    navigate('/');
-  }, [navigate]);
-
-  const handleMarkAllAsRead = React.useCallback(async () => {
-    if (summary.unread === 0) return;
-    
-    setIsMarkingAllRead(true);
-    await markAllAsRead();
-    setIsMarkingAllRead(false);
-  }, [summary.unread, markAllAsRead]);
-
-  const renderPageActions = () => {
-    if (isUserDetailPage) {
-      return (
-        <Button
-          variant="outline"
-          onClick={handleBackToUsers}
-          className="header__action"
-        >
-          ← Back to Users
-        </Button>
-      );
-    }
-
-    if (isNotificationsPage) {
-      return (
-        <div className="header__actions-group">
-          <Button
-            variant="outline"
-            onClick={handleBackToUsers}
-            className="header__action"
-          >
-            ← Back to Users
-          </Button>
-          
-          {summary.unread > 0 && (
-            <Button
-              variant="primary"
-              onClick={handleMarkAllAsRead}
-              disabled={isMarkingAllRead}
-              className="header__action"
-            >
-              {isMarkingAllRead ? 'Marking...' : `Mark all read (${summary.unread})`}
-            </Button>
-          )}
-        </div>
-      );
-    }
-
-    // Users page and other pages - no specific actions needed
-    return null;
-  };
-
+export const Header: React.FC<HeaderProps> = ({
+  title = 'User Lens',
+  homeUrl = '/',
+  actions,
+  notifications,
+  className = '',
+  homeAriaLabel = ARIA_LABELS.HOME_NAVIGATION,
+  navigationAriaLabel = ARIA_LABELS.PRIMARY_NAVIGATION
+}) => {
   return (
-    <header className="header" role="banner">
+    <header className={`header ${className}`.trim()} role="banner">
       <div className="header__content">
         <h1 className="header__title">
           <Link 
-            to="/" 
+            to={homeUrl} 
             className="header__title-link"
-            aria-label={ARIA_LABELS.HOME_NAVIGATION}
+            aria-label={homeAriaLabel}
           >
-            User Lens
+            {title}
           </Link>
         </h1>
         
         <nav 
           className="header__navigation" 
           role="navigation" 
-          aria-label={ARIA_LABELS.PRIMARY_NAVIGATION}
+          aria-label={navigationAriaLabel}
         >
-          <div className="header__actions">
-            {renderPageActions()}
-          </div>
+          {actions && (
+            <div className="header__actions">
+              {actions}
+            </div>
+          )}
           
-          <div className="header__notifications">
-            <NotificationBell />
-          </div>
+          {notifications && (
+            <div className="header__notifications">
+              {notifications}
+            </div>
+          )}
         </nav>
       </div>
     </header>

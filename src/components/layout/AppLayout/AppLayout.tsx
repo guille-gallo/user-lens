@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { LoadingSpinner } from '../../ui/LoadingSpinner';
-import { Header } from '../Header';
+import { NotificationBell } from '../../ui/NotificationBell';
+import { Header, HeaderActions } from '../Header';
 import { ARIA_LABELS } from '../../../constants/accessibility';
 import './AppLayout.scss';
 
@@ -13,7 +14,10 @@ export const AppLayout = () => {
         {ARIA_LABELS.SKIP_TO_CONTENT}
       </a>
       
-      <Header />
+      <Header 
+        actions={<HeaderActions />}
+        notifications={<NotificationBell />}
+      />
       
       <main 
         id="main-content" 

@@ -305,12 +305,8 @@
   ],
   "notifications": [
     {
-      "id": "1",
-      "title": "New User Registration",
-      "message": "12 new users have registered today",
-      "type": "info",
-      "timestamp": "2025-08-31T11:45:00Z",
-      "isRead": false
+      "isRead": true,
+      "id": "1"
     },
     {
       "id": "2",
