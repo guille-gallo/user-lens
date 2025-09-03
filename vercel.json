@@ -3,7 +3,7 @@
   "functions": {
     "api/server.js": {
       "includeFiles": "db.json",
-      "maxDuration": 30
+      "maxDuration": 10
     }
   },
   "routes": [
