@@ -7,8 +7,9 @@ import type { User, PaginationParams, PaginatedResponse } from '../../types';
  */
 class UserService extends BaseHttpService {
   constructor() {
-    // Use Vercel API in production, local API in development
-    const apiUrl = import.meta.env.PROD ? API_CONFIG.VERCEL_API : API_CONFIG.LOCAL_API;
+    // Use environment-based API URL
+    const isProduction = window.location.hostname !== 'localhost';
+    const apiUrl = isProduction ? API_CONFIG.VERCEL_API : API_CONFIG.LOCAL_API;
     super(apiUrl);
   }
 

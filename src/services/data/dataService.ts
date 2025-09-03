@@ -72,7 +72,7 @@ export const dataService = {
       async () => {
         console.log('🌐 Attempting to fetch users from API...');
         const response = await userService.getUsers();
-        const users = response.data;
+        const users = response.data; // Extract users from paginated response
         
         // Cache successful response
         localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));

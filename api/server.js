@@ -1,26 +1,29 @@
 const jsonServer = require('json-server');
 const path = require('path');
 
-const server = jsonServer.create();
-
-// Use the full dataset for production
-const router = jsonServer.router(path.join(__dirname, '../db.json'));
-const middlewares = jsonServer.defaults();
-
-// Enable CORS for all origins
-server.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+module.exports = (req, res) => {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   
   if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+    res.status(200).end();
+    return;
   }
-});
 
-server.use(middlewares);
-server.use(router);
+  // Create json-server instance
+  const server = jsonServer.create();
+  const router = jsonServer.router(path.join(__dirname, '../db.json'));
+  const middlewares = jsonServer.defaults();
 
-module.exports = server;
+  // Rewrite the URL to remove /api prefix for json-server
+  const originalUrl = req.url;
+  req.url = req.url.replace('/api', '');
+
+  server.use(middlewares);
+  server.use(router);
+  
+  // Handle the request
+  server.handle(req, res);
+};

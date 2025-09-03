@@ -1,7 +1,8 @@
 {
+  "version": 2,
   "functions": {
     "api/server.js": {
-      "maxDuration": 10
+      "includeFiles": "db.json"
     }
   },
   "rewrites": [
