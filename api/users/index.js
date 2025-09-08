@@ -1,4 +1,5 @@
-import { createClient } from '@vercel/kv';
+import { createClient } from 'redis';
+import path from 'path';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -11,17 +12,18 @@ export default async function handler(req, res) {
     return;
   }
 
-  const kv = createClient({
-    url: process.env.KV_REST_API_URL,
-    token: process.env.KV_REST_API_TOKEN,
+  const redis = createClient({
+    url: process.env.REDIS_URL
   });
+  await redis.connect();
 
   try {
     if (req.method === 'GET') {
       // Get query parameters
       const { _page = '1', _limit = '20', q = '', _sort, _order = 'asc' } = req.query;
       
-      let users = await kv.get('users');
+      const usersJSON = await redis.get('users');
+      let users = usersJSON ? JSON.parse(usersJSON) : [];
 
       // Handle search
       if (q) {
@@ -54,14 +56,15 @@ export default async function handler(req, res) {
       res.status(200).json(paginatedUsers);
     } else if (req.method === 'POST') {
       const newUser = req.body;
-      let users = await kv.get('users') || [];
+      const usersJSON = await redis.get('users');
+      let users = usersJSON ? JSON.parse(usersJSON) : [];
       
       // Assign a new ID
       const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
       newUser.id = newId;
       
       users.push(newUser);
-      await kv.set('users', users);
+      await redis.set('users', JSON.stringify(users));
       
       res.status(201).json(newUser);
     } else {
@@ -70,5 +73,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    await redis.quit();
   }
 }

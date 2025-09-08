@@ -1,4 +1,4 @@
-import { createClient } from '@vercel/kv';
+import { createClient } from 'redis';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -11,16 +11,17 @@ export default async function handler(req, res) {
     return;
   }
 
-  const kv = createClient({
-    url: process.env.KV_REST_API_URL,
-    token: process.env.KV_REST_API_TOKEN,
+  const redis = createClient({
+    url: process.env.REDIS_URL
   });
+  await redis.connect();
 
   const { id } = req.query;
   const userId = parseInt(id);
 
   try {
-    let users = await kv.get('users') || [];
+    const usersJSON = await redis.get('users');
+    let users = usersJSON ? JSON.parse(usersJSON) : [];
 
     if (req.method === 'GET') {
       const user = users.find(u => u.id === userId);
@@ -35,7 +36,7 @@ export default async function handler(req, res) {
 
       if (userIndex !== -1) {
         users[userIndex] = { ...users[userIndex], ...updatedUser };
-        await kv.set('users', users);
+        await redis.set('users', JSON.stringify(users));
         res.status(200).json(users[userIndex]);
       } else {
         res.status(404).json({ error: 'User not found' });
@@ -45,7 +46,7 @@ export default async function handler(req, res) {
 
       if (userIndex !== -1) {
         users.splice(userIndex, 1);
-        await kv.set('users', users);
+        await redis.set('users', JSON.stringify(users));
         res.status(204).end();
       } else {
         res.status(404).json({ error: 'User not found' });
@@ -56,5 +57,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    await redis.quit();
   }
 }

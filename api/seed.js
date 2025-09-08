@@ -1,4 +1,4 @@
-import { createClient } from '@vercel/kv';
+import { createClient } from 'redis';
 import fs from 'fs';
 import path from 'path';
 
@@ -16,10 +16,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const kv = createClient({
-    url: process.env.KV_REST_API_URL,
-    token: process.env.KV_REST_API_TOKEN,
+  const redis = createClient({
+    url: process.env.REDIS_URL
   });
+  await redis.connect();
 
   try {
     // Path to the db.json file
@@ -31,12 +31,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'No users found in db.json' });
     }
 
-    // Set the data in Vercel KV
-    await kv.set('users', users);
+    // Set the data in Redis
+    await redis.set('users', JSON.stringify(users));
 
-    res.status(200).json({ message: `Successfully seeded ${users.length} users to Vercel KV.` });
+    res.status(200).json({ message: `Successfully seeded ${users.length} users to Redis.` });
   } catch (error) {
     console.error('Seeding error:', error);
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  } finally {
+    await redis.quit();
   }
 }
