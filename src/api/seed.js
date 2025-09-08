@@ -16,29 +16,15 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const redis = createClient({
-    url: process.env.REDIS_URL
-  });
-  await redis.connect();
-
   try {
-    // Path to the db.json file
-    const dbPath = path.resolve(process.cwd(), 'db.json');
-    const dbData = fs.readFileSync(dbPath, 'utf-8');
-    const { users } = JSON.parse(dbData);
-
-    if (!users) {
-      return res.status(400).json({ error: 'No users found in db.json' });
-    }
-
-    // Set the data in Redis
-    await redis.set('users', JSON.stringify(users));
-
-    res.status(200).json({ message: `Successfully seeded ${users.length} users to Redis.` });
+    // First, let's just test if the endpoint works
+    res.status(200).json({ 
+      message: 'Seed endpoint is working',
+      redis_url_exists: !!process.env.REDIS_URL,
+      cwd: process.cwd()
+    });
   } catch (error) {
     console.error('Seeding error:', error);
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
-  } finally {
-    await redis.quit();
   }
 };
