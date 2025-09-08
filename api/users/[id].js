@@ -11,15 +11,25 @@ export default async function handler(req, res) {
     return;
   }
 
+  // Check if Redis URL is configured
+  if (!process.env.REDIS_URL) {
+    return res.status(500).json({ error: 'Redis URL not configured' });
+  }
+
   const redis = createClient({
     url: process.env.REDIS_URL
   });
-  await redis.connect();
 
   const { id } = req.query;
   const userId = parseInt(id);
 
+  if (isNaN(userId)) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
+
   try {
+    await redis.connect();
+    
     const usersJSON = await redis.get('users');
     let users = usersJSON ? JSON.parse(usersJSON) : [];
 
@@ -55,9 +65,18 @@ export default async function handler(req, res) {
       res.status(405).json({ error: 'Method not allowed' });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Redis operation error:', error);
+    res.status(500).json({ 
+      error: 'Internal Server Error', 
+      details: error.message 
+    });
   } finally {
-    await redis.quit();
+    try {
+      if (redis.isOpen) {
+        await redis.quit();
+      }
+    } catch (quitError) {
+      console.error('Redis quit error:', quitError);
+    }
   }
 };

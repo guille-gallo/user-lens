@@ -1,5 +1,4 @@
 import { createClient } from 'redis';
-const path = require('path');
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -12,12 +11,18 @@ export default async function handler(req, res) {
     return;
   }
 
+  // Check if Redis URL is configured
+  if (!process.env.REDIS_URL) {
+    return res.status(500).json({ error: 'Redis URL not configured' });
+  }
+
   const redis = createClient({
     url: process.env.REDIS_URL
   });
-  await redis.connect();
 
   try {
+    await redis.connect();
+
     if (req.method === 'GET') {
       // Get query parameters
       const { _page = '1', _limit = '20', q = '', _sort, _order = 'asc' } = req.query;
@@ -71,9 +76,18 @@ export default async function handler(req, res) {
       res.status(405).json({ error: 'Method not allowed' });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Redis operation error:', error);
+    res.status(500).json({ 
+      error: 'Internal Server Error', 
+      details: error.message 
+    });
   } finally {
-    await redis.quit();
+    try {
+      if (redis.isOpen) {
+        await redis.quit();
+      }
+    } catch (quitError) {
+      console.error('Redis quit error:', quitError);
+    }
   }
 };

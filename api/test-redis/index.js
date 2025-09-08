@@ -14,30 +14,54 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Check if Redis URL is configured
+  if (!process.env.REDIS_URL) {
+    return res.status(500).json({ 
+      error: 'Redis URL not configured',
+      redis_url_exists: false
+    });
+  }
+
+  const redis = createClient({
+    url: process.env.REDIS_URL
+  });
+
   try {
     // Test Redis connection
-    const redis = createClient({
-      url: process.env.REDIS_URL
-    });
     await redis.connect();
     
-    // Simple test
-    await redis.set('test', 'hello');
-    const result = await redis.get('test');
+    // Simple test operations
+    const testKey = `test_${Date.now()}`;
+    await redis.set(testKey, 'hello_world');
+    const result = await redis.get(testKey);
+    await redis.del(testKey); // Clean up
     
-    await redis.quit();
+    // Check if users data exists
+    const usersData = await redis.get('users');
+    const userCount = usersData ? JSON.parse(usersData).length : 0;
     
     res.status(200).json({ 
       message: 'Redis connection test successful', 
       test_result: result,
-      redis_url_exists: !!process.env.REDIS_URL
+      redis_url_exists: true,
+      users_in_db: userCount,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Redis test error:', error);
     res.status(500).json({ 
       error: 'Redis connection failed', 
       details: error.message,
-      redis_url_exists: !!process.env.REDIS_URL
+      redis_url_exists: !!process.env.REDIS_URL,
+      timestamp: new Date().toISOString()
     });
+  } finally {
+    try {
+      if (redis.isOpen) {
+        await redis.quit();
+      }
+    } catch (quitError) {
+      console.error('Redis quit error:', quitError);
+    }
   }
 };
