@@ -1,7 +1,7 @@
-import { createClient } from 'redis';
-import path from 'path';
+const { createClient } = require('redis');
+const path = require('path');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -76,4 +76,4 @@ export default async function handler(req, res) {
   } finally {
     await redis.quit();
   }
-}
+};
