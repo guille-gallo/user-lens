@@ -1,6 +1,7 @@
 import { API_CONFIG, ENDPOINTS } from '../../constants/api';
 import { BaseHttpService } from '../http/httpService';
 import type { User, PaginationParams, PaginatedResponse } from '../../types';
+import { normalizeUser, normalizeUsers } from '../../utils/dataTransforms';
 
 /**
  * User Service - Handles all user-related API operations
@@ -51,7 +52,7 @@ class UserService extends BaseHttpService {
     }
 
     return {
-      data: users,
+      data: normalizeUsers(users),
       pagination: {
         page,
         limit,
@@ -65,17 +66,20 @@ class UserService extends BaseHttpService {
 
   // Get single user by ID
   async getUserById(id: number): Promise<User> {
-    return this.get<User>(`${ENDPOINTS.USERS}/${id}`);
+    const user = await this.get<User>(`${ENDPOINTS.USERS}/${id}`);
+    return normalizeUser(user);
   }
 
   // Create new user
   async createUser(userData: Omit<User, 'id'>): Promise<User> {
-    return this.post<User>(ENDPOINTS.USERS, userData);
+    const user = await this.post<User>(ENDPOINTS.USERS, userData);
+    return normalizeUser(user);
   }
 
   // Update user
   async updateUser(id: number, userData: Partial<User>): Promise<User> {
-    return this.put<User>(`${ENDPOINTS.USERS}/${id}`, userData);
+    const user = await this.put<User>(`${ENDPOINTS.USERS}/${id}`, userData);
+    return normalizeUser(user);
   }
 
   // Delete user

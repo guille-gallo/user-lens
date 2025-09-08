@@ -49,3 +49,32 @@ export const debounce = <T extends (...args: unknown[]) => unknown>(
     timeoutId = setTimeout(() => func(...args), delay);
   };
 };
+
+/**
+ * Normalize user data to ensure coordinates are strings
+ * Handles the conversion of numeric lat/lng values from the API to strings
+ */
+export const normalizeUser = <T extends { address?: { geo?: { lat?: unknown; lng?: unknown } } }>(user: T): T => {
+  if (!user.address?.geo) {
+    return user;
+  }
+
+  return {
+    ...user,
+    address: {
+      ...user.address,
+      geo: {
+        ...user.address.geo,
+        lat: String(user.address.geo.lat || ''),
+        lng: String(user.address.geo.lng || '')
+      }
+    }
+  };
+};
+
+/**
+ * Normalize an array of users
+ */
+export const normalizeUsers = <T extends { address?: { geo?: { lat?: unknown; lng?: unknown } } }>(users: T[]): T[] => {
+  return users.map(normalizeUser);
+};

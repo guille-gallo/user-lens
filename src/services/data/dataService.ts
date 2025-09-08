@@ -1,6 +1,7 @@
 import { userService } from '../api/userService';
 import { MOCK_USERS } from './mockData';
 import type { User } from '../../types';
+import { normalizeUser, normalizeUsers } from '../../utils/dataTransforms';
 
 /**
  * Data Service with Smart Timeout & Fallback Strategy
@@ -115,7 +116,7 @@ export const dataService = {
           const cachedUser = cachedUsers.find(u => u.id === id);
           if (cachedUser) {
             console.log(`💾 Using cached user ${id} from localStorage`);
-            return cachedUser;
+            return normalizeUser(cachedUser);
           }
         }
         
@@ -123,7 +124,7 @@ export const dataService = {
         const mockUser = MOCK_USERS.find(u => u.id === id);
         if (mockUser) {
           console.log(`🎭 Using mock data for user ${id}`);
-          return mockUser;
+          return normalizeUser(mockUser);
         }
         
         return null; // Will cause the outer function to throw
@@ -266,7 +267,8 @@ function getCachedUsers(): User[] | null {
       return null;
     }
     
-    return JSON.parse(cachedData);
+    const users = JSON.parse(cachedData);
+    return normalizeUsers(users);
   } catch (error) {
     console.warn('💾 Error reading cache:', error);
     return null;
