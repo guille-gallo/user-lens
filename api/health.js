@@ -1,4 +1,6 @@
-export default function handler(req, res) {
+import { createClient } from 'redis';
+
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -12,8 +14,10 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const { check = 'basic' } = req.query;
+  
   try {
-    res.status(200).json({ 
+    const healthData = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       environment: {
@@ -26,10 +30,58 @@ export default function handler(req, res) {
         user_by_id: '/api/users/[id]',
         notifications: '/api/notifications',
         seed: '/api/seed',
-        test_redis: '/api/test-redis',
         health: '/api/health'
       }
-    });
+    };
+
+    // Extended health check with Redis test
+    if (check === 'full' && process.env.REDIS_URL) {
+      let redis;
+      try {
+        redis = createClient({
+          url: process.env.REDIS_URL
+        });
+        
+        redis.on('error', (err) => {
+          console.error('Redis Client Error', err);
+        });
+
+        await redis.connect();
+        
+        // Test Redis operations
+        const testKey = `health_test_${Date.now()}`;
+        await redis.set(testKey, 'health_check');
+        const testResult = await redis.get(testKey);
+        await redis.del(testKey);
+        
+        // Check users count
+        const usersData = await redis.get('users');
+        const userCount = usersData ? JSON.parse(usersData).length : 0;
+        
+        healthData.redis = {
+          status: 'connected',
+          test_result: testResult,
+          users_in_db: userCount,
+          connection_time_ms: Date.now() - new Date(healthData.timestamp).getTime()
+        };
+        
+        await redis.disconnect();
+      } catch (redisError) {
+        healthData.redis = {
+          status: 'error',
+          error: redisError.message
+        };
+        if (redis && redis.isReady) {
+          try {
+            await redis.disconnect();
+          } catch (disconnectError) {
+            console.error('Redis disconnect error:', disconnectError);
+          }
+        }
+      }
+    }
+
+    res.status(200).json(healthData);
   } catch (error) {
     console.error('Health check error:', error);
     res.status(500).json({ 
@@ -38,4 +90,4 @@ export default function handler(req, res) {
       timestamp: new Date().toISOString()
     });
   }
-};
+}
