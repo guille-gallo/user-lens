@@ -13,7 +13,8 @@
   "rewrites": [
     { "source": "/api/users/(.*)", "destination": "/src/api/users/$1.js" },
     { "source": "/api/users", "destination": "/src/api/users/index.js" },
-    { "source": "/api/(.*)", "destination": "/src/api/$1.js" },
+    { "source": "/api/seed", "destination": "/src/api/seed/index.js" },
+    { "source": "/api/test-redis", "destination": "/src/api/test-redis/index.js" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
