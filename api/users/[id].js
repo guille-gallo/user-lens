@@ -17,7 +17,11 @@ export default async function handler(req, res) {
   }
 
   const redis = createClient({
-    url: process.env.REDIS_URL
+    url: process.env.REDIS_URL,
+    socket: {
+      tls: process.env.REDIS_URL?.includes('rediss://'),
+      reconnectStrategy: (retries) => Math.min(retries * 50, 500)
+    }
   });
 
   const { id } = req.query;
