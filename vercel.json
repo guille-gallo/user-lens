@@ -11,7 +11,9 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/src/api/$1" },
+    { "source": "/api/users/(.*)", "destination": "/src/api/users/$1.js" },
+    { "source": "/api/users", "destination": "/src/api/users/index.js" },
+    { "source": "/api/(.*)", "destination": "/src/api/$1.js" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
