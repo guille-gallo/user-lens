@@ -1,8 +1,8 @@
-const { createClient } = require('redis');
+import { createClient } from 'redis';
 const fs = require('fs');
 const path = require('path');
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // Allow CORS for all origins
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
