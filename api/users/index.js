@@ -1,7 +1,6 @@
-import path from 'path';
-import fs from 'fs';
+import { createClient } from '@vercel/kv';
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -12,17 +11,17 @@ export default function handler(req, res) {
     return;
   }
 
-  try {
-    // Path to the db.json file
-    const dbPath = path.resolve(process.cwd(), 'db.json');
-    const dbData = fs.readFileSync(dbPath, 'utf-8');
-    const { users: allUsers } = JSON.parse(dbData);
+  const kv = createClient({
+    url: process.env.KV_REST_API_URL,
+    token: process.env.KV_REST_API_TOKEN,
+  });
 
+  try {
     if (req.method === 'GET') {
       // Get query parameters
       const { _page = '1', _limit = '20', q = '', _sort, _order = 'asc' } = req.query;
       
-      let users = [...allUsers];
+      let users = await kv.get('users');
 
       // Handle search
       if (q) {
@@ -53,14 +52,23 @@ export default function handler(req, res) {
 
       res.setHeader('X-Total-Count', users.length.toString());
       res.status(200).json(paginatedUsers);
+    } else if (req.method === 'POST') {
+      const newUser = req.body;
+      let users = await kv.get('users') || [];
+      
+      // Assign a new ID
+      const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+      newUser.id = newId;
+      
+      users.push(newUser);
+      await kv.set('users', users);
+      
+      res.status(201).json(newUser);
     } else {
       res.status(405).json({ error: 'Method not allowed' });
     }
   } catch (error) {
-    console.error('API Error:', error);
-    res.status(500).json({ 
-      error: 'Internal server error',
-      message: error.message 
-    });
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
