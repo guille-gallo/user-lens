@@ -2,13 +2,51 @@
 
 ## Overview
 
-This guide explains how to deploy the User Lens application with Redis backend to Vercel.
+This guide explains how to deploy the User Lens application with### Troubleshooting
+
+### Common Issues
+
+1. **"Found invalid Node.js Version" error**
+   - Ensure Node.js is set to 18.x in Vercel project settings
+   - Check that `vercel.json` includes `"nodeVersion": "18.x"`
+   - Verify `package.json` has correct engines specification
+
+2. **"Redis URL not configured"**
+   - Check environment variables in Vercel dashboard
+   - Ensure `REDIS_URL` is set correctly
+
+3. **"Redis connection failed"**
+   - Verify Redis instance is running and accessible
+   - Check Redis URL format and credentials
+   - Ensure Redis allows connections from Vercel IPs
+   - For TLS connections, use `rediss://` protocol
+
+4. **Empty users array**
+   - Run the seed endpoint: `curl https://your-project.vercel.app/api/seed`
+   - Check if seed was successful
+
+5. **CORS errors**
+   - API endpoints include CORS headers
+   - If issues persist, check browser console for specific errorsrcel.
 
 ## Prerequisites
 
 1. **Vercel Account**: Sign up at [vercel.com](https://vercel.com)
 2. **Redis Database**: You need a Redis instance (Redis Cloud, Upstash, etc.)
 3. **GitHub Repository**: Code should be in a GitHub repository
+4. **Node.js Version**: The project is configured for Node.js 18.x (required for Redis compatibility)
+
+## Technical Requirements
+
+### Node.js Version
+- **Required**: Node.js 18.x
+- **Reason**: Redis package compatibility with Vercel runtime
+- **Configuration**: Set in both `vercel.json` and `package.json`
+
+### Redis Compatibility
+- **Package Version**: Redis v4.6.13 (stable with Vercel)
+- **Connection**: Supports both standard Redis and TLS (rediss://)
+- **Features**: Auto-reconnection strategy, connection pooling
 
 ## Setup Steps
 
