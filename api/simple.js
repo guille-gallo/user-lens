@@ -1,6 +1,4 @@
-const { createClient } = require('redis');
-
-module.exports = async function handler(req, res) {
+module.exports = function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -11,13 +9,14 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    res.status(200).json({ 
+    return res.status(200).json({ 
       message: 'Simple test endpoint is working!',
       timestamp: new Date().toISOString(),
-      redis_url_exists: !!process.env.REDIS_URL
+      redis_url_exists: !!process.env.REDIS_URL,
+      method: req.method
     });
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+    return res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 };
