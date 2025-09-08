@@ -16,15 +16,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Redis URL not configured' });
   }
 
-  const redis = createClient({
-    url: process.env.REDIS_URL,
-    socket: {
-      tls: process.env.REDIS_URL?.includes('rediss://'),
-      reconnectStrategy: (retries) => Math.min(retries * 50, 500)
-    }
-  });
-
+  let redis;
   try {
+    redis = createClient({
+      url: process.env.REDIS_URL
+    });
+    
+    redis.on('error', (err) => {
+      console.error('Redis Client Error', err);
+    });
+
     await redis.connect();
 
     if (req.method === 'GET') {
@@ -87,11 +88,11 @@ export default async function handler(req, res) {
     });
   } finally {
     try {
-      if (redis.isOpen) {
-        await redis.quit();
+      if (redis && redis.isReady) {
+        await redis.disconnect();
       }
     } catch (quitError) {
-      console.error('Redis quit error:', quitError);
+      console.error('Redis disconnect error:', quitError);
     }
   }
 };
