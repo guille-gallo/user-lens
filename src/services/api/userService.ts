@@ -15,7 +15,7 @@ class UserService extends BaseHttpService {
   }
 
   // Get users with pagination and server-side search
-  async getUsers(params: PaginationParams = { page: 1, limit: 20 }, signal?: AbortSignal): Promise<PaginatedResponse<User>> {
+  async getUsers(params: PaginationParams = { page: 1, limit: 15 }, signal?: AbortSignal): Promise<PaginatedResponse<User>> {
     const { page, limit, searchTerm, sortField, sortOrder } = params;
     
     const queryParams = new URLSearchParams({

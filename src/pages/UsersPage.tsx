@@ -101,7 +101,7 @@ export const UsersPage: React.FC = () => {
     
     fetchUsers({ 
       page: 1, 
-      limit: 20,
+      limit: 15,
       searchTerm: deferredSearchTerm 
     }, true, abortControllerRef.current.signal); // Always force refresh for search changes
     

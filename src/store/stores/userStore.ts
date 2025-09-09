@@ -66,7 +66,7 @@ export const useUserStore = create<UserState>()(
       
       // Pagination state
       currentPage: 1,
-      pageSize: 20,
+      pageSize: 15,
       totalUsers: 0,
       totalPages: 0,
       hasNextPage: false,
