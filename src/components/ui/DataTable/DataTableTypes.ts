@@ -13,6 +13,7 @@ export interface DataTableColumn {
 
 export interface DataTableProps {
   users: User[];
+  totalUsers?: number; // Total count for display, falls back to users.length
   loading?: boolean;
   isSearchPending?: boolean; // New prop for skeleton state during search
   onSort?: (field: string, order: SortOrder) => void;

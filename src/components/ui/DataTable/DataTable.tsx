@@ -16,6 +16,7 @@ import './DataTable.scss';
 
 const DataTableComponent: React.FC<DataTableProps> = ({
   users,
+  totalUsers,
   loading = false,
   isSearchPending = false,
   onSort,
@@ -73,10 +74,11 @@ const DataTableComponent: React.FC<DataTableProps> = ({
     return String(value || '');
   }, []);
 
+  // Calculate display count - use totalUsers if provided, fallback to users.length
+  const displayCount = totalUsers ?? users.length;
+
   // Search pending state - show skeleton to prevent layout shift (prioritize over loading)
-  if (isSearchPending) {
-    return <DataTableSkeleton className={className} rowCount={users.length || 5} />;
-  }
+  const isShowingSkeleton = isSearchPending || (loading && users.length > 0);
 
   // Loading state - show full loading spinner only for initial loads when no users exist
   if (loading && users.length === 0) {
@@ -88,11 +90,6 @@ const DataTableComponent: React.FC<DataTableProps> = ({
         </div>
       </div>
     );
-  }
-
-  // Loading state with existing users - show skeleton to prevent layout shift
-  if (loading && users.length > 0) {
-    return <DataTableSkeleton className={className} rowCount={users.length} />;
   }
 
   // Empty state
@@ -118,9 +115,9 @@ const DataTableComponent: React.FC<DataTableProps> = ({
             role="status"
             aria-live="polite"
             tabIndex={0}
-            aria-label={`Results summary: ${users.length} users total`}
+            aria-label={`Results summary: ${displayCount} users total`}
           >
-            {users.length} users total
+            {displayCount} users total
           </span>
         </div>
         <div className="data-table__toolbar-right">
@@ -135,32 +132,39 @@ const DataTableComponent: React.FC<DataTableProps> = ({
         </div>
       </div>
       
-      {/* Desktop View */}
-      <DataTableDesktop
-        users={users}
-        visibleColumns={visibleColumns}
-        allColumns={allColumns}
-        sortField={sortField}
-        sortOrder={sortOrder}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        onView={onView}
-        handleSort={handleSort}
-        getSortIcon={getSortIcon}
-        getCellValue={getCellValue}
-      />
+      {/* Show skeleton or real content */}
+      {isShowingSkeleton ? (
+        <DataTableSkeleton rowCount={users.length || 5} />
+      ) : (
+        <>
+          {/* Desktop View */}
+          <DataTableDesktop
+            users={users}
+            visibleColumns={visibleColumns}
+            allColumns={allColumns}
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onView={onView}
+            handleSort={handleSort}
+            getSortIcon={getSortIcon}
+            getCellValue={getCellValue}
+          />
 
-      {/* Mobile View */}
-      <DataTableMobile
-        users={users}
-        visibleColumns={visibleColumns}
-        allColumns={allColumns}
-        sortField={sortField}
-        sortOrder={sortOrder}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        onView={onView}
-      />
+          {/* Mobile View */}
+          <DataTableMobile
+            users={users}
+            visibleColumns={visibleColumns}
+            allColumns={allColumns}
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onView={onView}
+          />
+        </>
+      )}
     </div>
   );
 };

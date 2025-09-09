@@ -244,6 +244,7 @@ export const UsersPage: React.FC = () => {
 
         <DataTable
           users={displayUsers}
+          totalUsers={totalUsers}
           loading={loading}
           isSearchPending={isPending}
           onSort={handleSort}

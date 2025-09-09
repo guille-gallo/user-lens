@@ -8,8 +8,8 @@ interface DataTableSkeletonProps {
 }
 
 /**
- * DataTableSkeleton - Maintains table layout during loading states
- * Prevents layout shift by preserving the same structure as the actual table
+ * DataTableSkeleton - Only skeletonizes the table content, not the controls
+ * This preserves user interaction with search, filters, and other controls
  */
 export const DataTableSkeleton: React.FC<DataTableSkeletonProps> = ({
   className = '',
@@ -21,19 +21,9 @@ export const DataTableSkeleton: React.FC<DataTableSkeletonProps> = ({
   const visibleColumns = getVisibleColumns();
 
   return (
-    <div className={`data-table ${className}`}>
-      {/* Toolbar skeleton */}
-      <div className="data-table__toolbar">
-        <div className="data-table__toolbar-left">
-          <div className="data-table__skeleton-text data-table__skeleton-text--result-count"></div>
-        </div>
-        <div className="data-table__toolbar-right">
-          <div className="data-table__skeleton-text data-table__skeleton-text--button"></div>
-        </div>
-      </div>
-
-      {/* Desktop table skeleton */}
-      <div className="data-table__wrapper">
+    <>
+      {/* Desktop table skeleton - only the table content */}
+      <div className={`data-table__wrapper ${className}`}>
         <table className="data-table__table" role="table" aria-label="Loading users data">
           <thead className="data-table__header">
             <tr className="data-table__header-row">
@@ -72,7 +62,7 @@ export const DataTableSkeleton: React.FC<DataTableSkeletonProps> = ({
         </table>
       </div>
 
-      {/* Mobile cards skeleton */}
+      {/* Mobile cards skeleton - only the content */}
       <div className="data-table__mobile-cards">
         {Array.from({ length: rowCount }, (_, index) => (
           <div key={index} className="data-table__card data-table__card--skeleton">
@@ -93,6 +83,6 @@ export const DataTableSkeleton: React.FC<DataTableSkeletonProps> = ({
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
