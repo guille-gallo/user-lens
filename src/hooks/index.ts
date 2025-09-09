@@ -8,4 +8,3 @@ export { useHeaderActions } from './useHeaderActions';
 export { useTableKeyboardNavigation } from './useTableKeyboardNavigation';
 export { useUserFieldEditor } from './useUserFieldEditor';
 export { useValidation } from './useValidation';
-export { useDebounce, useDebouncedSearch } from './useDebouncedSearch';

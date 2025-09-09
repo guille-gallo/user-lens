@@ -62,6 +62,19 @@ export const UsersPage: React.FC = () => {
   const deferredSearchTerm = useDeferredValue(searchTerm);
   const isPending = searchTerm !== deferredSearchTerm;
   
+  // Keep previous users to prevent content flashing during search
+  const [staleUsers, setStaleUsers] = useState<User[]>([]);
+  
+  // Update stale users only when not pending (search is complete)
+  useEffect(() => {
+    if (!isPending) {
+      setStaleUsers(users);
+    }
+  }, [users, isPending]);
+  
+  // Use stale data during pending state to prevent layout shift
+  const displayUsers = isPending ? staleUsers : users;
+  
   // AbortController ref for cancelling previous requests
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -106,10 +119,6 @@ export const UsersPage: React.FC = () => {
       processUserMetrics(users);
     }
   }, [users, processUserMetrics]);
-
-  // With pagination, we use the users directly from the store
-  // since filtering and sorting are done on the server
-  const displayUsers = users;
 
   const handleSort = (field: string, order: 'asc' | 'desc') => {
     setSorting(field, order);
@@ -215,7 +224,7 @@ export const UsersPage: React.FC = () => {
           error={metricsError}
         />
 
-        <div className="users-page__controls">
+                <div className="users-page__controls">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
@@ -235,7 +244,7 @@ export const UsersPage: React.FC = () => {
 
         <DataTable
           users={displayUsers}
-          loading={loading || isPending}
+          loading={loading}
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}
