@@ -126,11 +126,20 @@ describe('DataTable Component', () => {
       expect(screen.getByTestId('column-toggle')).toBeInTheDocument();
     });
 
-    it('should render loading state', () => {
-      render(<DataTable {...defaultProps} loading={true} />);
+    it('should render loading state for initial load (no users)', () => {
+      render(<DataTable {...defaultProps} users={[]} loading={true} />);
       
       expect(screen.getByText('Loading users...')).toBeInTheDocument();
       expect(screen.queryByTestId('desktop-table')).not.toBeInTheDocument();
+    });
+
+    it('should render skeleton when loading with existing users', () => {
+      render(<DataTable {...defaultProps} loading={true} />);
+      
+      // Should show skeleton instead of spinner when users exist
+      expect(screen.getByLabelText('Loading users data')).toBeInTheDocument();
+      expect(screen.queryByText('Loading users...')).not.toBeInTheDocument();
+      expect(document.querySelector('.data-table__skeleton-text')).toBeInTheDocument();
     });
 
     it('should render empty state', () => {

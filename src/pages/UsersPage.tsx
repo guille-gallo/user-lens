@@ -245,6 +245,7 @@ export const UsersPage: React.FC = () => {
         <DataTable
           users={displayUsers}
           loading={loading}
+          isSearchPending={isPending}
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}

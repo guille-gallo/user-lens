@@ -3,6 +3,7 @@ import { Icon } from '../Icon';
 import { ColumnToggle } from '../ColumnToggle';
 import { DataTableDesktop } from './DataTableDesktop';
 import { DataTableMobile } from './DataTableMobile';
+import { DataTableSkeleton } from './DataTableSkeleton';
 import { useDataTableColumns, useColumnVisibility } from '../../../hooks';
 import { getNestedValue } from '../../../utils';
 import type { DataTableProps, DataTableColumn, SortOrder } from './DataTableTypes';
@@ -16,6 +17,7 @@ import './DataTable.scss';
 const DataTableComponent: React.FC<DataTableProps> = ({
   users,
   loading = false,
+  isSearchPending = false,
   onSort,
   sortField,
   sortOrder,
@@ -71,8 +73,13 @@ const DataTableComponent: React.FC<DataTableProps> = ({
     return String(value || '');
   }, []);
 
-  // Loading state
-  if (loading) {
+  // Search pending state - show skeleton to prevent layout shift (prioritize over loading)
+  if (isSearchPending) {
+    return <DataTableSkeleton className={className} rowCount={users.length || 5} />;
+  }
+
+  // Loading state - show full loading spinner only for initial loads when no users exist
+  if (loading && users.length === 0) {
     return (
       <div className={`data-table ${className}`}>
         <div className="data-table__loading">
@@ -81,6 +88,11 @@ const DataTableComponent: React.FC<DataTableProps> = ({
         </div>
       </div>
     );
+  }
+
+  // Loading state with existing users - show skeleton to prevent layout shift
+  if (loading && users.length > 0) {
+    return <DataTableSkeleton className={className} rowCount={users.length} />;
   }
 
   // Empty state

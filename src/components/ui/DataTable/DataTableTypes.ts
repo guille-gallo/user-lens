@@ -14,6 +14,7 @@ export interface DataTableColumn {
 export interface DataTableProps {
   users: User[];
   loading?: boolean;
+  isSearchPending?: boolean; // New prop for skeleton state during search
   onSort?: (field: string, order: SortOrder) => void;
   sortField?: string | null;
   sortOrder?: SortOrder;

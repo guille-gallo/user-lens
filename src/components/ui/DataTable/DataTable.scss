@@ -1,3 +1,8 @@
+// DataTable Component Styles
+@import '../../../styles/_tokens';
+@import '../../../styles/_mixins';
+@import '../../../styles/_components';
+
 // DataTable component styles
 @import '../../../styles/_tokens';
 @import '../../../styles/_mixins';
@@ -340,11 +345,9 @@
 
   // Loading state
   &__loading {
-    display: flex;
+    @include flex-center;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 64px 24px;
+    padding: $space-16 $space-6;
     text-align: center;
     background-color: #fff;
     border-radius: 12px;
@@ -360,6 +363,87 @@
   &__spinner {
     font-size: 24px;
     animation: spin 1s linear infinite;
+  }
+
+  // Skeleton loading states
+  &__skeleton-text {
+    @include loading-skeleton;
+    border-radius: $radius-sm;
+    height: 16px;
+    width: 100%;
+
+    &--result-count {
+      width: 120px;
+      height: 18px;
+    }
+
+    &--button {
+      width: 80px;
+      height: 32px;
+      border-radius: $radius-base;
+    }
+
+    &--header {
+      width: 80%;
+      height: 18px;
+    }
+
+    &--cell {
+      width: 90%;
+      height: 16px;
+    }
+
+    &--name {
+      width: 140px;
+      height: 18px;
+      margin-bottom: 4px;
+    }
+
+    &--username {
+      width: 100px;
+      height: 14px;
+    }
+  }
+
+  &__skeleton-button {
+    @include loading-skeleton;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-base;
+  }
+
+  &__skeleton-actions {
+    display: flex;
+    gap: $space-2;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  &__row--skeleton {
+    .data-table__cell {
+      padding: $space-3 $space-4;
+    }
+  }
+
+  &__card--skeleton {
+    .data-table__card-header {
+      padding: $space-4;
+    }
+
+    .data-table__card-title {
+      display: flex;
+      align-items: center;
+      gap: $space-3;
+    }
+
+    .data-table__card-info {
+      flex: 1;
+    }
+
+    .data-table__card-actions {
+      display: flex;
+      gap: $space-2;
+    }
   }
 
   // Empty state
