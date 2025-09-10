@@ -564,6 +564,15 @@
     }
   }
 
+  &__row--empty {
+    height: 48px; // Match the fixed row height for consistency
+    
+    .data-table__cell {
+      padding: $space-3 $space-4;
+      border-bottom: 1px solid transparent; // Maintain border structure without visible line
+    }
+  }
+
   &__card--skeleton {
     .data-table__card-header {
       padding: $space-4;

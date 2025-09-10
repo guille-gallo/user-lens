@@ -115,34 +115,14 @@ export const Pagination: React.FC<PaginationProps> = ({
 
       {totalPages > 1 && (
         <div className="pagination__controls">
-          {/* First Page Button - always visible, disabled when on first page */}
-          <Button
-            variant="outline"
-            size="small"
-            onClick={() => {
-              console.log('First page clicked - going to page 1');
-              onPageChange(1);
-            }}
-            disabled={currentPage === 1 || loading}
-            className="pagination__jump-btn"
-            aria-label="Go to first page"
-            title="Jump to first page"
-          >
-            <Icon name="first-page" size={16} />
-          </Button>
-
           {/* Previous Button */}
           <Button
             variant="secondary"
             size="small"
-            onClick={() => {
-              console.log(`Previous page clicked - current: ${currentPage}, going to: ${currentPage - 1}`);
-              onPrev();
-            }}
+            onClick={onPrev}
             disabled={!hasPrev || loading}
             className="pagination__nav-btn"
             aria-label="Go to previous page"
-            title="Go to previous page"
           >
             <Icon name="chevron-left" size={16} />
           </Button>
@@ -182,33 +162,28 @@ export const Pagination: React.FC<PaginationProps> = ({
           <Button
             variant="secondary"
             size="small"
-            onClick={() => {
-              console.log(`Next page clicked - current: ${currentPage}, going to: ${currentPage + 1}`);
-              onNext();
-            }}
+            onClick={onNext}
             disabled={!hasNext || loading}
             className="pagination__nav-btn"
             aria-label="Go to next page"
-            title="Go to next page"
           >
             <Icon name="chevron-right" size={16} />
           </Button>
 
-          {/* Last Page Button - always visible, disabled when on last page */}
-          <Button
-            variant="outline"
-            size="small"
-            onClick={() => {
-              console.log(`Last page clicked - going to page ${totalPages} (totalItems: ${totalItems}, pageSize: ${pageSize})`);
-              onPageChange(totalPages);
-            }}
-            disabled={currentPage === totalPages || loading}
-            className="pagination__jump-btn"
-            aria-label={`Go to last page (${totalPages})`}
-            title={`Jump to last page (${totalPages})`}
-          >
-            <Icon name="last-page" size={16} />
-          </Button>
+          {/* Quick Jump to Last Page */}
+          {totalPages > 7 && currentPage < totalPages - 2 && (
+            <Button
+              variant="outline"
+              size="small"
+              onClick={() => onPageChange(totalPages)}
+              disabled={loading}
+              className="pagination__jump-btn"
+              aria-label={`Go to last page (${totalPages})`}
+            >
+              <Icon name="chevron-right" size={16} />
+              <Icon name="chevron-right" size={16} />
+            </Button>
+          )}
         </div>
       )}
     </div>

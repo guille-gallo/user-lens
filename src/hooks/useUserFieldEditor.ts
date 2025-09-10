@@ -47,6 +47,8 @@ export const useUserFieldEditor = (
       setIsSubmitting(true);
       
       const updatedUser = updateNestedField(user, field, value);
+      console.log('🔧 Field Editor - Field:', field, 'Value:', value);
+      console.log('🔧 Field Editor - Partial update object:', updatedUser);
       await onUpdate(user.id, updatedUser);
       
       setEditingField(null);

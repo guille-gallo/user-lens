@@ -24,7 +24,8 @@ const DataTableComponent: React.FC<DataTableProps> = ({
   onEdit,
   onDelete,
   onView,
-  className = ''
+  className = '',
+  pageSize = 15
 }) => {
   // Use custom hooks for column management
   const allColumns = useDataTableColumns();
@@ -137,16 +138,16 @@ const DataTableComponent: React.FC<DataTableProps> = ({
         <DataTableDesktop
           users={users}
           visibleColumns={visibleColumns}
-          allColumns={allColumns}
-          sortField={sortField}
-          sortOrder={sortOrder}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onView={onView}
+          sortField={sortField || ''}
+          sortOrder={sortOrder || 'asc'}
+          onEdit={onEdit || (() => {})}
+          onDelete={onDelete || (() => {})}
+          onView={onView || (() => {})}
           handleSort={handleSort}
           getSortIcon={getSortIcon}
           getCellValue={getCellValue}
           isShowingSkeleton={isShowingSkeleton}
+          pageSize={pageSize}
         />
 
         {/* Mobile View */}

@@ -191,18 +191,23 @@ export const useUserStore = create<UserState>()(
 
       updateUser: async (id, userData) => {
         set({ loading: true, error: null });
+        console.log('🏪 Store - updateUser called with id:', id);
+        console.log('🏪 Store - Partial update data:', userData);
+        
         try {
           const updatedUser = await userService.updateUser(id, userData);
+          console.log('🏪 Store - Complete user from API:', updatedUser);
+          
           const currentUsers = get().users;
           const updatedUsers = currentUsers.map(user => 
-            user.id === id ? { ...user, ...updatedUser } : user
+            user.id === id ? updatedUser : user
           );
           UserFilterCache.clearCache();
           set({ users: updatedUsers, loading: false });
           
           const selectedUser = get().selectedUser;
           if (selectedUser && selectedUser.id === id) {
-            set({ selectedUser: { ...selectedUser, ...updatedUser } });
+            set({ selectedUser: updatedUser });
           }
         } catch (error) {
           const errorMessage = StoreErrorHandler.handleError(error, 'Failed to update user');

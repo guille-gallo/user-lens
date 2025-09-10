@@ -23,6 +23,7 @@ export interface DataTableProps {
   onDelete?: (user: User) => void;
   onView?: (user: User) => void;
   className?: string;
+  pageSize?: number; // Number of rows per page for skeleton sizing
 }
 
 export interface DataTableBaseProps extends Omit<DataTableProps, 'className'> {

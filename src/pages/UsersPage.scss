@@ -102,7 +102,7 @@
   }
 
   &__table {
-    margin-bottom: 32px;
+    margin-bottom: 0; // Remove margin since pagination follows immediately
   }
 }
 
@@ -170,28 +170,15 @@
   }
 }
 
-// Pagination styles for UsersPage
+// Pagination styles for UsersPage - now at table footer
 .users-page {
   &__pagination {
+    // Integrate with table design for seamless appearance
+    border-top: none; // Pagination component handles its own border
+    border-radius: 0 0 12px 12px; // Round bottom corners to match table
     background-color: #fff;
-    border-radius: 12px;
     border: 1px solid #e1e5e9;
-    margin-bottom: 16px;
-    padding: 16px;
-    
-    // Make pagination more compact when in header
-    .pagination__summary {
-      @media (max-width: 767px) {
-        order: 2;
-      }
-    }
-    
-    .pagination__controls {
-      @media (max-width: 767px) {
-        order: 1;
-        justify-content: center;
-      }
-    }
+    border-top: none; // Remove top border to connect with table
   }
 }
 

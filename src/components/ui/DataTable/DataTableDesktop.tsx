@@ -3,14 +3,22 @@ import { DataTableActions } from './DataTableActions';
 import { useTableKeyboardNavigation } from '../../../hooks';
 import { DATA_TABLE } from '../../../constants/ui';
 import { ARIA_ROLES, TABLE_NAVIGATION } from '../../../constants/accessibility';
-import type { DataTableBaseProps, DataTableColumn } from './DataTableTypes';
+import type { DataTableColumn } from './DataTableTypes';
 import type { User } from '../../../types';
 
-interface DataTableDesktopProps extends DataTableBaseProps {
+interface DataTableDesktopProps {
+  users: User[];
+  visibleColumns: DataTableColumn[];
+  sortField: string;
+  sortOrder: 'asc' | 'desc';
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
+  onView: (user: User) => void;
   handleSort: (field: string) => void;
   getSortIcon: (field: string) => React.ReactNode;
   getCellValue: (user: User, column: DataTableColumn) => React.ReactNode;
   isShowingSkeleton?: boolean;
+  pageSize?: number;
 }
 
 /**
@@ -29,7 +37,8 @@ export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
   handleSort,
   getSortIcon,
   getCellValue,
-  isShowingSkeleton = false
+  isShowingSkeleton = false,
+  pageSize = 15
 }) => {
   // Table keyboard navigation
   const tableId = 'data-table-main';
@@ -50,6 +59,7 @@ export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
         role={ARIA_ROLES.TABLE} 
         aria-label={DATA_TABLE.USERS_DATA_TABLE}
         aria-describedby={announceRegionId}
+        style={{ '--expected-rows': pageSize } as React.CSSProperties}
       >
         <caption className="data-table__caption">
           User information table with {users.length} users. Use column headers to sort data. {TABLE_NAVIGATION.NAVIGATION_HINT}
@@ -101,8 +111,8 @@ export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
         </thead>
         <tbody>
           {isShowingSkeleton ? (
-            // Skeleton rows - same structure as real rows but with skeleton placeholders
-            Array.from({ length: users.length || 5 }, (_, index) => (
+            // Skeleton rows - use pageSize to prevent layout shift
+            Array.from({ length: pageSize }, (_, index) => (
               <tr key={`skeleton-${index}`} className="data-table__row data-table__row--skeleton" role="row">
                 {visibleColumns.map((column) => (
                   <td 
@@ -124,9 +134,10 @@ export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
               </tr>
             ))
           ) : (
-            // Real user data rows
-            users.map((user, rowIndex) => (
-              <tr key={user.id} className="data-table__row" role="row">
+            // Real user data rows + empty rows to maintain consistent height
+            <>
+              {users.map((user, rowIndex) => (
+                <tr key={user.id} className="data-table__row" role="row">
                 {visibleColumns.map((column, columnIndex) => {
                   const cellContent = getCellValue(user, column);
                   // Check if this column uses a render function (returns JSX) or plain text
@@ -172,7 +183,27 @@ export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
                   />
                 </td>
               </tr>
-            ))
+              ))}
+              
+              {/* Add empty rows to maintain consistent table height */}
+              {Array.from({ length: Math.max(0, pageSize - users.length) }, (_, index) => (
+                <tr key={`empty-${index}`} className="data-table__row data-table__row--empty" role="row">
+                  {visibleColumns.map((column) => (
+                    <td 
+                      key={column.key} 
+                      className="data-table__cell" 
+                      role="cell"
+                      data-field={column.key}
+                    >
+                      &nbsp;
+                    </td>
+                  ))}
+                  <td className="data-table__cell data-table__cell--actions" role="cell">
+                    &nbsp;
+                  </td>
+                </tr>
+              ))}
+            </>
           )}
         </tbody>
       </table>

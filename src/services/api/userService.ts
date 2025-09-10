@@ -33,35 +33,44 @@ class UserService extends BaseHttpService {
       queryParams.append('_order', sortOrder || 'asc');
     }
 
-    const users = await this.get<User[]>(`${ENDPOINTS.USERS}?${queryParams.toString()}`, signal);
+    // Make the request and get both data and headers
+    const url = `${ENDPOINTS.USERS}?${queryParams.toString()}`;
     
-    // For pagination info, we'll use a conservative estimate to avoid fetching all data
-    // This is a compromise - we estimate total based on current page results
-    let totalUsers: number;
-    let totalPages: number;
-    
-    if (users.length < limit) {
-      // If we got fewer results than requested, we're on the last page
-      totalUsers = (page - 1) * limit + users.length;
-      totalPages = page;
-    } else {
-      // If we got full page, assume there might be more data
-      // This is an estimation - we'll show "Load More" style pagination
-      totalUsers = page * limit; // Conservative estimate
-      totalPages = page + 1; // At least one more page potentially
-    }
+    try {
+      const { data: users, headers } = await this.getWithHeaders<User[]>(url, signal);
+      
+      // Get the actual total count from the API response headers
+      const totalCountHeader = headers.get('X-Total-Count');
+      const totalUsers = totalCountHeader ? parseInt(totalCountHeader, 10) : users.length;
+      const totalPages = Math.ceil(totalUsers / limit);
 
-    return {
-      data: normalizeUsers(users),
-      pagination: {
-        page,
-        limit,
-        total: totalUsers,
-        totalPages,
-        hasNext: users.length === limit, // True if current page is full
-        hasPrev: page > 1,
-      },
-    };
+      return {
+        data: normalizeUsers(users),
+        pagination: {
+          page,
+          limit,
+          total: totalUsers,
+          totalPages,
+          hasNext: page < totalPages,
+          hasPrev: page > 1,
+        },
+      };
+    } catch (error) {
+      // Fallback to the old method if needed
+      console.warn('Failed to get headers, falling back to basic pagination:', error);
+      const users = await this.get<User[]>(url, signal);
+      return {
+        data: normalizeUsers(users),
+        pagination: {
+          page,
+          limit,
+          total: users.length,
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false,
+        },
+      };
+    }
   }
 
   // Get single user by ID
@@ -78,8 +87,16 @@ class UserService extends BaseHttpService {
 
   // Update user
   async updateUser(id: number, userData: Partial<User>): Promise<User> {
+    console.log('🌐 API Service - updateUser called with id:', id);
+    console.log('🌐 API Service - Partial data to send:', userData);
+    
     const user = await this.put<User>(`${ENDPOINTS.USERS}/${id}`, userData);
-    return normalizeUser(user);
+    const normalizedUser = normalizeUser(user);
+    
+    console.log('🌐 API Service - Raw response from API:', user);
+    console.log('🌐 API Service - Normalized user to return:', normalizedUser);
+    
+    return normalizedUser;
   }
 
   // Delete user

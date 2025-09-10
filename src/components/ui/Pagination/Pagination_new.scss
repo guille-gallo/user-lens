@@ -1,5 +1,4 @@
-@import '../../../styles/_tokens';
-@import '../../../styles/_mixins';
+@import '../../../styles/tokens';
 
 .pagination {
   display: flex;
@@ -97,7 +96,7 @@
 
     &:hover:not(:disabled) {
       background: $color-bg-tertiary;
-      border-color: $color-gray-400;
+      border-color: $color-border-hover;
       color: $color-text-primary;
     }
 
@@ -109,12 +108,7 @@
     &:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-      background: $color-gray-100;
-    }
-    
-    // Remove the persistent blue square after click
-    &:focus:not(:focus-visible) {
-      outline: none;
+      background: $color-bg-disabled;
     }
   }
 
@@ -151,7 +145,7 @@
 
       &:hover:not(:disabled) {
         background: $color-bg-tertiary;
-        border-color: $color-gray-400;
+        border-color: $color-border-hover;
         color: $color-text-primary;
       }
     }
@@ -191,29 +185,11 @@
     color: $color-text-secondary;
     transition: all $transition-base;
     margin-left: $space-1;
-    
-    // Make jump buttons more distinctive
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60%;
-      height: 2px;
-      background: $color-primary;
-      opacity: 0.3;
-      border-radius: 1px;
-    }
 
     &:hover:not(:disabled) {
       background: $color-bg-tertiary;
-      border-color: $color-gray-400;
+      border-color: $color-border-hover;
       color: $color-text-primary;
-      
-      &::after {
-        opacity: 0.6;
-      }
     }
 
     &:focus {

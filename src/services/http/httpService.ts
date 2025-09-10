@@ -99,11 +99,27 @@ export class BaseHttpService {
     try {
       const response = await fetchWithTimeout(`${this.baseUrl}${endpoint}`, { signal });
       if (!response.ok) {
-        this.handleError(response, endpoint, 'GET');
+        throw new HttpError(`GET ${endpoint} failed`, response.status, response.statusText, endpoint);
       }
-      return response.json();
+      return await response.json();
     } catch (error) {
-      this.handleError(error, endpoint, 'GET');
+      console.error(`HTTP error for ${endpoint}:`, error);
+      throw error;
+    }
+  }
+
+  // Get with response headers for pagination
+  protected async getWithHeaders<T>(endpoint: string, signal?: AbortSignal): Promise<{ data: T; headers: Headers }> {
+    try {
+      const response = await fetchWithTimeout(`${this.baseUrl}${endpoint}`, { signal });
+      if (!response.ok) {
+        throw new HttpError(`GET ${endpoint} failed`, response.status, response.statusText, endpoint);
+      }
+      const data = await response.json();
+      return { data, headers: response.headers };
+    } catch (error) {
+      console.error(`HTTP error for ${endpoint}:`, error);
+      throw error;
     }
   }
 

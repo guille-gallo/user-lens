@@ -242,7 +242,22 @@ export const UsersPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Pagination moved to header area */}
+        <DataTable
+          users={displayUsers}
+          totalUsers={totalUsers}
+          loading={loading}
+          isSearchPending={isPending}
+          onSort={handleSort}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onView={handleView}
+          className="users-page__table"
+          pageSize={pageSize}
+        />
+
+        {/* Pagination moved to table footer following UX best practices */}
         {totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
@@ -259,20 +274,6 @@ export const UsersPage: React.FC = () => {
             className="users-page__pagination"
           />
         )}
-
-        <DataTable
-          users={displayUsers}
-          totalUsers={totalUsers}
-          loading={loading}
-          isSearchPending={isPending}
-          onSort={handleSort}
-          sortField={sortField}
-          sortOrder={sortOrder}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onView={handleView}
-          className="users-page__table"
-        />
       </div>
 
       {/* Delete confirmation dialog */}

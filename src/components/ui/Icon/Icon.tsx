@@ -18,7 +18,9 @@ import {
   FaChevronRight,
   FaSort,
   FaColumns,
-  FaBuilding
+  FaBuilding,
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight
 } from 'react-icons/fa';
 import { 
   MdBusiness,
@@ -59,7 +61,9 @@ export type IconName =
   | 'search'
   | 'arrow-left'
   | 'external-link'
-  | 'bell';
+  | 'bell'
+  | 'first-page'
+  | 'last-page';
 
 interface IconProps {
   name: IconName;
@@ -96,6 +100,8 @@ const iconMap = {
   'arrow-left': AiOutlineArrowLeft,
   'external-link': AiOutlineLink,
   bell: MdNotifications,
+  'first-page': FaAngleDoubleLeft,
+  'last-page': FaAngleDoubleRight,
 };
 
 export const Icon: React.FC<IconProps> = ({ name, size = 16, className, color }) => {
