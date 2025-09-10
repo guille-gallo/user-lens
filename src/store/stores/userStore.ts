@@ -217,13 +217,16 @@ export const useUserStore = create<UserState>()(
 
       deleteUser: async (id) => {
         set({ loading: true, error: null });
+        console.log('🏪 Store - deleteUser called with id:', id);
         
         const currentUsers = get().users;
         const userToDelete = currentUsers.find(user => user.id === id);
         const selectedUser = get().selectedUser;
+        console.log('🏪 Store - User to delete:', userToDelete?.name);
 
         try {
           await userService.deleteUser(id);
+          console.log('🏪 Store - Delete service call successful, refreshing users');
           
           // Refresh current page after deletion
           await get().fetchUsers({}, true);
@@ -232,7 +235,9 @@ export const useUserStore = create<UserState>()(
             set({ selectedUser: null });
           }
           set({ loading: false });
+          console.log('🏪 Store - Delete operation completed successfully');
         } catch (error) {
+          console.error('🏪 Store - Delete operation failed:', error);
           const errorMessage = `Failed to delete ${userToDelete?.name || 'user'}: ${StoreErrorHandler.handleError(error, 'Unknown error')}`;
           set({ error: errorMessage, loading: false });
         }

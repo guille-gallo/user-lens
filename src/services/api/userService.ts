@@ -101,7 +101,15 @@ class UserService extends BaseHttpService {
 
   // Delete user
   async deleteUser(id: number): Promise<void> {
-    return this.delete(`${ENDPOINTS.USERS}/${id}`);
+    console.log('🌐 API Service - deleteUser called with id:', id);
+    try {
+      const result = await this.delete(`${ENDPOINTS.USERS}/${id}`);
+      console.log('🌐 API Service - Delete successful for user id:', id);
+      return result;
+    } catch (error) {
+      console.error('🌐 API Service - Delete failed for user id:', id, error);
+      throw error;
+    }
   }
 
   // Legacy method for backward compatibility (returns first page)
