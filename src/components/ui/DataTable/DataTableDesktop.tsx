@@ -10,6 +10,7 @@ interface DataTableDesktopProps extends DataTableBaseProps {
   handleSort: (field: string) => void;
   getSortIcon: (field: string) => React.ReactNode;
   getCellValue: (user: User, column: DataTableColumn) => React.ReactNode;
+  isShowingSkeleton?: boolean;
 }
 
 /**
@@ -27,7 +28,8 @@ export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
   onView,
   handleSort,
   getSortIcon,
-  getCellValue
+  getCellValue,
+  isShowingSkeleton = false
 }) => {
   // Table keyboard navigation
   const tableId = 'data-table-main';
@@ -59,6 +61,7 @@ export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
                 key={column.key} 
                 className="data-table__header-cell"
                 role="columnheader"
+                data-field={column.key}
                 aria-sort={
                   sortField === column.key 
                     ? sortOrder === 'asc' ? 'ascending' : 'descending'
@@ -97,49 +100,80 @@ export const DataTableDesktop: React.FC<DataTableDesktopProps> = ({
           </tr>
         </thead>
         <tbody>
-          {users.map((user, rowIndex) => (
-            <tr key={user.id} className="data-table__row" role="row">
-              {visibleColumns.map((column, columnIndex) => {
-                const cellContent = getCellValue(user, column);
-                // Check if this column uses a render function (returns JSX) or plain text
-                const hasRenderFunction = column.render !== undefined;
-                
-                return (
+          {isShowingSkeleton ? (
+            // Skeleton rows - same structure as real rows but with skeleton placeholders
+            Array.from({ length: users.length || 5 }, (_, index) => (
+              <tr key={`skeleton-${index}`} className="data-table__row data-table__row--skeleton" role="row">
+                {visibleColumns.map((column) => (
                   <td 
                     key={column.key} 
-                    className="data-table__cell data-table__cell--navigable"
+                    className="data-table__cell" 
                     role="cell"
-                    {...getCellProps(rowIndex, columnIndex)}
+                    data-field={column.key}
                   >
-                    {hasRenderFunction ? (
-                      // For rendered content (links, etc), use as-is but ensure it's in a container
-                      <div className="data-table__cell-content">
-                        {cellContent}
-                      </div>
-                    ) : (
-                      // For plain text content, wrap in span
-                      <span className="data-table__cell-content">
-                        {cellContent}
-                      </span>
-                    )}
+                    <div className="data-table__skeleton-placeholder data-table__skeleton-placeholder--cell"></div>
                   </td>
-                );
-              })}
-              <td 
-                className="data-table__cell data-table__cell--actions data-table__cell--navigable" 
-                role="cell"
-                {...getCellProps(rowIndex, visibleColumns.length)}
-              >
-                <DataTableActions
-                  user={user}
-                  onView={onView}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  variant="desktop"
-                />
-              </td>
-            </tr>
-          ))}
+                ))}
+                <td className="data-table__cell data-table__cell--actions" role="cell">
+                  <div className="data-table__skeleton-actions">
+                    <div className="data-table__skeleton-placeholder data-table__skeleton-placeholder--button"></div>
+                    <div className="data-table__skeleton-placeholder data-table__skeleton-placeholder--button"></div>
+                    <div className="data-table__skeleton-placeholder data-table__skeleton-placeholder--button"></div>
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            // Real user data rows
+            users.map((user, rowIndex) => (
+              <tr key={user.id} className="data-table__row" role="row">
+                {visibleColumns.map((column, columnIndex) => {
+                  const cellContent = getCellValue(user, column);
+                  // Check if this column uses a render function (returns JSX) or plain text
+                  const hasRenderFunction = column.render !== undefined;
+                  // Get text content for tooltip - if render function, try to extract text
+                  const textContent = hasRenderFunction ? 
+                    (typeof cellContent === 'string' ? cellContent : '') : 
+                    String(cellContent || '');
+                  
+                  return (
+                    <td 
+                      key={column.key} 
+                      className="data-table__cell data-table__cell--navigable"
+                      role="cell"
+                      data-field={column.key}
+                      {...getCellProps(rowIndex, columnIndex)}
+                    >
+                      {hasRenderFunction ? (
+                        // For rendered content (links, etc), use as-is but ensure it's in a container
+                        <div className="data-table__cell-content" title={textContent}>
+                          {cellContent}
+                        </div>
+                      ) : (
+                        // For plain text content, wrap in span with tooltip
+                        <span className="data-table__cell-content" title={textContent}>
+                          {cellContent}
+                        </span>
+                      )}
+                    </td>
+                  );
+                })}
+                <td 
+                  className="data-table__cell data-table__cell--actions data-table__cell--navigable" 
+                  role="cell"
+                  {...getCellProps(rowIndex, visibleColumns.length)}
+                >
+                  <DataTableActions
+                    user={user}
+                    onView={onView}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    variant="desktop"
+                  />
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
       

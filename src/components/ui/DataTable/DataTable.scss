@@ -108,6 +108,7 @@
     @include table-base;
     @include text-sm;
     min-width: 800px; // Ensures horizontal scroll on mobile
+    table-layout: fixed; // Force consistent column widths regardless of content
     
     @include respond-to(lg) {
       min-width: 100%;
@@ -128,6 +129,51 @@
     position: sticky;
     top: 0;
     z-index: 10;
+
+    // Fixed column widths for consistent layout - adjusted for better content distribution
+    &[data-field="name"] {
+      width: 18%;
+    }
+
+    &[data-field="username"] {
+      width: 12%;
+    }
+
+    &[data-field="email"] {
+      width: 20%;
+    }
+
+    &[data-field="phone"] {
+      width: 12%;
+    }
+
+    &[data-field="website"] {
+      width: 12%;
+    }
+
+    &[data-field="address.street"] {
+      width: 15%;
+    }
+
+    &[data-field="address.city"] {
+      width: 10%;
+    }
+
+    &[data-field="address.zipcode"] {
+      width: 8%;
+    }
+
+    &[data-field="company.name"] {
+      width: 15%;
+    }
+
+    &[data-field="company.catchPhrase"] {
+      width: 18%;
+    }
+
+    &[data-field="company.bs"] {
+      width: 15%;
+    }
 
     &--actions {
       width: 200px;
@@ -179,6 +225,7 @@
 
   &__row {
     transition: background-color $transition-base;
+    height: 48px; // Fixed row height for consistency
 
     &:hover {
       background-color: $color-bg-tertiary;
@@ -195,6 +242,55 @@
 
   &__cell {
     @include table-cell;
+    vertical-align: middle; // Center content vertically in fixed height rows
+    white-space: nowrap; // Prevent text wrapping
+    overflow: hidden; // Hide overflowing content
+    text-overflow: ellipsis; // Show ellipsis for overflowing text
+    
+    // Dynamic column widths matching header cells
+    &[data-field="name"] {
+      width: var(--col-width-name, 18%);
+    }
+
+    &[data-field="username"] {
+      width: var(--col-width-username, 12%);
+    }
+
+    &[data-field="email"] {
+      width: var(--col-width-email, 20%);
+    }
+
+    &[data-field="phone"] {
+      width: var(--col-width-phone, 12%);
+    }
+
+    &[data-field="website"] {
+      width: var(--col-width-website, 12%);
+    }
+
+    &[data-field="address.street"] {
+      width: var(--col-width-street, 15%);
+    }
+
+    &[data-field="address.city"] {
+      width: var(--col-width-city, 10%);
+    }
+
+    &[data-field="address.zipcode"] {
+      width: var(--col-width-zipcode, 8%);
+    }
+
+    &[data-field="company.name"] {
+      width: var(--col-width-company-name, 15%);
+    }
+
+    &[data-field="company.catchPhrase"] {
+      width: var(--col-width-company-catch, 18%);
+    }
+
+    &[data-field="company.bs"] {
+      width: var(--col-width-company-bs, 15%);
+    }
     
     // Responsive cell padding
     @include respond-to(sm) {
@@ -233,11 +329,18 @@
   &__cell-content {
     display: block;
     width: 100%;
+    overflow: hidden; // Hide overflowing content
+    text-overflow: ellipsis; // Show ellipsis for overflowing text
+    white-space: nowrap; // Prevent text wrapping
     
     // Ensure links and interactive elements within cells remain accessible
     a, button {
       position: relative;
       z-index: 2;
+      max-width: 100%; // Prevent buttons from exceeding cell width
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
@@ -365,7 +468,41 @@
     animation: spin 1s linear infinite;
   }
 
-  // Skeleton loading states
+  // Static skeleton placeholders.
+  &__skeleton-placeholder {
+    background-color: $color-gray-200;
+    border-radius: $radius-sm;
+    
+    &--cell {
+      width: 90%;
+      height: 16px;
+    }
+
+    &--button {
+      width: 32px;
+      height: 32px;
+      border-radius: $radius-base;
+    }
+
+    &--avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: $radius-full;
+    }
+
+    &--name {
+      width: 140px;
+      height: 18px;
+      margin-bottom: 4px;
+    }
+
+    &--username {
+      width: 100px;
+      height: 14px;
+    }
+  }
+
+  // Legacy animated skeleton (deprecated - keeping for backward compatibility)
   &__skeleton-text {
     @include loading-skeleton;
     border-radius: $radius-sm;
@@ -420,6 +557,8 @@
   }
 
   &__row--skeleton {
+    height: 48px; // Match the fixed row height for consistency
+    
     .data-table__cell {
       padding: $space-3 $space-4;
     }

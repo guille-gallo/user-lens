@@ -3,7 +3,6 @@ import { Icon } from '../Icon';
 import { ColumnToggle } from '../ColumnToggle';
 import { DataTableDesktop } from './DataTableDesktop';
 import { DataTableMobile } from './DataTableMobile';
-import { DataTableSkeleton } from './DataTableSkeleton';
 import { useDataTableColumns, useColumnVisibility } from '../../../hooks';
 import { getNestedValue } from '../../../utils';
 import type { DataTableProps, DataTableColumn, SortOrder } from './DataTableTypes';
@@ -132,39 +131,36 @@ const DataTableComponent: React.FC<DataTableProps> = ({
         </div>
       </div>
       
-      {/* Show skeleton or real content */}
-      {isShowingSkeleton ? (
-        <DataTableSkeleton rowCount={users.length || 5} />
-      ) : (
-        <>
-          {/* Desktop View */}
-          <DataTableDesktop
-            users={users}
-            visibleColumns={visibleColumns}
-            allColumns={allColumns}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onView={onView}
-            handleSort={handleSort}
-            getSortIcon={getSortIcon}
-            getCellValue={getCellValue}
-          />
+      {/* Desktop and Mobile Views */}
+      <>
+        {/* Desktop View */}
+        <DataTableDesktop
+          users={users}
+          visibleColumns={visibleColumns}
+          allColumns={allColumns}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onView={onView}
+          handleSort={handleSort}
+          getSortIcon={getSortIcon}
+          getCellValue={getCellValue}
+          isShowingSkeleton={isShowingSkeleton}
+        />
 
-          {/* Mobile View */}
-          <DataTableMobile
-            users={users}
-            visibleColumns={visibleColumns}
-            allColumns={allColumns}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onView={onView}
-          />
-        </>
-      )}
+        {/* Mobile View */}
+        <DataTableMobile
+          users={users}
+          visibleColumns={visibleColumns}
+          allColumns={allColumns}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onView={onView}
+        />
+      </>
     </div>
   );
 };

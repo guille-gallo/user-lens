@@ -176,7 +176,22 @@
     background-color: #fff;
     border-radius: 12px;
     border: 1px solid #e1e5e9;
-    margin-top: 16px;
+    margin-bottom: 16px;
+    padding: 16px;
+    
+    // Make pagination more compact when in header
+    .pagination__summary {
+      @media (max-width: 767px) {
+        order: 2;
+      }
+    }
+    
+    .pagination__controls {
+      @media (max-width: 767px) {
+        order: 1;
+        justify-content: center;
+      }
+    }
   }
 }
 

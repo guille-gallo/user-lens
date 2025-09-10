@@ -224,7 +224,7 @@ export const UsersPage: React.FC = () => {
           error={metricsError}
         />
 
-                <div className="users-page__controls">
+                        <div className="users-page__controls">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
@@ -242,6 +242,24 @@ export const UsersPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Pagination moved to header area */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalUsers}
+            pageSize={pageSize}
+            hasNext={hasNextPage}
+            hasPrev={hasPrevPage}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            onNext={handleNextPage}
+            onPrev={handlePrevPage}
+            loading={loading}
+            className="users-page__pagination"
+          />
+        )}
+
         <DataTable
           users={displayUsers}
           totalUsers={totalUsers}
@@ -254,22 +272,6 @@ export const UsersPage: React.FC = () => {
           onDelete={handleDelete}
           onView={handleView}
           className="users-page__table"
-        />
-
-        {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={totalUsers}
-          pageSize={pageSize}
-          hasNext={hasNextPage}
-          hasPrev={hasPrevPage}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-          onNext={handleNextPage}
-          onPrev={handlePrevPage}
-          loading={loading}
-          className="users-page__pagination"
         />
       </div>
 

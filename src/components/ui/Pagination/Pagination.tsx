@@ -34,45 +34,63 @@ export const Pagination: React.FC<PaginationProps> = ({
   loading = false,
   className = '',
 }) => {
-  // Calculate which page numbers to show
+  // Calculate which page numbers to show using USWDS 7-slot pattern
   const getVisiblePages = () => {
-    const delta = 2; // Number of pages to show on each side of current page
-    const range = [];
-    const rangeWithDots = [];
+    const maxSlots = 7;
+    const result: (number | string)[] = [];
 
-    // Always show first page
-    range.push(1);
-
-    // Calculate start and end of the range around current page
-    const start = Math.max(2, currentPage - delta);
-    const end = Math.min(totalPages - 1, currentPage + delta);
-
-    // Add dots if there's a gap after the first page
-    if (start > 2) {
-      rangeWithDots.push(1, '...');
-    } else if (start === 2) {
-      rangeWithDots.push(1);
-    } else {
-      rangeWithDots.push(1);
-    }
-
-    // Add the range around current page
-    for (let i = start; i <= end; i++) {
-      if (i !== 1 && i !== totalPages) {
-        rangeWithDots.push(i);
+    // If total pages <= 7, show all pages
+    if (totalPages <= maxSlots) {
+      for (let i = 1; i <= totalPages; i++) {
+        result.push(i);
       }
+      return result;
     }
 
-    // Add dots if there's a gap before the last page
-    if (end < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
-    } else if (end === totalPages - 1) {
-      rangeWithDots.push(totalPages);
-    } else if (totalPages > 1) {
-      rangeWithDots.push(totalPages);
+    // Always include first page
+    result.push(1);
+
+    // Determine the range around current page
+    let start: number;
+    let end: number;
+
+    if (currentPage <= 4) {
+      // Current page is near the beginning
+      start = 2;
+      end = 5;
+      for (let i = start; i <= end; i++) {
+        result.push(i);
+      }
+      if (totalPages > 6) {
+        result.push('...');
+      }
+      if (totalPages > 5) {
+        result.push(totalPages);
+      }
+    } else if (currentPage >= totalPages - 3) {
+      // Current page is near the end
+      if (totalPages > 5) {
+        result.push('...');
+      }
+      start = totalPages - 4;
+      end = totalPages - 1;
+      for (let i = start; i <= end; i++) {
+        if (i > 1) {
+          result.push(i);
+        }
+      }
+      result.push(totalPages);
+    } else {
+      // Current page is in the middle
+      result.push('...');
+      result.push(currentPage - 1);
+      result.push(currentPage);
+      result.push(currentPage + 1);
+      result.push('...');
+      result.push(totalPages);
     }
 
-    return rangeWithDots;
+    return result;
   };
 
   const visiblePages = getVisiblePages();

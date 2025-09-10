@@ -3,15 +3,17 @@
 .pagination {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
-  padding: var(--spacing-4);
-  border-top: 1px solid var(--color-border);
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
+  border-bottom: 1px solid var(--color-border);
   background: var(--color-background);
 
   @media (min-width: 768px) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-2) 0;
   }
 
   &__summary {
@@ -22,7 +24,7 @@
     @media (min-width: 576px) {
       flex-direction: row;
       align-items: center;
-      gap: var(--spacing-4);
+      gap: var(--spacing-3);
     }
   }
 
