@@ -1,11 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { useUserStore } from '../userStore';
-import { dataService } from '../../../services';
 import { UserFilterCache } from '../../utils';
 
-// Mock the dependencies
-jest.mock('../../../services', () => ({
-  dataService: {
+// Mock the userService directly where it's imported
+jest.mock('../../../services/api/userService', () => ({
+  userService: {
     getUsers: jest.fn(),
     getUserById: jest.fn(),
     createUser: jest.fn(),
@@ -13,6 +12,9 @@ jest.mock('../../../services', () => ({
     deleteUser: jest.fn(),
   },
 }));
+
+// Import the mocked userService
+import { userService } from '../../../services/api/userService';
 
 jest.mock('../../utils', () => ({
   UserFilterCache: {
@@ -24,7 +26,7 @@ jest.mock('../../utils', () => ({
   },
 }));
 
-const mockDataService = dataService as jest.Mocked<typeof dataService>;
+const mockUserService = userService as jest.Mocked<typeof userService>;
 const mockUserFilterCache = UserFilterCache as jest.Mocked<typeof UserFilterCache>;
 
 describe('userStore', () => {
@@ -71,6 +73,18 @@ describe('userStore', () => {
     }
   ];
 
+  const mockPaginatedResponse = {
+    data: mockUsers,
+    pagination: {
+      page: 1,
+      limit: 15,
+      total: mockUsers.length,
+      totalPages: 1,
+      hasNext: false,
+      hasPrev: false
+    }
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset store state before each test
@@ -83,6 +97,12 @@ describe('userStore', () => {
       sortField: null,
       sortOrder: 'asc',
       lastFetch: 0,
+      currentPage: 1,
+      pageSize: 15,
+      totalUsers: 0,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPrevPage: false,
     });
   });
 
@@ -168,7 +188,7 @@ describe('userStore', () => {
 
   describe('Async Actions - fetchUsers', () => {
     it('should fetch users successfully', async () => {
-      mockDataService.getUsers.mockResolvedValueOnce(mockUsers);
+      mockUserService.getUsers.mockResolvedValueOnce(mockPaginatedResponse);
       const { result } = renderHook(() => useUserStore());
       
       await act(async () => {
@@ -183,7 +203,7 @@ describe('userStore', () => {
 
     it('should handle fetch users error', async () => {
       const errorMessage = 'Failed to load users';
-      mockDataService.getUsers.mockRejectedValueOnce(new Error('Network error'));
+      mockUserService.getUsers.mockRejectedValueOnce(new Error('Network error'));
       
       // Mock StoreErrorHandler
       const { StoreErrorHandler } = require('../../utils');
@@ -201,9 +221,9 @@ describe('userStore', () => {
     });
 
     it('should set loading state during fetch', async () => {
-      mockDataService.getUsers.mockImplementation(() => 
+      mockUserService.getUsers.mockImplementation(() => 
         new Promise((resolve) => {
-          setTimeout(() => resolve(mockUsers), 100);
+          setTimeout(() => resolve(mockPaginatedResponse), 100);
         })
       );
       
@@ -221,7 +241,7 @@ describe('userStore', () => {
   describe('Async Actions - fetchUserById', () => {
     it('should fetch user by id successfully', async () => {
       const userId = 1;
-      mockDataService.getUserById.mockResolvedValueOnce(mockUsers[0]);
+      mockUserService.getUserById.mockResolvedValueOnce(mockUsers[0]);
       const { result } = renderHook(() => useUserStore());
       
       await act(async () => {
@@ -231,13 +251,13 @@ describe('userStore', () => {
       expect(result.current.loading).toBe(false);
       expect(result.current.selectedUser).toEqual(mockUsers[0]);
       expect(result.current.error).toBe(null);
-      expect(mockDataService.getUserById).toHaveBeenCalledWith(userId);
+      expect(mockUserService.getUserById).toHaveBeenCalledWith(userId);
     });
 
     it('should handle fetch user by id error', async () => {
       const userId = 999;
       const errorMessage = 'Failed to load user';
-      mockDataService.getUserById.mockRejectedValueOnce(new Error('User not found'));
+      mockUserService.getUserById.mockRejectedValueOnce(new Error('User not found'));
       
       const { StoreErrorHandler } = require('../../utils');
       StoreErrorHandler.handleError.mockReturnValueOnce(errorMessage);
@@ -268,7 +288,7 @@ describe('userStore', () => {
       };
       const errorMessage = 'Failed to create user';
       
-      mockDataService.createUser.mockRejectedValueOnce(new Error('Validation error'));
+      mockUserService.createUser.mockRejectedValueOnce(new Error('Validation error'));
       
       const { StoreErrorHandler } = require('../../utils');
       StoreErrorHandler.handleError.mockReturnValueOnce(errorMessage);
@@ -291,7 +311,7 @@ describe('userStore', () => {
       const updateData = { name: 'John Updated' };
       const updatedUser = { ...mockUsers[0], ...updateData };
       
-      mockDataService.updateUser.mockResolvedValueOnce(updatedUser);
+      mockUserService.updateUser.mockResolvedValueOnce(updatedUser);
       const { result } = renderHook(() => useUserStore());
       
       // Set initial users and different selected user
@@ -313,7 +333,7 @@ describe('userStore', () => {
       const updateData = { email: 'invalid-email' };
       const errorMessage = 'Failed to update user';
       
-      mockDataService.updateUser.mockRejectedValueOnce(new Error('Validation error'));
+      mockUserService.updateUser.mockRejectedValueOnce(new Error('Validation error'));
       
       const { StoreErrorHandler } = require('../../utils');
       StoreErrorHandler.handleError.mockReturnValueOnce(errorMessage);
@@ -338,7 +358,7 @@ describe('userStore', () => {
     it('should clear selected user if deleted user was selected', async () => {
       const userId = 1;
       
-      mockDataService.deleteUser.mockResolvedValueOnce(undefined);
+      mockUserService.deleteUser.mockResolvedValueOnce(undefined);
       const { result } = renderHook(() => useUserStore());
       
       // Set initial users and select the user to be deleted
@@ -357,7 +377,7 @@ describe('userStore', () => {
     it('should not affect selected user if different user is deleted', async () => {
       const userId = 1;
       
-      mockDataService.deleteUser.mockResolvedValueOnce(undefined);
+      mockUserService.deleteUser.mockResolvedValueOnce(undefined);
       const { result } = renderHook(() => useUserStore());
       
       // Set initial users and select a different user
@@ -377,7 +397,7 @@ describe('userStore', () => {
       const userId = 1;
       const userToDelete = mockUsers[0];
       
-      mockDataService.deleteUser.mockRejectedValueOnce(new Error('Access denied'));
+      mockUserService.deleteUser.mockRejectedValueOnce(new Error('Access denied'));
       
       const { StoreErrorHandler } = require('../../utils');
       StoreErrorHandler.handleError.mockReturnValueOnce('Access denied');
@@ -399,7 +419,7 @@ describe('userStore', () => {
     it('should handle delete user error without user name', async () => {
       const userId = 999; // Non-existent user
       
-      mockDataService.deleteUser.mockRejectedValueOnce(new Error('User not found'));
+      mockUserService.deleteUser.mockRejectedValueOnce(new Error('User not found'));
       
       const { StoreErrorHandler } = require('../../utils');
       StoreErrorHandler.handleError.mockReturnValueOnce('User not found');
@@ -479,9 +499,9 @@ describe('userStore', () => {
       const { StoreErrorHandler } = require('../../utils');
       StoreErrorHandler.handleError.mockReturnValue('Network connection failed');
       
-      mockDataService.getUsers.mockRejectedValueOnce(networkError);
-      mockDataService.getUserById.mockRejectedValueOnce(networkError);
-      mockDataService.createUser.mockRejectedValueOnce(networkError);
+      mockUserService.getUsers.mockRejectedValueOnce(networkError);
+      mockUserService.getUserById.mockRejectedValueOnce(networkError);
+      mockUserService.createUser.mockRejectedValueOnce(networkError);
       
       const { result } = renderHook(() => useUserStore());
       
