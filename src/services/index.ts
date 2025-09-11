@@ -2,9 +2,6 @@
 export { userService } from './api/userService';
 export { NotificationService } from './api/notificationService';
 
-// Data Services
-export { dataService } from './data/dataService';
-
 // Metrics Services
 export { userMetricsService } from './metrics/userMetricsService';
 export { companyMetricsService } from './metrics/companyMetricsService';
