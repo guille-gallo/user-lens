@@ -33,13 +33,23 @@ class UserService extends BaseHttpService {
       queryParams.append('_order', sortOrder || 'asc');
     }
 
-    // Make the request and get both data and headers
+    // Make the request and get the response
     const url = `${ENDPOINTS.USERS}?${queryParams.toString()}`;
     
     try {
-      const { data: users, headers } = await this.getWithHeaders<User[]>(url, signal);
+      // Try the new structured API format first (Express server)
+      const response = await this.get<PaginatedResponse<User>>(url, signal);
       
-      // Get the actual total count from the API response headers
+      // Check if response has the new structured format
+      if (response && typeof response === 'object' && 'data' in response && 'pagination' in response) {
+        return {
+          data: normalizeUsers(response.data),
+          pagination: response.pagination,
+        };
+      }
+      
+      // Fallback to old format (array + headers) for Vercel API
+      const { data: users, headers } = await this.getWithHeaders<User[]>(url, signal);
       const totalCountHeader = headers.get('X-Total-Count');
       const totalUsers = totalCountHeader ? parseInt(totalCountHeader, 10) : users.length;
       const totalPages = Math.ceil(totalUsers / limit);
@@ -56,15 +66,15 @@ class UserService extends BaseHttpService {
         },
       };
     } catch (error) {
-      // Fallback to the old method if needed
-      console.warn('Failed to get headers, falling back to basic pagination:', error);
+      // Final fallback
+      console.warn('Failed to get structured response, falling back to basic pagination:', error);
       const users = await this.get<User[]>(url, signal);
       return {
-        data: normalizeUsers(users),
+        data: normalizeUsers(users || []),
         pagination: {
           page,
           limit,
-          total: users.length,
+          total: users?.length || 0,
           totalPages: 1,
           hasNext: false,
           hasPrev: false,

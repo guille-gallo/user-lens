@@ -91,8 +91,11 @@ export const UsersPage: React.FC = () => {
 
   // Single effect to handle initial load and search changes
   useEffect(() => {
+    console.log('🔄 UsersPage: Effect triggered, deferredSearchTerm:', deferredSearchTerm);
+    
     // Cancel previous request if it exists
     if (abortControllerRef.current) {
+      console.log('🚫 Aborting previous request');
       abortControllerRef.current.abort();
     }
     
@@ -108,6 +111,7 @@ export const UsersPage: React.FC = () => {
     // Cleanup on unmount
     return () => {
       if (abortControllerRef.current) {
+        console.log('🧹 Cleanup: Aborting request on unmount');
         abortControllerRef.current.abort();
       }
     };

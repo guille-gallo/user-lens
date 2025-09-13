@@ -134,8 +134,9 @@ export const useUserStore = create<UserState>()(
           get().setPaginationData(paginatedResponse);
           set({ loading: false });
         } catch (error) {
-          // Don't show error for aborted requests
-          if (signal?.aborted) {
+          // Don't show error for aborted requests (this is expected behavior)
+          if (signal?.aborted || (error instanceof Error && error.name === 'AbortError')) {
+            console.log('📡 Request aborted (expected in React dev mode)');
             set({ loading: false });
             return;
           }
