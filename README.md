@@ -1,53 +1,93 @@
-# User Lens
+# User Lens 🚀
 
-A modern React application for user management with comprehensive CRUD operations, responsive design, and robust testing infrastructure.
+A professional React application for user management with enterprise-grade development workflow, Docker containerization, and full CI/CD pipeline.
 
-Link to demo: [Video Demo](https://drive.google.com/file/d/1EOOwQgjZXXsK_PWmzcGrjyt7ayu1W8No/view?usp=sharing)
+**🎥 Demo**: [Watch Demo Video](https://drive.google.com/file/d/1EOOwQgjZXXsK_PWmzcGrjyt7ayu1W8No/view?usp=sharing)  
+**� Live**: [Production App](https://user-lens.vercel.app) | [Staging](https://user-lens-staging.vercel.app)
 
 ## 🏗️ Architecture
 
-Built with enterprise-grade patterns and scalable architecture:
-
+### Modern Tech Stack
 - **Frontend**: React 19 + TypeScript + Vite
+- **Backend**: Express.js + Redis
 - **State Management**: Zustand with persistence
 - **Styling**: SCSS with design tokens
-- **Routing**: React Router DOM v7
+- **Database**: Redis (production) + JSON fallback
 - **Testing**: Jest + React Testing Library + Playwright
-- **Backend**: JSON Server (development)
+- **DevOps**: Docker + GitHub Actions + Vercel
+
+### Environment Strategy
+```
+🖥️  Local Dev (Docker)  →  🧪 Staging (GitHub Actions)  →  � Production (Vercel)
+   Redis + 1K records       Redis + 10K records           Redis + Real data
+```
+
+## 🐳 Quick Start (Docker)
+
+**Recommended for professional development experience:**
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd user-lens
+
+# Start complete development environment
+npm run docker:dev
+
+# Access application
+open http://localhost:5173  # Frontend
+open http://localhost:3001  # API
+open http://localhost:8082  # Redis GUI (with tools profile)
+```
+
+**One-command setup** includes:
+- ✅ Redis database with test data
+- ✅ Express API server  
+- ✅ React development server
+- ✅ Hot reload enabled
+- ✅ Database migrations
+
+## 🛠️ Traditional Setup
+
+If you prefer local Node.js development:
+
+```bash
+# Install dependencies
+npm install
+
+# Start development servers
+npm run dev:express    # Starts both frontend and API
+# OR
+npm run dev           # Frontend only
+npm run server:dev    # API only
+```
 
 ## 📋 Prerequisites
 
-- Node.js (v18 or higher)
-- npm or yarn package manager
+### For Docker Development (Recommended)
+- Docker Desktop 4.0+
+- Node.js 22+ (for scripts)
 
-## 🚀 Installation
+### For Local Development
+- Node.js 22+
+- Redis server (optional - will fallback to JSON)
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd user-lens
-```
+## 🗄️ Database Environments
 
-2. Install dependencies:
-```bash
-npm install
-```
+### Development (Local)
+- **Redis**: `redis://localhost:6379/0`
+- **Data**: 1,000 synthetic users
+- **Reset**: `npm run db:reset -- --force`
 
-## 🔧 Configuration
+### Staging
+- **Redis**: Managed Redis instance
+- **Data**: 10,000 mixed synthetic/anonymized users
+- **Deploy**: Push to `develop` branch
 
-### Environment Setup
-
-The application uses Vite for development and build processes. Configuration files:
-
-- `vite.config.ts` - Vite configuration with React plugin and SCSS preprocessor
-- `tsconfig.json` - TypeScript configuration with project references
-- `package.json` - Dependencies and scripts
-- `db.json` - Mock database for development
-
-### Database Configuration
-
-The development server uses JSON Server with a mock database (`db.json`) containing:
-- Users data with CRUD operations
+### Production  
+- **Redis**: Production Redis cluster
+- **Data**: Real user data
+- **Deploy**: Push to `main` branch
 - Notifications data
 - Company metrics
 

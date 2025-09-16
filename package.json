@@ -26,7 +26,19 @@
     "server:redis": "node server.js",
     "dev:express": "concurrently \"npm run dev\" \"npm run server:dev\"",
     "dev:full": "concurrently \"npm run dev\" \"npm run json-server\"",
-    "generate-data": "node scripts/generate-data.js"
+    "generate-data": "node scripts/generate-data.js",
+    "docker:dev": "docker-compose up --build",
+    "docker:dev:detached": "docker-compose up -d --build",
+    "docker:dev:logs": "docker-compose logs -f",
+    "docker:stop": "docker-compose down",
+    "docker:clean": "docker-compose down -v --remove-orphans",
+    "docker:seed": "docker-compose --profile seeding up db-seeder",
+    "docker:tools": "docker-compose --profile tools up -d redis-commander",
+    "docker:prod-like": "docker-compose --profile production-like up -d",
+    "dev:docker": "concurrently \"npm run dev -- --host 0.0.0.0\" \"npm run server:dev\"",
+    "db:migrate": "node scripts/migrate-database.js",
+    "db:seed": "node scripts/seed-database.js",
+    "db:reset": "node scripts/reset-database.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

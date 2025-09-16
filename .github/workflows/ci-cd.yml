@@ -1,0 +1,303 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, 'feature/*' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '22'
+  REDIS_VERSION: '7'
+
+jobs:
+  # Linting and Code Quality
+  lint:
+    name: 🔍 Lint & Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run ESLint
+        run: npm run lint
+
+      - name: 🏗️  Type check
+        run: npx tsc --noEmit
+
+  # Unit Tests
+  test:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:${{ env.REDIS_VERSION }}-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run unit tests
+        run: npm run test:coverage
+        env:
+          REDIS_URL: redis://localhost:6379/0
+          NODE_ENV: test
+
+      - name: 📊 Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        if: success()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/lcov.info
+
+  # Docker Build Test
+  docker-test:
+    name: 🐳 Docker Build Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🏗️  Build development image
+        run: |
+          docker build -f Dockerfile.dev -t user-lens:dev .
+
+      - name: 🧪 Test Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml config
+          docker-compose up -d redis-dev redis-test
+          sleep 10
+          docker-compose ps
+          docker-compose down
+
+  # Integration Tests with Docker
+  integration-test:
+    name: 🔧 Integration Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [development, staging]
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🚀 Start test environment
+        run: |
+          cp .env.${{ matrix.environment }} .env
+          docker-compose up -d redis-dev redis-test
+          sleep 15
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🌱 Run database migrations
+        run: npm run db:migrate run
+        env:
+          REDIS_URL: redis://localhost:6379/0
+          NODE_ENV: ${{ matrix.environment }}
+
+      - name: 🌱 Seed test database
+        run: npm run db:seed
+        env:
+          REDIS_URL: redis://localhost:6379/0
+          NODE_ENV: ${{ matrix.environment }}
+          DB_SEED_SIZE: 100
+
+      - name: 🧪 Run integration tests
+        run: npm run test:components
+        env:
+          REDIS_URL: redis://localhost:6379/0
+          NODE_ENV: ${{ matrix.environment }}
+
+      - name: 🛑 Cleanup
+        if: always()
+        run: docker-compose down -v
+
+  # E2E Tests
+  e2e-test:
+    name: 🎭 E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: 🚀 Start application with Docker
+        run: |
+          cp .env.development .env
+          docker-compose up -d
+          sleep 30
+          curl --retry 10 --retry-delay 5 http://localhost:3001/api/health
+
+      - name: 🎭 Run E2E tests
+        run: npm run test:e2e
+
+      - name: 📊 Upload E2E artifacts
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: e2e-results
+          path: |
+            test-results/
+            playwright-report/
+
+      - name: 🛑 Cleanup
+        if: always()
+        run: docker-compose down -v
+
+  # Build for Production
+  build:
+    name: 🏗️  Production Build
+    runs-on: ubuntu-latest
+    needs: [lint, test, docker-test]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️  Build application
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: 📦 Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-build
+          path: dist/
+
+  # Deploy to Staging
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build, integration-test, e2e-test]
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: production-build
+          path: dist/
+
+      - name: 🚀 Deploy to Vercel (Staging)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          alias-domains: |
+            user-lens-staging.vercel.app
+
+      - name: 🌱 Run staging migrations
+        run: |
+          npm ci
+          npm run db:migrate run
+        env:
+          REDIS_URL: ${{ secrets.REDIS_STAGING_URL }}
+          NODE_ENV: staging
+
+  # Deploy to Production
+  deploy-production:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [deploy-staging]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: production-build
+          path: dist/
+
+      - name: 🚀 Deploy to Vercel (Production)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-args: '--prod'
+
+      - name: 🌱 Run production migrations
+        run: |
+          npm ci
+          npm run db:migrate run
+        env:
+          REDIS_URL: ${{ secrets.REDIS_PRODUCTION_URL }}
+          NODE_ENV: production
+
+      - name: 🔔 Notify deployment success
+        if: success()
+        run: |
+          echo "🎉 Production deployment successful!"
+          echo "🔗 URL: https://user-lens.vercel.app"
