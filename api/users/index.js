@@ -37,11 +37,12 @@ export default async function handler(req, res) {
 
       // Handle search
       if (q) {
+        const searchTerm = q.toLowerCase();
         users = users.filter(user => 
-          user.name.toLowerCase().includes(q.toLowerCase()) ||
-          user.email.toLowerCase().includes(q.toLowerCase()) ||
-          user.username.toLowerCase().includes(q.toLowerCase()) ||
-          (user.company?.name && user.company.name.toLowerCase().includes(q.toLowerCase()))
+          (user.name && user.name.toLowerCase().includes(searchTerm)) ||
+          (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+          (user.username && user.username.toLowerCase().includes(searchTerm)) ||
+          (user.company?.name && user.company.name.toLowerCase().includes(searchTerm))
         );
       }
 
