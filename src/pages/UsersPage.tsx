@@ -18,6 +18,7 @@ import './UsersPage.scss';
 /**
  * Users Page - Main page for user management
  */
+
 export const UsersPage: React.FC = () => {
   const navigate = useNavigate();
   
