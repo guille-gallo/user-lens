@@ -23,6 +23,11 @@ export default async function handler(req, res) {
       environment: {
         node_version: process.version,
         redis_url_configured: !!(process.env.KV_URL || process.env.REDIS_URL),
+        kv_url_exists: !!process.env.KV_URL,
+        kv_url_prefix: process.env.KV_URL ? process.env.KV_URL.substring(0, 12) : null,
+        kv_rest_api_url_exists: !!process.env.KV_REST_API_URL,
+        redis_url_exists: !!process.env.REDIS_URL,
+        redis_url_prefix: process.env.REDIS_URL ? process.env.REDIS_URL.substring(0, 12) : null,
         vercel_env: process.env.VERCEL_ENV || 'unknown'
       },
       endpoints: {
