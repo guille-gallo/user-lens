@@ -100,23 +100,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  let redis;
   try {
-    const redisUrl = process.env.KV_URL || process.env.REDIS_URL;
-    redis = createClient({
-      url: redisUrl,
-      socket: {
-        tls: redisUrl.startsWith('rediss://'),
-        connectTimeout: 5000,
-        reconnectStrategy: (retries) => Math.min(retries * 50, 500)
-      }
-    });
-    
-    redis.on('error', (err) => {
-      console.error('Redis Client Error', err);
-    });
-
-    await redis.connect();
+    const redis = getRedis();
     
     // Get parameters
     const { force = 'false', count, seed, source = 'auto' } = req.query;

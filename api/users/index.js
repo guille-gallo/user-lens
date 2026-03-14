@@ -11,28 +11,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Check if Redis URL is configured
-  const redisUrl = process.env.KV_URL || process.env.REDIS_URL;
-  if (!redisUrl) {
-    return res.status(500).json({ error: 'Redis URL not configured' });
-  }
-
-  let redis;
   try {
-    redis = createClient({
-      url: redisUrl,
-      socket: {
-        tls: redisUrl.startsWith('rediss://'),
-        connectTimeout: 5000,
-        reconnectStrategy: (retries) => Math.min(retries * 50, 500)
-      }
-    });
-    
-    redis.on('error', (err) => {
-      console.error('Redis Client Error', err);
-    });
-
-    await redis.connect();
+    const redis = getRedis();
 
     if (req.method === 'GET') {
       // Get query parameters

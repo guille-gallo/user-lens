@@ -40,24 +40,10 @@ export default async function handler(req, res) {
     };
 
     // Extended health check with Redis test
-    const redisUrl = process.env.KV_URL || process.env.REDIS_URL;
-    if (check === 'full' && redisUrl) {
-      let redis;
+    const redisConfigured = !!(process.env.KV_URL || process.env.REDIS_URL || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL);
+    if (check === 'full' && redisConfigured) {
       try {
-        redis = createClient({
-          url: redisUrl,
-          socket: {
-            tls: redisUrl.startsWith('rediss://'),
-            connectTimeout: 5000,
-            reconnectStrategy: (retries) => Math.min(retries * 50, 500)
-          }
-        });
-        
-        redis.on('error', (err) => {
-          console.error('Redis Client Error', err);
-        });
-
-        await redis.connect();
+        const redis = getRedis();
         
         // Test Redis operations
         const testKey = `health_test_${Date.now()}`;
