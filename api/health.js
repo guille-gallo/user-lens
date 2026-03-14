@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString(),
       environment: {
         node_version: process.version,
-        redis_url_configured: !!process.env.REDIS_URL,
+        redis_url_configured: !!(process.env.KV_URL || process.env.REDIS_URL),
         vercel_env: process.env.VERCEL_ENV || 'unknown'
       },
       endpoints: {
@@ -35,11 +35,12 @@ export default async function handler(req, res) {
     };
 
     // Extended health check with Redis test
-    if (check === 'full' && process.env.REDIS_URL) {
+    const redisUrl = process.env.KV_URL || process.env.REDIS_URL;
+    if (check === 'full' && redisUrl) {
       let redis;
       try {
         redis = createClient({
-          url: process.env.REDIS_URL
+          url: redisUrl
         });
         
         redis.on('error', (err) => {

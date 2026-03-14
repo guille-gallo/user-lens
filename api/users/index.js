@@ -12,14 +12,15 @@ export default async function handler(req, res) {
   }
 
   // Check if Redis URL is configured
-  if (!process.env.REDIS_URL) {
+  const redisUrl = process.env.KV_URL || process.env.REDIS_URL;
+  if (!redisUrl) {
     return res.status(500).json({ error: 'Redis URL not configured' });
   }
 
   let redis;
   try {
     redis = createClient({
-      url: process.env.REDIS_URL
+      url: redisUrl
     });
     
     redis.on('error', (err) => {

@@ -102,8 +102,9 @@ export default async function handler(req, res) {
 
   let redis;
   try {
+    const redisUrl = process.env.KV_URL || process.env.REDIS_URL;
     redis = createClient({
-      url: process.env.REDIS_URL
+      url: redisUrl
     });
     
     redis.on('error', (err) => {
@@ -218,7 +219,7 @@ export default async function handler(req, res) {
     res.status(500).json({ 
       error: 'Failed to seed database', 
       details: error.message,
-      redis_url_exists: !!process.env.REDIS_URL
+      redis_url_exists: !!(process.env.KV_URL || process.env.REDIS_URL)
     });
   } finally {
     try {
