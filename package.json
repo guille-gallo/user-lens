@@ -25,6 +25,7 @@
     "generate-data": "node scripts/generate-data.js"
   },
   "dependencies": {
+    "@upstash/redis": "^1.37.0",
     "json-server": "^0.17.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

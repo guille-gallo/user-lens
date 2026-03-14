@@ -1,4 +1,4 @@
-import { createClient } from 'redis';
+import { getRedis } from '../_redis.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -226,13 +226,5 @@ export default async function handler(req, res) {
       details: error.message,
       redis_url_exists: !!(process.env.KV_URL || process.env.REDIS_URL)
     });
-  } finally {
-    try {
-      if (redis && redis.isReady) {
-        await redis.disconnect();
-      }
-    } catch (quitError) {
-      console.error('Redis disconnect error:', quitError);
-    }
   }
 };

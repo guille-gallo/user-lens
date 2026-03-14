@@ -1,4 +1,4 @@
-import { createClient } from 'redis';
+import { getRedis } from '../_redis.js';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -93,13 +93,5 @@ export default async function handler(req, res) {
       error: 'Internal Server Error', 
       details: error.message 
     });
-  } finally {
-    try {
-      if (redis && redis.isReady) {
-        await redis.disconnect();
-      }
-    } catch (quitError) {
-      console.error('Redis disconnect error:', quitError);
-    }
   }
 };

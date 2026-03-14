@@ -1,4 +1,4 @@
-import { createClient } from 'redis';
+import { getRedis } from '../_redis.js';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -34,8 +34,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    await redis.connect();
-    
     const usersJSON = await redis.get('users');
     let users = usersJSON ? JSON.parse(usersJSON) : [];
 

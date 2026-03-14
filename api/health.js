@@ -1,4 +1,4 @@
-import { createClient } from 'redis';
+import { getRedis } from './_redis.js';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -76,19 +76,11 @@ export default async function handler(req, res) {
           connection_time_ms: Date.now() - new Date(healthData.timestamp).getTime()
         };
         
-        await redis.disconnect();
       } catch (redisError) {
         healthData.redis = {
           status: 'error',
           error: redisError.message
         };
-        if (redis && redis.isReady) {
-          try {
-            await redis.disconnect();
-          } catch (disconnectError) {
-            console.error('Redis disconnect error:', disconnectError);
-          }
-        }
       }
     }
 
