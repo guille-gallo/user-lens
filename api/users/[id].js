@@ -20,7 +20,8 @@ export default async function handler(req, res) {
   const redis = createClient({
     url: redisUrl,
     socket: {
-      tls: redisUrl?.includes('rediss://'),
+      tls: redisUrl.startsWith('rediss://'),
+      connectTimeout: 5000,
       reconnectStrategy: (retries) => Math.min(retries * 50, 500)
     }
   });

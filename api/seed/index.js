@@ -104,7 +104,12 @@ export default async function handler(req, res) {
   try {
     const redisUrl = process.env.KV_URL || process.env.REDIS_URL;
     redis = createClient({
-      url: redisUrl
+      url: redisUrl,
+      socket: {
+        tls: redisUrl.startsWith('rediss://'),
+        connectTimeout: 5000,
+        reconnectStrategy: (retries) => Math.min(retries * 50, 500)
+      }
     });
     
     redis.on('error', (err) => {
