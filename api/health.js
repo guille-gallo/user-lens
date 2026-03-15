@@ -1,7 +1,6 @@
-import { getRedis } from './_redis.js';
+import { withRedis } from './_redis.js';
 
 export default async function handler(req, res) {
-  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -9,13 +8,13 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-  
+
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { check = 'basic' } = req.query;
-  
+
   try {
     const healthData = {
       status: 'healthy',
@@ -39,29 +38,25 @@ export default async function handler(req, res) {
       }
     };
 
-    // Extended health check with Redis test
-    const redisConfigured = !!(process.env.KV_URL || process.env.REDIS_URL || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL);
+    const redisConfigured = !!(process.env.KV_URL || process.env.REDIS_URL);
     if (check === 'full' && redisConfigured) {
       try {
-        const redis = getRedis();
-        
-        // Test Redis operations
-        const testKey = `health_test_${Date.now()}`;
-        await redis.set(testKey, 'health_check');
-        const testResult = await redis.get(testKey);
-        await redis.del(testKey);
-        
-        // Check users count
-        const usersData = await redis.get('users');
-        const userCount = usersData ? JSON.parse(usersData).length : 0;
-        
-        healthData.redis = {
-          status: 'connected',
-          test_result: testResult,
-          users_in_db: userCount,
-          connection_time_ms: Date.now() - new Date(healthData.timestamp).getTime()
-        };
-        
+        await withRedis(async (redis) => {
+          const testKey = `health_test_${Date.now()}`;
+          await redis.set(testKey, 'health_check');
+          const testResult = await redis.get(testKey);
+          await redis.del(testKey);
+
+          const usersData = await redis.get('users');
+          const userCount = usersData ? JSON.parse(usersData).length : 0;
+
+          healthData.redis = {
+            status: 'connected',
+            test_result: testResult,
+            users_in_db: userCount,
+            connection_time_ms: Date.now() - new Date(healthData.timestamp).getTime()
+          };
+        });
       } catch (redisError) {
         healthData.redis = {
           status: 'error',
@@ -73,10 +68,6 @@ export default async function handler(req, res) {
     res.status(200).json(healthData);
   } catch (error) {
     console.error('Health check error:', error);
-    res.status(500).json({ 
-      status: 'unhealthy',
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
+    res.status(500).json({ status: 'unhealthy', error: error.message, timestamp: new Date().toISOString() });
   }
 }
