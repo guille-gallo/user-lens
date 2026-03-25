@@ -186,7 +186,7 @@ export const UserDetailPage: React.FC = () => {
               <div className="user-detail-page__fields">
                 <EditableField
                   label="Street"
-                  value={user.address.street}
+                  value={user.address?.street ?? ''}
                   field="address.street"
                   isEditing={editingField === 'address.street'}
                   onEdit={() => handleEditField('address.street')}
@@ -225,7 +225,7 @@ export const UserDetailPage: React.FC = () => {
                   <div className="user-detail-page__value">
                     {hasValidCoordinates(user.address?.geo?.lat, user.address?.geo?.lng) ? (
                       <a 
-                        href={`https://maps.google.com/?q=${user.address.geo.lat},${user.address.geo.lng}`}
+                        href={`https://maps.google.com/?q=${user.address?.geo?.lat},${user.address?.geo?.lng}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="user-detail-page__map-link"
