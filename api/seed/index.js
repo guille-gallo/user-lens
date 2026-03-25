@@ -10,6 +10,20 @@ try {
   console.log('Faker not available, using fallback data generation');
 }
 
+const isValidUser = (user) => {
+  return !!(
+    user &&
+    user.id != null &&
+    user.name &&
+    user.username &&
+    user.email &&
+    user.address?.street &&
+    user.address?.city &&
+    user.address?.zipcode &&
+    user.company?.name
+  );
+};
+
 const generateUsers = (count) => {
   const users = [];
 
@@ -121,8 +135,19 @@ export default async function handler(req, res) {
         dataSource = faker ? 'faker.js generated' : 'simple generated';
       }
 
+      users = users.filter(isValidUser);
+
       if (users.length === 0) {
-        users = [{ id: 1, name: 'Jon Marquardt III', username: 'Benjamin_Olson84', email: 'Dorthy39@gmail.com' }];
+        users = [{
+          id: 1,
+          name: 'Jon Marquardt III',
+          username: 'Benjamin_Olson84',
+          email: 'Dorthy39@gmail.com',
+          address: { street: '9588 Cortez Wells', suite: 'Suite 245', city: 'North Joeboro', zipcode: '66761-3353', geo: { lat: 89.7261, lng: -153.925 } },
+          phone: '1-826-364-9052 x31711',
+          website: 'adolescent-lobster.org',
+          company: { name: 'Shields LLC', catchPhrase: 'Cross-platform tangible array', bs: 'engage scalable infrastructures' }
+        }];
         dataSource = 'fallback sample data';
       }
 
