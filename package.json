@@ -1,6 +1,7 @@
 {
   "name": "user-lens",
   "private": true,
+  "packageManager": "pnpm@11.3.0",
   "version": "0.0.0",
   "type": "module",
   "engines": {
@@ -19,9 +20,9 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
-    "test:all": "npm run test && npm run test:e2e",
+    "test:all": "pnpm test && pnpm test:e2e",
     "json-server": "json-server --watch db.json --port 3001",
-    "dev:full": "concurrently \"npm run dev\" \"npm run json-server\"",
+    "dev:full": "concurrently \"pnpm dev\" \"pnpm json-server\"",
     "generate-data": "node scripts/generate-data.js"
   },
   "dependencies": {
@@ -42,6 +43,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
+    "@types/node": "^20",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@types/react-router-dom": "^5.3.3",
